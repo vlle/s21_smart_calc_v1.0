@@ -1,10 +1,21 @@
 #ifndef SRC_SMARTCALC_H_
 #define SRC_SMARTCALC_H_
 
+typedef enum {
+    minus,
+    plus,
+    multiply,
+    divide,
+    sinus,
+    cosinus,
+    tangengs,
+    etc
+} math_oper ;
+
 typedef struct stack
 {
-    int top;
-    int *next;
+    int storage;
+    struct stack *next;
 } math_stack;
 
 // Stack functions
