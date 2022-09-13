@@ -2,13 +2,31 @@
 
 #include "../smartcalc.h"
 
-int pop(math_stack *a) {
-  return 1;
 
+int init_stack(math_stack *a) {
+  if (a) {
+    a->top = 0;
+    a->next = NULL;
+  }
+  return 0;
 }
 
-int push_back(math_stack *a) {
-  return 1;
+int peek(math_stack *a) {
+  int oper = 0;
+  return oper;
+}
+
+// IsEmpty
+// IsFull
+
+int pop(math_stack *a) {
+  int oper = 0;
+  return oper;
+}
+
+int push_back(math_stack *a, int oper) {
+  oper = 1;
+  return 0;
 }
 
 int main() {

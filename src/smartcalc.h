@@ -3,9 +3,24 @@
 
 typedef struct stack
 {
-    int maxsize;    // define max capacity of the stack
     int top;
-    int *items;
+    int *next;
 } math_stack;
+
+// Stack functions
+
+int init_stack(math_stack *a);
+int peek(math_stack *a);
+int pop(math_stack *a);
+int push_back(math_stack *a, int oper);
+
+
+
+
+
+
+
+
+
 
 #endif
