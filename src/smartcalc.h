@@ -20,7 +20,7 @@ typedef struct stack
 
 // Stack functions
 
-int init_stack(math_stack *a);
+struct stack* init_stack(int value);
 int peek(math_stack *a);
 int pop(math_stack *a);
 int push_back(math_stack *a, int oper);
