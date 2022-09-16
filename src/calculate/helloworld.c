@@ -10,7 +10,7 @@ void parse_oper() {
   int nodesCount = 0;
   int nodesCount1 = 0;
   char what[100];
-  char res[200];
+  char res[400];
   int res_i = 0;
   scanf("%s", what);
   for (int i = 0; i < strlen(what); i++) {
@@ -26,7 +26,9 @@ void parse_oper() {
   int tmp = nodesCount1;
   while (tmp > 0) {
     res[res_i] = popC(&tmp, &opr);
-    tmp--;
+    res_i++;
+    res[res_i] = ' ';
+    res_i++;
   }
   printf("%s", res);
 }
