@@ -11,6 +11,7 @@ char* parse_oper(char* inpstr, char* funcstr) {
   int nodesCount1 = 0;
   int funcstr_i = 0;
   scanf("%s", inpstr);
+  int numcount = 0;
   // for (int i = 0; i < strlen(inpstr); i++) {
   for (; *inpstr != '\0'; inpstr++) {
     if (*inpstr >= '0' && *inpstr <= '9') {
@@ -21,11 +22,13 @@ char* parse_oper(char* inpstr, char* funcstr) {
       inpstr = mover;
       strncat(funcstr, tmp, strlen(tmp));
       strcat(funcstr, " ");
+      numcount++;
       //funcstr[funcstr_i] = inpstr[i];
       //funcstr_i++;
       //funcstr[funcstr_i] = ' ';
       //funcstr_i++;
       // while num parse
+      // TODO(artemii): error handling
     } 
     if (*inpstr == '+') {
       push_backC(&nodesCount1, &opr, '+');
@@ -40,7 +43,7 @@ char* parse_oper(char* inpstr, char* funcstr) {
   int tmp = nodesCount1;
   funcstr_i = strlen(funcstr);
   while (tmp > 0) {
-    funcstr[funcstr_i] = popC(&tmp, &opr);
+    funcstr[funcstr_i] = popC(&tmp, &opr); // peek for preceding op
     funcstr_i++;
     funcstr[funcstr_i] = ' ';
     funcstr_i++;
