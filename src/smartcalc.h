@@ -18,12 +18,18 @@ typedef struct stack
     struct stack *next;
 } math_stack;
 
+struct Node {
+    int storage;               // integer data
+    struct Node* next;      // pointer to the next node
+};
+
 // Stack functions
 
 struct stack* init_stack(int value);
-int peek(math_stack *a);
-int pop(math_stack *a);
-int push_back(math_stack *a, int oper);
+int peek(struct Node *a);
+int pop(int *nodesCount, struct Node **a);
+int push_back(int *nodesCount, struct Node **a, int oper);
+int IsEmpty(struct Node *top);
 
 
 
