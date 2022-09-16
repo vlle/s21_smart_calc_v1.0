@@ -4,13 +4,11 @@
 #include "../smartcalc.h"
 
 
-void parse_oper() {
+char* parse_oper(char* what, char* res) {
   struct Node* num;
   struct Node* opr;
   int nodesCount = 0;
   int nodesCount1 = 0;
-  char what[100];
-  char res[400];
   int res_i = 0;
   scanf("%s", what);
   for (int i = 0; i < strlen(what); i++) {
@@ -30,10 +28,15 @@ void parse_oper() {
     res[res_i] = ' ';
     res_i++;
   }
-  printf("%s", res);
+  // printf("%s", res);
+  return res;
 }
 
 int main() {
-  parse_oper();
+  char what[100];
+  char res[400];
+  char *go;
+  go = parse_oper(what, res);
+  printf("%s", go);
   return 0;
 }
