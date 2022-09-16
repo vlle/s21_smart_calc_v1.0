@@ -1,8 +1,13 @@
 lgtk=$(shell pkg-config --cflags gtk+-3.0)
 llgtk=$(shell pkg-config --libs gtk+-3.0)
 
-all:
-	gcc $(lgtk) -o example-0 example-0.c $(llgtk) 
+all: algo example
+
+algo:
+	gcc stack/stack.c calculate/helloworld.c -o hello
+
+example:
+	gcc $(lgtk) -o example-0 gui/example-0.c $(llgtk) 
 
 rebuild: clean all
 
