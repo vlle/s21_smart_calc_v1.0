@@ -38,15 +38,3 @@ int pop(int *nodesCount, struct Node **top) {
 
 int IsEmpty(struct Node *top) { return top == NULL; }
 // IsFull
-
-int main() {
-  struct Node *top;
-  int nodesCount = 0;
-  push_back(&nodesCount, &top, 30);
-  push_back(&nodesCount, &top, 32);
-  push_back(&nodesCount, &top, 35);
-  printf("%d\n", pop(&nodesCount, &top));
-  printf("%d\n", pop(&nodesCount, &top));
-  printf("%d\n", pop(&nodesCount, &top));
-  return 0;
-}

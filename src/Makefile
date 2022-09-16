@@ -24,5 +24,6 @@ lint:
 	-find . -type f -name "*.c" | xargs cppcheck --enable=all --suppress=missingIncludeSystem
 
 flint: lint
-	clang-format --style=file -i *.c */*.c *.h */*.h
+	-find . -type f -name "*.c" | xargs clang-format --style=Google -i
+	-find . -type f -name "*.h" | xargs clang-format --style=Google -i
 	
