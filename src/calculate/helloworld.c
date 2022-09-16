@@ -15,12 +15,19 @@ char* parse_oper(char* inpstr, char* funcstr) {
   for (; *inpstr != '\0'; inpstr++) {
     if (*inpstr >= '0' && *inpstr <= '9') {
       char tmp[90];
+      char *mover;
+      long double calc_num = strtol(inpstr, &mover, 10);
+      sprintf(tmp, "%.0Lf", calc_num);
+      inpstr = mover;
+      strncat(funcstr, tmp, strlen(tmp));
+      strcat(funcstr, " ");
       //funcstr[funcstr_i] = inpstr[i];
       //funcstr_i++;
       //funcstr[funcstr_i] = ' ';
       //funcstr_i++;
       // while num parse
-    } else if (*inpstr == '+') {
+    } 
+    if (*inpstr == '+') {
       push_backC(&nodesCount1, &opr, '+');
     } else if (*inpstr == '-') {
       push_backC(&nodesCount1, &opr, '-');
@@ -31,13 +38,13 @@ char* parse_oper(char* inpstr, char* funcstr) {
     }
   }
   int tmp = nodesCount1;
+  funcstr_i = strlen(funcstr);
   while (tmp > 0) {
     funcstr[funcstr_i] = popC(&tmp, &opr);
     funcstr_i++;
     funcstr[funcstr_i] = ' ';
     funcstr_i++;
   }
-  // printf("%s", funcstr);
   funcstr[funcstr_i] = '\0';
   return funcstr;
 }
@@ -67,6 +74,6 @@ int main() {
   go = parse_oper(inpstr, funcstr);
   printf("%s", go);
   long double res = cal_oper(go);
-  printf("%Lf", res);
+  printf("\n%Lf", res);
   return 0;
 }

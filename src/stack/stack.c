@@ -9,13 +9,13 @@ int push_backN(int *nodesCount, struct Node **top, int oper) {
   newNode->storage = oper;
   if (top == NULL) {
     newNode->next = NULL;
-    printf("%d = aaa\n", 0);
+    // printf("%d = aaa\n", 0);
   } else {
     newNode->next = *top;
   }
   *top = newNode;
   *nodesCount += 1;
-  printf("Node is Inserted\n\n");
+  // printf("Node is Inserted\n\n");
   return 0;
 }
 
@@ -25,13 +25,13 @@ int push_backC(int *nodesCount, struct Node **top, char oper) {
   newNode->res = oper;
   if (top == NULL) {
     newNode->next = NULL;
-    printf("%d = aaa\n", 0);
+    // printf("%d = aaa\n", 0);
   } else {
     newNode->next = *top;
   }
   *top = newNode;
   *nodesCount += 1;
-  printf("Node is Inserted\n\n");
+  // printf("Node is Inserted\n\n");
   return 0;
 }
 
