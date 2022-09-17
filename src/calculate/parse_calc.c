@@ -4,6 +4,11 @@
 
 #include "../smartcalc.h"
 
+void strcat_c (char *str, char c) {
+  for (;*str;str++); // note the terminating semicolon here. 
+  *str++ = c; 
+  *str++ = 0;
+}
 
 char* parse_oper(char* inpstr, char* funcstr) {
   struct Node* opr;
@@ -12,21 +17,18 @@ char* parse_oper(char* inpstr, char* funcstr) {
   int funcstr_i = 0;
   scanf("%s", inpstr);
   int numcount = 0;
-  // for (int i = 0; i < strlen(inpstr); i++) {
-  for (; *inpstr != '\0'; inpstr++) {
+  for (; *inpstr != '\0'; ++inpstr) {
+      printf("%c iS curr\n", *inpstr);
     if (*inpstr >= '0' && *inpstr <= '9') {
       char tmp[90];
-      char *mover;
-      long double calc_num = strtol(inpstr, &mover, 10);
+      char *pEnd;
+      long double calc_num = strtol(inpstr, &pEnd, 10);
       sprintf(tmp, "%.0Lf", calc_num);
-      inpstr = mover;
+      inpstr = pEnd;
+      printf("%c is curr\n", *inpstr);
       strncat(funcstr, tmp, strlen(tmp));
       strcat(funcstr, " ");
       numcount++;
-      //funcstr[funcstr_i] = inpstr[i];
-      //funcstr_i++;
-      //funcstr[funcstr_i] = ' ';
-      //funcstr_i++;
       // while num parse
       // TODO(artemii): error handling
     } 
@@ -47,21 +49,27 @@ char* parse_oper(char* inpstr, char* funcstr) {
     funcstr_i++;
     funcstr[funcstr_i] = ' ';
     funcstr_i++;
+    // strcat_c(funcstr, popC(&tmp, &opr));
+    // strcat(funcstr, " ");
   }
-  funcstr[funcstr_i] = '\0';
+  strcat_c(funcstr, '\0');
+  // funcstr[funcstr_i] = '\0';
   return funcstr;
 }
 
 long double cal_oper(char* funcstr) {
   long double result = 0.0;
   struct Node* nums;
-  struct Node* ops;
+  struct Node* operators;
   int nodesCount = 0;
   int nodesCount1 = 0;
-  for (int i = 0; i < strlen(funcstr); i++) {
-    if (funcstr[i] >= '0' && funcstr[i] <= '9') {
-      push_backN(&nodesCount, &nums, funcstr[i] - 48);
-    } else if (funcstr[i] == '+') {
+  for (; *funcstr != '\0'; funcstr++) {
+    if (*funcstr >= '0' && *funcstr <= '9') {
+      char *pEnd;
+      long double calc_num = strtol(funcstr, &pEnd, 10);
+      push_backN(&nodesCount, &nums, calc_num);
+      funcstr = pEnd;
+    } else if (*funcstr == '+') {
       int a = popN(&nodesCount, &nums);
       int b = popN(&nodesCount, &nums);
       result = a + b;

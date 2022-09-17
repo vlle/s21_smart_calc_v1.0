@@ -40,7 +40,7 @@ int peekN(struct Node *a) { return a->storage; }
 char peekC(struct Node *a) { return a->res; }
 
 int popN(int *nodesCount, struct Node **top) {
-  int x = -1;
+  int x = 0;
   struct Node *node;
   if (IsEmpty(*top)) {
     printf("Top stack is empty");

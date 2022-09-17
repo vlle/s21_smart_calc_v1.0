@@ -4,7 +4,8 @@ llgtk=$(shell pkg-config --libs gtk+-3.0)
 all: algo example
 
 algo:
-	gcc stack/stack.c calculate/helloworld.c -o hello
+	gcc stack/stack.c calculate/parse_calc.c -o hello
+
 
 example:
 	gcc $(lgtk) -o example-0 gui/example-0.c $(llgtk) 
