@@ -13,7 +13,7 @@ typedef enum {
 } math_oper;
 
 struct Node {
-  int storage;        // integer data
+  int storage;  // integer data
   char res;
   struct Node *next;  // pointer to the next node
 };

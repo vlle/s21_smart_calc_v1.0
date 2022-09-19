@@ -1,7 +1,7 @@
 lgtk=$(shell pkg-config --cflags gtk+-3.0)
 llgtk=$(shell pkg-config --libs gtk+-3.0)
 
-all: algo example
+all: algo #example
 
 algo:
 	gcc stack/stack.c calculate/parse_calc.c -o hello

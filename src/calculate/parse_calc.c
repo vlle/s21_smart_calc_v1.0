@@ -1,14 +1,14 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "../smartcalc.h"
 #define MAX_INP_SZ 256
 
 char* parse_oper(char* funcstr) {
   struct Node* opr;
-  char *inpstr = (char*) malloc(MAX_INP_SZ);
+  char* inpstr = (char*)malloc(MAX_INP_SZ);
   if (!inpstr) {
     fprintf(stderr, "No memory alloc. \n");
     perror("");
@@ -22,7 +22,7 @@ char* parse_oper(char* funcstr) {
   for (; *inpstr != '\0'; inpstr++) {
     if (*inpstr >= '0' && *inpstr <= '9') {
       char tmp[90];
-      char *pEnd;
+      char* pEnd;
       long double calc_num = strtol(inpstr, &pEnd, 10);
       sprintf(tmp, "%.0Lf", calc_num);
       inpstr = pEnd;
@@ -35,17 +35,23 @@ char* parse_oper(char* funcstr) {
       // TODO(Artemii): minus num support
       // TODO(artemii): error handling
       // TODO(artemii): float num spo=port
-    } 
-    if (*inpstr == '+') {
+    }
+    if (*inpstr == '(') {
+      push_backC(&nodesCount1, &opr, '(');
+    } else if (*inpstr == '+') {
       push_backC(&nodesCount1, &opr, '+');
     } else if (*inpstr == '-') {
       push_backC(&nodesCount1, &opr, '-');
     } else if (*inpstr == '/') {
       push_backC(&nodesCount1, &opr, '/');
     } else if (*inpstr == '*') {
+      // While there is an token-operator O2 at the top of the stack, that has
+      // greater precedence than O1 or they have the same precedence and O1 is
+      // left-associative: Pop O2 from the stack into the output queue Push O1
+      // onto the stack
       push_backC(&nodesCount1, &opr, '*');
     } else if (*inpstr == 's') {
-      char *null_prot = inpstr;
+      char* null_prot = inpstr;
       // store check in func
       if ((*(null_prot + 1) != '\0') && (*(null_prot + 2) != '\0')) {
         if ((*(null_prot + 1) == 'i') && (*(null_prot + 2) == 'n')) {
@@ -57,7 +63,7 @@ char* parse_oper(char* funcstr) {
   int tmp = nodesCount1;
   funcstr_i = strlen(funcstr);
   while (tmp > 0) {
-    funcstr[funcstr_i] = popC(&tmp, &opr); // peek for preceding op
+    funcstr[funcstr_i] = popC(&tmp, &opr);  // peek for preceding op
     funcstr_i++;
     funcstr[funcstr_i] = ' ';
     funcstr_i++;
@@ -67,7 +73,7 @@ char* parse_oper(char* funcstr) {
   return funcstr;
 }
 
-struct Vars popper(struct Node**nums, int *nodesCount) {
+struct Vars popper(struct Node** nums, int* nodesCount) {
   struct Vars res;
   if (*nodesCount > 1) {
     res.a1 = popN(nodesCount, nums);
@@ -92,7 +98,7 @@ long double cal_oper(char* funcstr) {
   struct Vars var;
   for (; *funcstr != '\0'; funcstr++) {
     if (*funcstr >= '0' && *funcstr <= '9') {
-      char *pEnd;
+      char* pEnd;
       long double calc_num = strtol(funcstr, &pEnd, 10);
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
@@ -115,7 +121,7 @@ long double cal_oper(char* funcstr) {
 
 int main() {
   char funcstr[400] = {0};
-  char *go;
+  char* go;
   go = parse_oper(funcstr);
   printf("%s", go);
   long double res = 0;
