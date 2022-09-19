@@ -6,12 +6,6 @@
 #include "../smartcalc.h"
 #define MAX_INP_SZ 256
 
-void strcat_c (char *str, char c) {
-  for (;*str;str++); // note the terminating semicolon here. 
-  *str++ = c; 
-  *str++ = 0;
-}
-
 char* parse_oper(char* funcstr) {
   struct Node* opr;
   char *inpstr = (char*) malloc(MAX_INP_SZ);
@@ -38,7 +32,9 @@ char* parse_oper(char* funcstr) {
       numcount++;
       // store in funciton?
       // while num parse
+      // TODO(Artemii): minus num support
       // TODO(artemii): error handling
+      // TODO(artemii): float num spo=port
     } 
     if (*inpstr == '+') {
       push_backC(&nodesCount1, &opr, '+');
@@ -48,6 +44,14 @@ char* parse_oper(char* funcstr) {
       push_backC(&nodesCount1, &opr, '/');
     } else if (*inpstr == '*') {
       push_backC(&nodesCount1, &opr, '*');
+    } else if (*inpstr == 's') {
+      char *null_prot = inpstr;
+      // store check in func
+      if ((*(null_prot + 1) != '\0') && (*(null_prot + 2) != '\0')) {
+        if ((*(null_prot + 1) == 'i') && (*(null_prot + 2) == 'n')) {
+          push_backC(&nodesCount1, &opr, 'S');
+        }
+      }
     }
   }
   int tmp = nodesCount1;
@@ -66,7 +70,6 @@ char* parse_oper(char* funcstr) {
 struct Vars popper(struct Node**nums, int *nodesCount) {
   struct Vars res;
   if (*nodesCount > 1) {
-    // store in funct
     res.a1 = popN(nodesCount, nums);
     res.a2 = popN(nodesCount, nums);
   } else {
@@ -94,18 +97,14 @@ long double cal_oper(char* funcstr) {
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
     } else if (*funcstr == '+') {
-      if (nodesCount > 1) {
-        // store in funct
-        a = popN(&nodesCount, &nums);
-        b = popN(&nodesCount, &nums);
-        result = a + b;
-      } else {
-        result = -1;
-        while (nodesCount) {
-          popN(&nodesCount, &nums);
-        }
-        fprintf(stderr, "Wrong calculation. Returning -1\n");
-      }
+      var = popper(&nums, &nodesCount);
+      result = var.a2 + var.a1;
+    } else if (*funcstr == '-') {
+      var = popper(&nums, &nodesCount);
+      result = var.a2 - var.a1;
+    } else if (*funcstr == '*') {
+      var = popper(&nums, &nodesCount);
+      result = var.a2 * var.a1;
     } else if (*funcstr == '/') {
       var = popper(&nums, &nodesCount);
       result = var.a2 / var.a1;
