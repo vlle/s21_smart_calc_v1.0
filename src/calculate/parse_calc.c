@@ -17,7 +17,7 @@ char* parse_oper(char* inpstr, char* funcstr) {
   int funcstr_i = 0;
   scanf("%s", inpstr);
   int numcount = 0;
-  for (; *inpstr != '\0'; ++inpstr) {
+  for (; *inpstr != '\0'; inpstr++) {
       printf("%c iS curr\n", *inpstr);
     if (*inpstr >= '0' && *inpstr <= '9') {
       char tmp[90];
@@ -25,8 +25,8 @@ char* parse_oper(char* inpstr, char* funcstr) {
       long double calc_num = strtol(inpstr, &pEnd, 10);
       sprintf(tmp, "%.0Lf", calc_num);
       inpstr = pEnd;
-      printf("%c is curr\n", *inpstr);
-      strncat(funcstr, tmp, strlen(tmp));
+      // strncat(funcstr, tmp, strlen(tmp));
+      strcat(funcstr, tmp);
       strcat(funcstr, " ");
       numcount++;
       // while num parse
@@ -52,8 +52,7 @@ char* parse_oper(char* inpstr, char* funcstr) {
     // strcat_c(funcstr, popC(&tmp, &opr));
     // strcat(funcstr, " ");
   }
-  strcat_c(funcstr, '\0');
-  // funcstr[funcstr_i] = '\0';
+  funcstr[funcstr_i] = '\0';
   return funcstr;
 }
 
@@ -79,8 +78,8 @@ long double cal_oper(char* funcstr) {
 }
 
 int main() {
-  char inpstr[100];
-  char funcstr[400];
+  char inpstr[100] = {0};
+  char funcstr[400] = {0};
   char *go;
   go = parse_oper(inpstr, funcstr);
   printf("%s", go);
