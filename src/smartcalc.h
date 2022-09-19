@@ -18,6 +18,11 @@ struct Node {
   struct Node *next;  // pointer to the next node
 };
 
+struct Vars {
+  long double a1;
+  long double a2;
+};
+
 // Stack functions
 
 int popN(int *nodesCount, struct Node **top);
