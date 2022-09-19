@@ -10,6 +10,15 @@ algo:
 example:
 	gcc $(lgtk) -o example-0 gui/example-0.c $(llgtk) 
 
+example1:
+	gcc $(lgtk) -o example-1 gui/example-1.c $(llgtk) 
+
+example2:
+	gcc $(lgtk) -o example-2 gui/example-2.c $(llgtk) 
+
+example3:
+	gcc $(lgtk) -o example-3 gui/example-3.c $(llgtk) 
+
 rebuild: clean all
 
 .PHONY: clean rebuild lint 
