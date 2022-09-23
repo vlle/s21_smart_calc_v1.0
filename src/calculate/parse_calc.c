@@ -66,7 +66,7 @@ char* parse_oper(char* funcstr) {
       }
     } else if (*inpstr == ')') {
       char *tmp = (char*)malloc(nodesCount1 + 2);
-      char k;
+      char k = '1';
       while (k != '(')  {
         k = popC(&nodesCount1, &opr);
         if (k == '(') break;
@@ -79,10 +79,8 @@ char* parse_oper(char* funcstr) {
   int tmp = nodesCount1;
   funcstr_i = strlen(funcstr);
   while (tmp > 0) {
-    funcstr[funcstr_i] = popC(&tmp, &opr);  // peek for preceding op
-    funcstr_i++;
-    funcstr[funcstr_i] = ' ';
-    funcstr_i++;
+    funcstr[funcstr_i++] = popC(&tmp, &opr);  // peek for preceding op
+    funcstr[funcstr_i++] = ' ';
   }
   funcstr[funcstr_i] = '\0';
   free(start);
