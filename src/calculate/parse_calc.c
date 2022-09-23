@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 
 #include "../smartcalc.h"
@@ -8,6 +9,7 @@
 
 char* parse_oper(char* funcstr) {
   struct Node* opr;
+  struct Node* num;
   char* inpstr = (char*)malloc(MAX_INP_SZ);
   if (!inpstr) {
     fprintf(stderr, "No memory alloc. \n");
@@ -19,7 +21,11 @@ char* parse_oper(char* funcstr) {
   fgets(inpstr, MAX_INP_SZ, stdin);
   char* start = inpstr;
   int numcount = 0;
+  int number = 0;
   for (; *inpstr != '\0'; inpstr++) {
+    // if (isdigit(*inpstr)) {
+    //   number *= 10;
+    //   number += (*inpstr - '0');
     if (*inpstr >= '0' && *inpstr <= '9') {
       char tmp[90];
       char* pEnd;
@@ -36,7 +42,7 @@ char* parse_oper(char* funcstr) {
       // TODO(artemii): error handling
       // TODO(artemii): float num spo=port
     }
-    if (*inpstr == '(') {
+     if (*inpstr == '(') {
       push_backC(&nodesCount1, &opr, '(');
     } else if (*inpstr == '+') {
       push_backC(&nodesCount1, &opr, '+');
@@ -58,6 +64,16 @@ char* parse_oper(char* funcstr) {
           push_backC(&nodesCount1, &opr, 'S');
         }
       }
+    } else if (*inpstr == ')') {
+      char *tmp = (char*)malloc(nodesCount1 + 2);
+      char k;
+      while (k != '(')  {
+        k = popC(&nodesCount1, &opr);
+        if (k == '(') break;
+        tmp[0] = k;
+        strcat(funcstr, tmp);
+      }
+      free(tmp);
     }
   }
   int tmp = nodesCount1;
