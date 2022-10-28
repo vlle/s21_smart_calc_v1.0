@@ -23,6 +23,7 @@ char* parse_oper(char* funcstr) {
   int numcount = 0;
   int number = 0;
   for (; *inpstr != '\0'; inpstr++) {
+    printf("curr=%s\n",funcstr);
     // if (isdigit(*inpstr)) {
     //   number *= 10;
     //   number += (*inpstr - '0');
@@ -71,6 +72,7 @@ char* parse_oper(char* funcstr) {
         k = popC(&nodesCount1, &opr);
         if (k == '(') break;
         tmp[0] = k;
+        tmp[1] = ' ';
         strcat(funcstr, tmp);
       }
       free(tmp);
@@ -106,7 +108,7 @@ long double cal_oper(char* funcstr) {
   struct Node* nums;
   struct Node* operators;
   int nodesCount = 0;
-  int a = 0, b = 0;
+  double a = 0, b = 0;
   long double a1 = 0, a2 = 0;
   int nodesCount1 = 0;
   struct Vars var;
@@ -119,18 +121,47 @@ long double cal_oper(char* funcstr) {
     } else if (*funcstr == '+') {
       var = popper(&nums, &nodesCount);
       result = var.a2 + var.a1;
+      push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '-') {
       var = popper(&nums, &nodesCount);
-      result = var.a2 - var.a1;
-    } else if (*funcstr == '*') {
-      var = popper(&nums, &nodesCount);
+      result = var.a2 - var.a1; } else if (*funcstr == '*') { var = popper(&nums, &nodesCount);
       result = var.a2 * var.a1;
+      push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '/') {
       var = popper(&nums, &nodesCount);
       result = var.a2 / var.a1;
+      push_backN(&nodesCount, &nums, result);
     }
   }
+  while (nodesCount > 0) {
+    popN(&nodesCount, &nums);
+  }
   return result;
+  // for (; *funcstr != '\0'; funcstr++) {
+  //   if (*funcstr >= '0' && *funcstr <= '9') {
+  //     char* pEnd;
+  //     long double calc_num = strtol(funcstr, &pEnd, 10);
+  //     push_backN(&nodesCount, &nums, calc_num);
+  //     funcstr = pEnd;
+  //   // } else if (*funcstr == '+') {
+  //   //   // var = popper(&nums, &nodesCount);
+  //   //   // result = var.a2 + var.a1;
+  //   // } else if (*funcstr == '-') {
+  //   //   // var = popper(&nums, &nodesCount);
+  //   //   // result = var.a2 - var.a1;
+  //   // } else if (*funcstr == '*') {
+  //   //   // var = popper(&nums, &nodesCount);
+  //   //   // result = var.a2 * var.a1;
+  //   } else if (*funcstr == '/') {
+  //     a = popN(&nodesCount, &nums);
+  //     b = popN(&nodesCount, &nums);
+  //     result = b / a;
+  //     push_backN(&nodesCount, &nums, result);
+  //   //   // var = popper(&nums, &nodesCount);
+  //   //   // result = var.a2 / var.a1;
+  //   }
+  // }
+  // return result;
 }
 
 int main() {
