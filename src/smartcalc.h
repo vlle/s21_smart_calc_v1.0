@@ -33,4 +33,7 @@ int peekN(struct Node *a);
 char peekC(struct Node *a);
 int IsEmpty(struct Node *top);
 
+long double cal_oper(char *funcstr);
+char *parse_oper(char *funcstr, char *inpo);
+
 #endif

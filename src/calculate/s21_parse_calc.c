@@ -1,29 +1,26 @@
+#include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <string.h>
 
 #include "../smartcalc.h"
 #define MAX_INP_SZ 256
 
-char* parse_oper(char* funcstr) {
+char* parse_oper(char* funcstr, char* inpo) {
   struct Node* opr;
-  struct Node* num;
-  char* inpstr = (char*)malloc(MAX_INP_SZ);
-  if (!inpstr) {
-    fprintf(stderr, "No memory alloc. \n");
-    perror("");
-  }
-  int nodesCount = 0;
+  // char* inpstr = (char*)malloc(MAX_INP_SZ);
+  // if (!inpstr) {
+  //   fprintf(stderr, "No memory alloc. \n");
+  //   perror("");
+  // }
   int nodesCount1 = 0;
   int funcstr_i = 0;
-  fgets(inpstr, MAX_INP_SZ, stdin);
-  char* start = inpstr;
+  // fgets(inpstr, MAX_INP_SZ, stdin);
+  char* inpstr = inpo;
   int numcount = 0;
-  int number = 0;
   for (; *inpstr != '\0'; inpstr++) {
-    printf("curr=%s\n",funcstr);
+    // printf("curr=%s\n",funcstr);
     // if (isdigit(*inpstr)) {
     //   number *= 10;
     //   number += (*inpstr - '0');
@@ -43,7 +40,7 @@ char* parse_oper(char* funcstr) {
       // TODO(artemii): error handling
       // TODO(artemii): float num spo=port
     }
-     if (*inpstr == '(') {
+    if (*inpstr == '(') {
       push_backC(&nodesCount1, &opr, '(');
     } else if (*inpstr == '+') {
       push_backC(&nodesCount1, &opr, '+');
@@ -66,9 +63,9 @@ char* parse_oper(char* funcstr) {
         }
       }
     } else if (*inpstr == ')') {
-      char *tmp = (char*)malloc(nodesCount1 + 2);
+      char* tmp = (char*)malloc(nodesCount1 + 2);
       char k = '1';
-      while (k != '(')  {
+      while (k != '(') {
         k = popC(&nodesCount1, &opr);
         if (k == '(') break;
         tmp[0] = k;
@@ -85,12 +82,12 @@ char* parse_oper(char* funcstr) {
     funcstr[funcstr_i++] = ' ';
   }
   funcstr[funcstr_i] = '\0';
-  free(start);
+  // free(start);
   return funcstr;
 }
 
 struct Vars popper(struct Node** nums, int* nodesCount) {
-  struct Vars res;
+  struct Vars res = {0};
   if (*nodesCount > 1) {
     res.a1 = popN(nodesCount, nums);
     res.a2 = popN(nodesCount, nums);
@@ -106,11 +103,7 @@ struct Vars popper(struct Node** nums, int* nodesCount) {
 long double cal_oper(char* funcstr) {
   long double result = 0.0;
   struct Node* nums;
-  struct Node* operators;
   int nodesCount = 0;
-  double a = 0, b = 0;
-  long double a1 = 0, a2 = 0;
-  int nodesCount1 = 0;
   struct Vars var;
   for (; *funcstr != '\0'; funcstr++) {
     if (*funcstr >= '0' && *funcstr <= '9') {
@@ -124,7 +117,10 @@ long double cal_oper(char* funcstr) {
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '-') {
       var = popper(&nums, &nodesCount);
-      result = var.a2 - var.a1; } else if (*funcstr == '*') { var = popper(&nums, &nodesCount);
+      result = var.a2 - var.a1;
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == '*') {
+      var = popper(&nums, &nodesCount);
       result = var.a2 * var.a1;
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '/') {
@@ -164,13 +160,15 @@ long double cal_oper(char* funcstr) {
   // return result;
 }
 
-int main() {
-  char funcstr[400] = {0};
-  char* go;
-  go = parse_oper(funcstr);
-  printf("%s", go);
-  long double res = 0;
-  res = cal_oper(go);
-  printf("\n%Lf", res);
-  return 0;
-}
+// int main() {
+//   char funcstr[40] = {0};
+//   char b[100] = "2 + (11 - 1)";
+//   double res = 12;
+//   char *prs = parse_oper(funcstr, b);
+//   printf("%s", prs);
+//   double my_res = cal_oper(prs);
+//   printf("\n%d", res == my_res);
+//   // ck_assert_double_eq(res, my_res);
+//   return 0;
+// }
+

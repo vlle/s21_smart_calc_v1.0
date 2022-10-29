@@ -1,0 +1,6 @@
+Running suite add_min
+tests/add-min.c:21:P:Core:add_braces:0: Passed
+tests/add-min.c:11:P:Core:add_minus:0: Passed
+tests/add-min.c:31:P:Core:add:0: Passed
+Results for all suites run:
+100%: Checks: 3, Failures: 0, Errors: 0
