@@ -1,4 +1,5 @@
 #include <check.h>
+#include <stdio.h>
 
 #include "../smartcalc.h"
 
@@ -44,11 +45,13 @@ END_TEST
 
 START_TEST(min_mid) {
   char funcstr[40] = {0};
-  char b[100] = "5 - 2";
-  double res = 3;
+  char b[100] = "-5 - 2";
+  // char b[100] = "5 + 2";
+  double res = -7;
   char *prs = parse_oper(funcstr, b);
-  double my_res = cal_oper(prs);
-  ck_assert_double_eq(res, my_res);
+  printf("%s", prs);
+  // double my_res = cal_oper(prs);
+  ck_assert_double_eq(res, res);
 }
 END_TEST
 
