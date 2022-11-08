@@ -47,8 +47,14 @@ algo:
 # example2:
 # 	gcc $(lgtk) -o example-2 gui/example-2.c $(llgtk) 
 
-example3:
-	gcc $(lgtk) -o example-3 gui/example-3.c $(llgtk) 
+gui_wip: $(LIB)
+	gcc $(lgtk) s21_calc.a -o t1 gui/s2.c $(llgtk) 
+
+gui_tst: $(LIB)
+	gcc $(lgtk) s21_calc.a -o t1 gui/gtk_con.c $(llgtk) 
+
+gui_tst1: $(LIB)
+	gcc $(lgtk) s21_calc.a -o t1 gui/gtk_ent.c $(llgtk) 
 
 rebuild: clean all
 
@@ -89,13 +95,15 @@ $(BUILD_TEST_DIR)/main.o: $(DEC_TEST)
 
 $(BUILD_TEST_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(INC_CHECK) -c $^ -o $@
+	#$(CC) $(CFLAGS) $(INC_CHECK) -c $^ -o $@
+	$(CC)  $(INC_CHECK) -c $^ -o $@
 
 $(GCOV_OBJ_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(TEST_FLAGS) -c $< -o $@
 
-#leaks: test.out
+leaks: test.out
+	leaks -atExit -- ./test.out
 
 lint:
 	-cp ../materials/linters/.clang-format .
