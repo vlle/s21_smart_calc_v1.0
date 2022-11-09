@@ -21,7 +21,6 @@ char* parse_oper(char* funcstr, char* inpo) {
   int numcount = 0;
   for (; *inpstr != '\0'; inpstr++) {
     // printf("curr=%s\n",funcstr);
-    // if (isdigit(*inpstr)) {
     //   number *= 10;
     //   number += (*inpstr - '0');
     if (*inpstr >= '0' && *inpstr <= '9') {
@@ -40,20 +39,70 @@ char* parse_oper(char* funcstr, char* inpo) {
       // TODO(artemii): error handling
       // TODO(artemii): float num spo=port
     }
+    // While there is an token-operator O2 at the top of the stack, that has
+    // greater precedence than O1 or they have the same precedence and O1 is
+    // left-associative: Pop O2 from the stack into the output queue Push O1
+    // onto the stack
+    /* Экспонента	^	4	Справа налево
+         Умножение	*	3	Слева направо
+         Разделение	/	3	Слева направо
+         Добавление	+	2	Слева направо
+         вычитание	—	2	Слева направо */
     if (*inpstr == '(') {
       push_backC(&nodesCount1, &opr, '(');
     } else if (*inpstr == '+') {
+      if (nodesCount1 > 0) {
+        char cmpr = peekC(opr);
+        funcstr_i = strlen(funcstr);
+        while ((cmpr == '*' || cmpr == '-' || cmpr == '+' || cmpr == '/') & (nodesCount1 > 0)) {
+            cmpr = popC(&nodesCount1, &opr);
+            if (cmpr == '(' || cmpr == ')') {
+              continue;
+            }
+            funcstr[funcstr_i++] = cmpr;  // peek for preceding op
+            funcstr[funcstr_i++] = ' ';
+            printf("%s\n", funcstr);
+          }
+      }
       push_backC(&nodesCount1, &opr, '+');
     } else if (*inpstr == '-') {
+      if (nodesCount1 > 0) {
+        char cmpr = peekC(opr);
+        funcstr_i = strlen(funcstr);
+        while ((cmpr == '*' || cmpr == '-' || cmpr == '+' || cmpr == '/') & (nodesCount1 > 0)) {
+            cmpr = popC(&nodesCount1, &opr);
+            if (cmpr == '(' || cmpr == ')') {
+              continue;
+            }
+            funcstr[funcstr_i++] = cmpr;  // peek for preceding op
+            funcstr[funcstr_i++] = ' ';
+            printf("%s\n", funcstr);
+          }
+      }
       push_backC(&nodesCount1, &opr, '-');
     } else if (*inpstr == '/') {
       push_backC(&nodesCount1, &opr, '/');
     } else if (*inpstr == '*') {
-      // While there is an token-operator O2 at the top of the stack, that has
-      // greater precedence than O1 or they have the same precedence and O1 is
-      // left-associative: Pop O2 from the stack into the output queue Push O1
-      // onto the stack
-      push_backC(&nodesCount1, &opr, '*');
+      if (nodesCount1 > 0) {
+        char cmpr = peekC(opr);
+        if (cmpr == '+' || cmpr == '-') {
+          push_backC(&nodesCount1, &opr, '*');
+        } else {
+          funcstr_i = strlen(funcstr);
+          while ((cmpr != '+' && cmpr != '-') && (nodesCount1 > 0)) {
+            cmpr = popC(&nodesCount1, &opr);
+            if (cmpr == '(' || cmpr == ')') {
+              continue;
+            }
+            funcstr[funcstr_i++] = cmpr;  // peek for preceding op
+            funcstr[funcstr_i++] = ' ';
+            printf("%s\n", funcstr);
+          }
+          push_backC(&nodesCount1, &opr, '*');
+        }
+      } else {
+        push_backC(&nodesCount1, &opr, '*');
+      }
     } else if (*inpstr == 's') {
       char* null_prot = inpstr;
       // store check in func
@@ -75,14 +124,14 @@ char* parse_oper(char* funcstr, char* inpo) {
       free(tmp);
     }
   }
-  int tmp = nodesCount1;
   funcstr_i = strlen(funcstr);
-  while (tmp > 0) {
-    funcstr[funcstr_i++] = popC(&tmp, &opr);  // peek for preceding op
+  while (nodesCount1 > 0) {
+    funcstr[funcstr_i++] = popC(&nodesCount1, &opr);  // peek for preceding op
     funcstr[funcstr_i++] = ' ';
   }
   funcstr[funcstr_i] = '\0';
   // free(start);
+  printf("%s is functsr\n", funcstr);
   return funcstr;
 }
 
