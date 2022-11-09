@@ -83,13 +83,16 @@ char* parse_oper(char* funcstr, char* inpo) {
     } else if (*inpstr == '/') {
       push_backC(&nodesCount1, &opr, '/');
     } else if (*inpstr == '*') {
+      printf("%d is nodes\n", nodesCount1);
       if (nodesCount1 > 0) {
         char cmpr = peekC(opr);
+        printf("%c cmpr \n", cmpr);
         if (cmpr == '+' || cmpr == '-') {
           push_backC(&nodesCount1, &opr, '*');
+          printf("%s W\n", funcstr);
         } else {
           funcstr_i = strlen(funcstr);
-          while ((cmpr != '+' && cmpr != '-') && (nodesCount1 > 0)) {
+          while ((peekC(opr) == '/' || peekC(opr) == '*') && (nodesCount1 > 0)) {
             cmpr = popC(&nodesCount1, &opr);
             if (cmpr == '(' || cmpr == ')') {
               continue;
