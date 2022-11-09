@@ -18,14 +18,15 @@ START_TEST(add_braces) {
   char b[100] = "2 + (2 + 10)";
   double res = 14;
   char *prs = parse_oper(funcstr, b);
-  double my_res = cal_oper(prs); ck_assert_double_eq(res, my_res);
+  double my_res = cal_oper(prs); 
+  ck_assert_double_eq(res, my_res);
 }
 END_TEST
 
 START_TEST(min) {
   char funcstr[40] = {0};
-  char b[100] = "2 - 2";
-  double res = 0;
+  char b[100] = "2 - 2 - 2";
+  double res = -2;
   char *prs = parse_oper(funcstr, b);
   double my_res = cal_oper(prs);
   ck_assert_double_eq(res, my_res);
