@@ -9,34 +9,20 @@
 
 char* parse_oper(char* funcstr, char* inpo) {
   struct Node* opr;
-  // char* inpstr = (char*)malloc(MAX_INP_SZ);
-  // if (!inpstr) {
-  //   fprintf(stderr, "No memory alloc. \n");
-  //   perror("");
-  // }
   int nodesCount1 = 0;
   int funcstr_i = 0;
-  // fgets(inpstr, MAX_INP_SZ, stdin);
   char* inpstr = inpo;
   int numcount = 0;
   for (; *inpstr != '\0'; inpstr++) {
-    // printf("curr=%s\n",funcstr);
-    //   number *= 10;
-    //   number += (*inpstr - '0');
     if (*inpstr >= '0' && *inpstr <= '9') {
       char tmp[90];
       char* pEnd;
       long double calc_num = strtol(inpstr, &pEnd, 10);
       sprintf(tmp, "%.0Lf", calc_num);
       inpstr = pEnd;
-      // strncat(funcstr, tmp, strlen(tmp));
       strcat(funcstr, tmp);
       strcat(funcstr, " ");
       numcount++;
-      // store in funciton?
-      // while num parse
-      // TODO(Artemii): minus num support
-      // TODO(artemii): error handling
       // TODO(artemii): float num spo=port
     }
     // While there is an token-operator O2 at the top of the stack, that has
@@ -54,7 +40,7 @@ char* parse_oper(char* funcstr, char* inpo) {
       if (nodesCount1 > 0) {
         char cmpr = peekC(opr);
         funcstr_i = strlen(funcstr);
-        while ((cmpr == '*' || cmpr == '-' || cmpr == '+' || cmpr == '/') & (nodesCount1 > 0)) {
+        while ((peekC(opr) == '*' || peekC(opr) == '-' || peekC(opr) == '+' || peekC(opr) == '/') & (nodesCount1 > 0)) {
             cmpr = popC(&nodesCount1, &opr);
             if (cmpr == '(' || cmpr == ')') {
               continue;
@@ -69,7 +55,7 @@ char* parse_oper(char* funcstr, char* inpo) {
       if (nodesCount1 > 0) {
         char cmpr = peekC(opr);
         funcstr_i = strlen(funcstr);
-        while ((cmpr == '*' || cmpr == '-' || cmpr == '+' || cmpr == '/') & (nodesCount1 > 0)) {
+        while ((peekC(opr) == '*' || peekC(opr) == '-' || peekC(opr) == '+' || peekC(opr) == '/') & (nodesCount1 > 0)) {
             cmpr = popC(&nodesCount1, &opr);
             if (cmpr == '(' || cmpr == ')') {
               continue;
@@ -115,11 +101,11 @@ char* parse_oper(char* funcstr, char* inpo) {
         }
       }
     } else if (*inpstr == ')') {
+      printf("%s bef\n", funcstr);
       char* tmp = (char*)malloc(nodesCount1 + 2);
-      char k = '1';
-      while (k != '(') {
+      char k = peekC(opr);
+      while (peekC(opr) != '(') {
         k = popC(&nodesCount1, &opr);
-        if (k == '(') break;
         tmp[0] = k;
         tmp[1] = ' ';
         strcat(funcstr, tmp);
@@ -185,31 +171,6 @@ long double cal_oper(char* funcstr) {
     popN(&nodesCount, &nums);
   }
   return result;
-  // for (; *funcstr != '\0'; funcstr++) {
-  //   if (*funcstr >= '0' && *funcstr <= '9') {
-  //     char* pEnd;
-  //     long double calc_num = strtol(funcstr, &pEnd, 10);
-  //     push_backN(&nodesCount, &nums, calc_num);
-  //     funcstr = pEnd;
-  //   // } else if (*funcstr == '+') {
-  //   //   // var = popper(&nums, &nodesCount);
-  //   //   // result = var.a2 + var.a1;
-  //   // } else if (*funcstr == '-') {
-  //   //   // var = popper(&nums, &nodesCount);
-  //   //   // result = var.a2 - var.a1;
-  //   // } else if (*funcstr == '*') {
-  //   //   // var = popper(&nums, &nodesCount);
-  //   //   // result = var.a2 * var.a1;
-  //   } else if (*funcstr == '/') {
-  //     a = popN(&nodesCount, &nums);
-  //     b = popN(&nodesCount, &nums);
-  //     result = b / a;
-  //     push_backN(&nodesCount, &nums, result);
-  //   //   // var = popper(&nums, &nodesCount);
-  //   //   // result = var.a2 / var.a1;
-  //   }
-  // }
-  // return result;
 }
 
 // int main() {
