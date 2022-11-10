@@ -159,12 +159,10 @@ long double cal_oper(char* funcstr) {
   struct Node* nums;
   int nodesCount = 0;
   struct Vars var;
-  printf("%s bef\n", funcstr);
   for (; *funcstr != '\0'; funcstr++) {
     if (*funcstr >= '0' && *funcstr <= '9') {
       char* pEnd;
       long double calc_num = strtold(funcstr, &pEnd);
-      printf("%Lf is calc_num\n", calc_num);
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
     } else if (*funcstr == '+') {
@@ -184,7 +182,6 @@ long double cal_oper(char* funcstr) {
       result = var.a2 / var.a1;
       push_backN(&nodesCount, &nums, result);
     }
-    printf("%Lf is res\n", result);
   }
   while (nodesCount > 0) {
     popN(&nodesCount, &nums);
