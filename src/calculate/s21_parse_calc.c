@@ -7,6 +7,22 @@
 #include "../smartcalc.h"
 #define MAX_INP_SZ 256
 
+
+void push_and_print(char** funcstr, struct Node** opr, int* nodesCount1) {
+  char symb = {0};
+  int funcstr_i = strlen(*funcstr);
+  while ((peekC(*opr) == '*' || peekC(*opr) == '-' || peekC(*opr) == '+' || peekC(*opr) == '/') \
+    & (*(nodesCount1) > 0)) {
+    symb = popC(&(*nodesCount1), &(*opr));
+    if (symb == '(' || symb == ')') {
+      continue;
+    }
+    (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
+    (*funcstr)[funcstr_i++] = ' ';
+  }
+}
+
+
 char* parse_oper(char* funcstr, char* inpo) {
   struct Node* opr;
   int nodesCount1 = 0;
@@ -38,32 +54,34 @@ char* parse_oper(char* funcstr, char* inpo) {
       push_backC(&nodesCount1, &opr, '(');
     } else if (*inpstr == '+') {
       if (nodesCount1 > 0) {
-        char cmpr = peekC(opr);
-        funcstr_i = strlen(funcstr);
-        while ((peekC(opr) == '*' || peekC(opr) == '-' || peekC(opr) == '+' || peekC(opr) == '/') & (nodesCount1 > 0)) {
-            cmpr = popC(&nodesCount1, &opr);
-            if (cmpr == '(' || cmpr == ')') {
-              continue;
-            }
-            funcstr[funcstr_i++] = cmpr;  // peek for preceding op
-            funcstr[funcstr_i++] = ' ';
-            printf("%s\n", funcstr);
-          }
+        push_and_print(&funcstr, &opr, &nodesCount1);
+        // char cmpr = peekC(opr);
+        // funcstr_i = strlen(funcstr);
+        // while ((peekC(opr) == '*' || peekC(opr) == '-' || peekC(opr) == '+' || peekC(opr) == '/') & (nodesCount1 > 0)) {
+        //   cmpr = popC(&nodesCount1, &opr);
+        //   if (cmpr == '(' || cmpr == ')') {
+        //     continue;
+        //   }
+        //   funcstr[funcstr_i++] = cmpr;  // peek for preceding op
+        //   funcstr[funcstr_i++] = ' ';
+        //   printf("%s\n", funcstr);
+        // }
       }
       push_backC(&nodesCount1, &opr, '+');
     } else if (*inpstr == '-') {
       if (nodesCount1 > 0) {
-        char cmpr = peekC(opr);
-        funcstr_i = strlen(funcstr);
-        while ((peekC(opr) == '*' || peekC(opr) == '-' || peekC(opr) == '+' || peekC(opr) == '/') & (nodesCount1 > 0)) {
-            cmpr = popC(&nodesCount1, &opr);
-            if (cmpr == '(' || cmpr == ')') {
-              continue;
-            }
-            funcstr[funcstr_i++] = cmpr;  // peek for preceding op
-            funcstr[funcstr_i++] = ' ';
-            printf("%s\n", funcstr);
-          }
+        push_and_print(&funcstr, &opr, &nodesCount1);
+        // char cmpr = peekC(opr);
+        // funcstr_i = strlen(funcstr);
+        // while ((peekC(opr) == '*' || peekC(opr) == '-' || peekC(opr) == '+' || peekC(opr) == '/') & (nodesCount1 > 0)) {
+        //   cmpr = popC(&nodesCount1, &opr);
+        //   if (cmpr == '(' || cmpr == ')') {
+        //     continue;
+        //   }
+        //   funcstr[funcstr_i++] = cmpr;  // peek for preceding op
+        //   funcstr[funcstr_i++] = ' ';
+        //   printf("%s\n", funcstr);
+        // }
       }
       push_backC(&nodesCount1, &opr, '-');
     } else if (*inpstr == '/') {
@@ -102,15 +120,15 @@ char* parse_oper(char* funcstr, char* inpo) {
       }
     } else if (*inpstr == ')') {
       printf("%s bef\n", funcstr);
-      char* tmp = (char*)malloc(nodesCount1 + 2);
+      char* brc = (char*)malloc(nodesCount1 + 2);
       char k = peekC(opr);
       while (peekC(opr) != '(') {
         k = popC(&nodesCount1, &opr);
-        tmp[0] = k;
-        tmp[1] = ' ';
-        strcat(funcstr, tmp);
+        brc[0] = k;
+        brc[1] = ' ';
+        strcat(funcstr, brc);
       }
-      free(tmp);
+      free(brc);
     }
   }
   funcstr_i = strlen(funcstr);
@@ -119,7 +137,6 @@ char* parse_oper(char* funcstr, char* inpo) {
     funcstr[funcstr_i++] = ' ';
   }
   funcstr[funcstr_i] = '\0';
-  // free(start);
   printf("%s is functsr\n", funcstr);
   return funcstr;
 }
@@ -172,16 +189,4 @@ long double cal_oper(char* funcstr) {
   }
   return result;
 }
-
-// int main() {
-//   char funcstr[40] = {0};
-//   char b[100] = "2 + (11 - 1)";
-//   double res = 12;
-//   char *prs = parse_oper(funcstr, b);
-//   printf("%s", prs);
-//   double my_res = cal_oper(prs);
-//   printf("\n%d", res == my_res);
-//   // ck_assert_double_eq(res, my_res);
-//   return 0;
-// }
 
