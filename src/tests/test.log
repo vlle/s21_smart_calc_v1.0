@@ -1,6 +1,17 @@
 Running suite add_min
-tests/add-min.c:21:P:Core:add_braces:0: Passed
-tests/add-min.c:11:P:Core:add_minus:0: Passed
-tests/add-min.c:31:P:Core:add:0: Passed
+tests/add-min.c:23:P:Core:add_braces:0: Passed
+tests/add-min.c:12:P:Core:add_minus:0: Passed
+tests/add-min.c:66:P:Core:add:0: Passed
+tests/add-min.c:33:P:Core:min:0: Passed
+tests/add-min.c:44:P:Core:min_min:0: Passed
+tests/add-min.c:56:P:Core:min_mid:0: Passed
+Running suite mult
+tests/mult.c:77:P:Core:tricky_mult:0: Passed
+tests/mult.c:67:P:Core:tricky_multdiv:0: Passed
+tests/mult.c:22:P:Core:multmult:0: Passed
+tests/mult.c:45:P:Core:mult_brace:0: Passed
+tests/mult.c:56:P:Core:multwut:0: Passed
+tests/mult.c:32:P:Core:multq:0: Passed
+tests/mult.c:12:P:Core:mul:0: Passed
 Results for all suites run:
-100%: Checks: 3, Failures: 0, Errors: 0
+100%: Checks: 13, Failures: 0, Errors: 0

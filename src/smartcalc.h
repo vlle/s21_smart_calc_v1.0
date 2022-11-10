@@ -13,7 +13,7 @@ typedef enum {
 } math_oper;
 
 struct Node {
-  int storage;  // integer data
+  long double storage;  // integer data
   char res;
   struct Node *next;  // pointer to the next node
 };
@@ -25,11 +25,11 @@ struct Vars {
 
 // Stack functions
 
-int popN(int *nodesCount, struct Node **top);
+long double popN(int *nodesCount, struct Node **top);
 char popC(int *nodesCount, struct Node **top);
 int push_backC(int *nodesCount, struct Node **top, char oper);
-int push_backN(int *nodesCount, struct Node **top, int oper);
-int peekN(struct Node *a);
+int push_backN(int *nodesCount, struct Node **top, long double oper);
+long double peekN(struct Node *a);
 char peekC(struct Node *a);
 int IsEmpty(struct Node *top);
 

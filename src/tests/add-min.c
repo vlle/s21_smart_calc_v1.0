@@ -15,9 +15,10 @@ END_TEST
 
 START_TEST(add_braces) {
   char funcstr[40] = {0};
-  char b[100] = "2 + (2 + 10)";
-  double res = 14;
+  char b[100] = "2.5 + (2 + 10)";
+  double res = 14.5;
   char *prs = parse_oper(funcstr, b);
+  printf("%s WORKING\n", prs);
   double my_res = cal_oper(prs); 
   ck_assert_double_eq(res, my_res);
 }

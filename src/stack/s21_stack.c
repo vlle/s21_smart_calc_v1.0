@@ -3,7 +3,7 @@
 
 #include "../smartcalc.h"
 
-int push_backN(int *nodesCount, struct Node **top, int oper) {
+int push_backN(int *nodesCount, struct Node **top, long double oper) {
   struct Node *newNode = NULL;
   newNode = (struct Node *)malloc(sizeof(struct Node));
   newNode->storage = oper;
@@ -35,12 +35,12 @@ int push_backC(int *nodesCount, struct Node **top, char oper) {
   return 0;
 }
 
-int peekN(struct Node *a) { return a->storage; }
+long double peekN(struct Node *a) { return a->storage; }
 
 char peekC(struct Node *a) { return a->res; }
 
-int popN(int *nodesCount, struct Node **top) {
-  int x = 0;
+long double popN(int *nodesCount, struct Node **top) {
+  long double x = 0;
   struct Node *node;
   if (IsEmpty(*top)) {
     printf("Top stack is empty");

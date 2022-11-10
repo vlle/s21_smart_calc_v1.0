@@ -33,8 +33,8 @@ char* parse_oper(char* funcstr, char* inpo) {
     if (*inpstr >= '0' && *inpstr <= '9') {
       char tmp[90];
       char* pEnd;
-      long double calc_num = strtol(inpstr, &pEnd, 10);
-      sprintf(tmp, "%.0Lf", calc_num);
+      long double calc_num = strtold(inpstr, &pEnd);
+      sprintf(tmp, "%.2Lf", calc_num);
       inpstr = pEnd;
       strcat(funcstr, tmp);
       strcat(funcstr, " ");
@@ -119,7 +119,6 @@ char* parse_oper(char* funcstr, char* inpo) {
         }
       }
     } else if (*inpstr == ')') {
-      printf("%s bef\n", funcstr);
       char* brc = (char*)malloc(nodesCount1 + 2);
       char k = peekC(opr);
       while (peekC(opr) != '(') {
@@ -160,10 +159,12 @@ long double cal_oper(char* funcstr) {
   struct Node* nums;
   int nodesCount = 0;
   struct Vars var;
+  printf("%s bef\n", funcstr);
   for (; *funcstr != '\0'; funcstr++) {
     if (*funcstr >= '0' && *funcstr <= '9') {
       char* pEnd;
-      long double calc_num = strtol(funcstr, &pEnd, 10);
+      long double calc_num = strtold(funcstr, &pEnd);
+      printf("%Lf is calc_num\n", calc_num);
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
     } else if (*funcstr == '+') {
@@ -183,6 +184,7 @@ long double cal_oper(char* funcstr) {
       result = var.a2 / var.a1;
       push_backN(&nodesCount, &nums, result);
     }
+    printf("%Lf is res\n", result);
   }
   while (nodesCount > 0) {
     popN(&nodesCount, &nums);
