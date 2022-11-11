@@ -6,7 +6,7 @@
 #include "../smartcalc.h"
 
 #define HIGHPRIOR "*/"
-#define LOWPRIOR "*/+-"
+#define LOWPRIOR "*/+-STC"
 
 void push_and_print(char** funcstr, struct Node** opr, int* nodesCount,
                     char* prior_str) {
@@ -29,7 +29,7 @@ char* parse_oper(char* funcstr, char* inpo) {
   char* inpstr = inpo;
   for (; *inpstr != '\0'; inpstr++) {
     if (*inpstr >= '0' && *inpstr <= '9') {
-      char num_str[90] = {0};
+      char num_str[MAX_ENTRY_SIZE] = {0};
       char* pEnd;
       long double calc_num = strtold(inpstr, &pEnd);
       sprintf(num_str, "%Lf", calc_num);
@@ -53,7 +53,9 @@ char* parse_oper(char* funcstr, char* inpo) {
       push_backC(&nodesCount, &opr, '-');
     } else if (*inpstr == '/') {
       if (nodesCount > 0) {
-        push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+        if (peekC(opr) != '+' && peekC(opr) != '-') {
+          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+        }
       }
       push_backC(&nodesCount, &opr, '/');
     } else if (*inpstr == '*') {
@@ -65,20 +67,42 @@ char* parse_oper(char* funcstr, char* inpo) {
       push_backC(&nodesCount, &opr, '*');
     } else if (*inpstr == 's') {
       if (strncmp(inpstr, "sin", 3) == 0) {
+        if (nodesCount > 0) {
+          if (peekC(opr) != '+' && peekC(opr) != '-') {
+            push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+          }
+        }
         push_backC(&nodesCount, &opr, 'S');
       }
-      // Verifiable accuracy of the fractional part is at least to 7 decimal
-      // places
+    } else if (*inpstr == 't') {
+      if (strncmp(inpstr, "tan", 3) == 0) {
+        if (nodesCount > 0) {
+          if (peekC(opr) != '+' && peekC(opr) != '-') {
+            push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+          }
+        }
+        push_backC(&nodesCount, &opr, 'T');
+      }
+    } else if (*inpstr == 'c') {
+      if (strncmp(inpstr, "cos", 3) == 0) {
+        if (nodesCount > 0) {
+          if (peekC(opr) != '+' && peekC(opr) != '-') {
+            push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+          }
+        }
+        push_backC(&nodesCount, &opr, 'C');
+      }
     } else if (*inpstr == ')') {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
         funcstr[funcstr_i++] =
-            popC(&nodesCount, &opr);  // peek for preceding op
+          popC(&nodesCount, &opr);  // peek for preceding op
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
         }
       }
+      popC(&nodesCount, &opr);
     }
   }
   funcstr_i = strlen(funcstr);
@@ -133,6 +157,12 @@ long double cal_oper(char* funcstr) {
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == 'S') {
       result = sin(popN(&nodesCount, &nums));
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'T') {
+      result = tan(popN(&nodesCount, &nums));
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'C') {
+      result = cos(popN(&nodesCount, &nums));
       push_backN(&nodesCount, &nums, result);
     }
   }
