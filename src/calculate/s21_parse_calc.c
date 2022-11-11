@@ -12,14 +12,14 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount1, int pri
   char symb = {0};
   int funcstr_i = strlen(*funcstr);
   if (prior == 2) {
-    while ((peekC(*opr) == '*' || peekC(*opr) == '-' || peekC(*opr) == '+' || peekC(*opr) == '/') \
-      & (*(nodesCount1) > 0)) {
-        symb = popC(&(*nodesCount1), &(*opr));
+    while ((*nodesCount1 != 0) & (peekC(*opr) == '*' || peekC(*opr) == '-' || peekC(*opr) == '+' || peekC(*opr) == '/')) {
+        symb = popC(nodesCount1, opr);
         if (symb == '(' || symb == ')') {
           continue;
         }
         (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
         (*funcstr)[funcstr_i++] = ' ';
+        if (*nodesCount1 == 0) break;
       }
   } else if (prior == 3) {
     while ((peekC(*opr) == '*' || peekC(*opr) == '/') \
@@ -30,24 +30,27 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount1, int pri
         }
         (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
         (*funcstr)[funcstr_i++] = ' ';
+        if (*nodesCount1 == 0) break;
       }
   }
 }
 
 char* parse_oper(char* funcstr, char* inpo) {
-  struct Node* opr;
+  struct Node* opr = {0};
+  // funcstr = "\0";
   int nodesCount1 = 0;
   int funcstr_i = 0;
   char* inpstr = inpo;
   for (; *inpstr != '\0'; inpstr++) {
     if (*inpstr >= '0' && *inpstr <= '9') {
-      char num_str[90];
+      char num_str[90] = {0};
       char* pEnd;
       long double calc_num = strtold(inpstr, &pEnd);
       sprintf(num_str, "%.2Lf", calc_num);
       inpstr = pEnd;
+      strcat(num_str, " ");
       strcat(funcstr, num_str);
-      strcat(funcstr, " ");
+      // strncpy(funcstr, num_str, strlen(num_str));
     }
     // While there is an token-operator O2 at the top of the stack, that has
     // greater precedence than O1 or they have the same precedence and O1 is
@@ -96,15 +99,21 @@ char* parse_oper(char* funcstr, char* inpo) {
         }
       }
     } else if (*inpstr == ')') {
-      char* brc = (char*)malloc(nodesCount1 + 2);
-      char k = peekC(opr);
+      //char* brc = (char*)malloc((nodesCount1 + 2)*sizeof(char));
+      funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
-        k = popC(&nodesCount1, &opr);
-        brc[0] = k;
-        brc[1] = ' ';
-        strcat(funcstr, brc);
+        // brc[0] = popC(&nodesCount1, &opr);
+        // brc[1] = ' ';
+        // brc[2] = '\0';
+        // strncpy(funcstr, brc, 2);
+        funcstr[funcstr_i++] = popC(&nodesCount1, &opr);  // peek for preceding op
+        funcstr[funcstr_i++] = ' ';
+        if (nodesCount1 == 0) {
+          perror("Wtf man");
+        }
+        // printf("%s funcstr after copy %s\n", funcstr, brc);
       }
-      free(brc);
+      // free(brc);
     }
   }
   funcstr_i = strlen(funcstr);
@@ -113,7 +122,6 @@ char* parse_oper(char* funcstr, char* inpo) {
     funcstr[funcstr_i++] = ' ';
   }
   funcstr[funcstr_i] = '\0';
-  // printf("%s is functsr\n", funcstr);
   return funcstr;
 }
 
@@ -123,7 +131,7 @@ struct Vars popper(struct Node** nums, int* nodesCount) {
     res.a1 = popN(nodesCount, nums);
     res.a2 = popN(nodesCount, nums);
   } else {
-    while (nodesCount) {
+    while (*nodesCount > 0 ) {
       popN(nodesCount, nums);
     }
     fprintf(stderr, "Wrong calculation. Returning -1\n");
