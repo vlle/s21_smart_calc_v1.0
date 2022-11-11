@@ -4,7 +4,7 @@
 #include "../smartcalc.h"
 
 START_TEST(add_minus) {
-  char funcstr[40] = {"\0"};
+  char funcstr[MAX_ENTRY_SIZE] = {"\0"};
   char b[100] = "2 + (11 - 1)";
   double res = 12;
   char *prs = parse_oper(funcstr, b);
@@ -14,7 +14,7 @@ START_TEST(add_minus) {
 END_TEST
 
 START_TEST(add_braces) {
-  char funcstr[40] = {"\0"};
+  char funcstr[MAX_ENTRY_SIZE] = {"\0"};
   char b[100] = "2 + (2 + 10)";
   double res = 14;
   char *prs = parse_oper(funcstr, b);
@@ -25,7 +25,7 @@ START_TEST(add_braces) {
 END_TEST
 
 START_TEST(minA) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "(2+2)-(2-2)/1";
   double res = 4;
   char *prs = parse_oper(funcstr, b);
@@ -35,7 +35,7 @@ START_TEST(minA) {
 END_TEST
 
 START_TEST(min) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "2 - 2 - 2";
   double res = -2;
   char *prs = parse_oper(funcstr, b);
@@ -45,7 +45,7 @@ START_TEST(min) {
 END_TEST
 
 START_TEST(min_min) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   // char b[100] = "6-2-2";
   char b[100] = "6 + 2 - 2";
   double res = 6;
@@ -56,7 +56,7 @@ START_TEST(min_min) {
 END_TEST
 
 START_TEST(min_mid) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "-5 - 2";
   // char b[100] = "5 + 2";
   double res = -7;
@@ -68,7 +68,7 @@ START_TEST(min_mid) {
 END_TEST
 
 START_TEST(add) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "2 + 2";
   double res = 4;
   char *prs = parse_oper(funcstr, b);

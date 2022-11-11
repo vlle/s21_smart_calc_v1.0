@@ -4,7 +4,7 @@
 #include "../smartcalc.h"
 
 START_TEST(mul) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "211 * 2";
   double res = 422;
   char *prs = parse_oper(funcstr, b);
@@ -14,7 +14,7 @@ START_TEST(mul) {
 END_TEST
 
 START_TEST(multmult) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "2 * 2 * 2";
   double res = 8;
   char *prs = parse_oper(funcstr, b);
@@ -24,7 +24,7 @@ START_TEST(multmult) {
 END_TEST
 
 START_TEST(multq) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "1+4*2+3";
   double res = 12;
   char *prs = parse_oper(funcstr, b);
@@ -36,7 +36,7 @@ END_TEST
 // (123+123-123)*123
 // 123+123-123-1234
 START_TEST(mult_brace) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "(123+123-123)*123";
   double res = 15129;
   char *prs = parse_oper(funcstr, b);
@@ -47,7 +47,7 @@ START_TEST(mult_brace) {
 
 END_TEST
 START_TEST(multwut) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "1+1+2*4*5";
   double res = 42;
   char *prs = parse_oper(funcstr, b);
@@ -59,7 +59,7 @@ END_TEST
 
 
 START_TEST(tricky_multdiv) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "120 / 2 * 2";
   char *prs = parse_oper(funcstr, b);
   double my_res = cal_oper(prs);
@@ -69,7 +69,7 @@ START_TEST(tricky_multdiv) {
 END_TEST
 
 START_TEST(tricky_mult) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "2 + 2 * 2";
   double res = 6;
   char *prs = parse_oper(funcstr, b);

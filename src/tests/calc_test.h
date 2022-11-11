@@ -5,6 +5,7 @@
 
 Suite *add_min(void);
 Suite *mult(void);
+Suite *trigo(void);
 // Suite* eq_suite(void);
 // Suite* multnum_suite(void);
 // Suite* transpose_suite(void);

@@ -1,5 +1,6 @@
 #ifndef SRC_SMARTCALC_H_
 #define SRC_SMARTCALC_H_
+#define MAX_ENTRY_SIZE 256
 
 typedef enum {
   minus,

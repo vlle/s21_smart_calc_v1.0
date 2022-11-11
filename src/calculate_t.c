@@ -8,8 +8,10 @@ int main() {
   int no_failed = 0;
   Suite *add = add_min();
   Suite *mul = mult();
+  Suite *trig = trigo();
   SRunner *runner = srunner_create(add);
   srunner_add_suite(runner, mul);
+  srunner_add_suite(runner, trig);
   srunner_set_log(runner, "tests/test.log");
   srunner_set_fork_status(runner, CK_NOFORK);
   srunner_run_all(runner, CK_NORMAL);

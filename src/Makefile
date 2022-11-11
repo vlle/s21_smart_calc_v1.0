@@ -1,7 +1,7 @@
 CC = gcc
 
 WARNING    = -Wall -Werror -Wextra
-CFLAGS     = -std=c11 -pedantic $(WARNING)
+CFLAGS     = -std=c11 -pedantic $(WARNING)# -fsanitize=address
 LFLAGS    ?= $(shell pkg-config --cflags --libs check)
 INC_CHECK ?= $(shell pkg-config --cflags check)
 
@@ -38,15 +38,6 @@ test: test.out
 algo:
 	gcc stack/stack.c calculate/parse_calc.c -o hello
 
-# example:
-# 	gcc $(lgtk) -o example-0 gui/example-0.c $(llgtk) 
-# 
-# example1:
-# 	gcc $(lgtk) -o example-1 gui/example-1.c $(llgtk) 
-# 
-# example2:
-# 	gcc $(lgtk) -o example-2 gui/example-2.c $(llgtk) 
-
 gui_wip: $(LIB)
 	gcc $(lgtk) s21_calc.a -o t1 gui/s2.c $(llgtk) 
 
@@ -55,6 +46,9 @@ gui_tst: $(LIB)
 
 gui_tst1: $(LIB)
 	gcc $(lgtk) s21_calc.a -o t1 gui/gtk_ent.c $(llgtk) 
+
+gui_tst2: $(LIB)
+	gcc $(lgtk) s21_calc.a -o t1 gui/spin.c $(llgtk) 
 
 rebuild: clean all
 

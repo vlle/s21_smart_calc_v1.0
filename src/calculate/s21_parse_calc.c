@@ -5,37 +5,27 @@
 
 #include "../smartcalc.h"
 
+#define HIGHPRIOR "*/"
+#define LOWPRIOR "*/+-"
 
-void push_and_print(char** funcstr, struct Node** opr, int* nodesCount, int prior) {
+
+void push_and_print(char** funcstr, struct Node** opr, int* nodesCount, char* prior_str) {
   char symb = {0};
   int funcstr_i = strlen(*funcstr);
-  if (prior == 2) {
-    while ((*nodesCount != 0) & (peekC(*opr) == '*' || peekC(*opr) == '-' || peekC(*opr) == '+' || peekC(*opr) == '/')) {
-        symb = popC(nodesCount, opr);
-        if (symb == '(' || symb == ')') {
-          continue;
-        }
-        (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
-        (*funcstr)[funcstr_i++] = ' ';
-        if (*nodesCount == 0) break;
+  while ((strchr(prior_str, peekC(*opr)) != NULL) \
+    & (*(nodesCount) > 0)) {
+      symb = popC(&(*nodesCount), &(*opr));
+      if (symb == '(' || symb == ')') {
+        continue;
       }
-  } else if (prior == 3) {
-    while ((peekC(*opr) == '*' || peekC(*opr) == '/') \
-      & (*(nodesCount) > 0)) {
-        symb = popC(&(*nodesCount), &(*opr));
-        if (symb == '(' || symb == ')') {
-          continue;
-        }
-        (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
-        (*funcstr)[funcstr_i++] = ' ';
-        if (*nodesCount == 0) break;
-      }
-  }
+      (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
+      (*funcstr)[funcstr_i++] = ' ';
+      if (*nodesCount == 0) break;
+    }
 }
 
 char* parse_oper(char* funcstr, char* inpo) {
   struct Node* opr = {0};
-  // funcstr = "\0";
   int nodesCount = 0;
   int funcstr_i = 0;
   char* inpstr = inpo;
@@ -44,52 +34,42 @@ char* parse_oper(char* funcstr, char* inpo) {
       char num_str[90] = {0};
       char* pEnd;
       long double calc_num = strtold(inpstr, &pEnd);
-      sprintf(num_str, "%.2Lf", calc_num);
+      sprintf(num_str, "%Lf", calc_num);
       inpstr = pEnd;
       strcat(num_str, " ");
       strcat(funcstr, num_str);
     }
-    // While there is an token-operator O2 at the top of the stack, that has
-    // greater precedence than O1 or they have the same precedence and O1 is
-    // left-associative: Pop O2 from the stack into the output queue Push O1
-    // onto the stack
-
-    /* Экспонента	^	4	Справа налево
-         Умножение	*	3	Слева направо
-         Разделение	/	3	Слева направо
-         Добавление	+	2	Слева направо
-         вычитание	—	2	Слева направо */
+    /* Экспонента	^	4	Справа налево */
+    
     if (*inpstr == '(') {
       push_backC(&nodesCount, &opr, '(');
     } else if (*inpstr == '+') {
       if (nodesCount > 0) {
-        push_and_print(&funcstr, &opr, &nodesCount, 2);
+        push_and_print(&funcstr, &opr, &nodesCount, LOWPRIOR);
       }
       push_backC(&nodesCount, &opr, '+');
     } else if (*inpstr == '-') {
       if (nodesCount > 0) {
-        push_and_print(&funcstr, &opr, &nodesCount, 2);
+        push_and_print(&funcstr, &opr, &nodesCount, LOWPRIOR);
       }
       push_backC(&nodesCount, &opr, '-');
     } else if (*inpstr == '/') {
       if (nodesCount > 0) {
-        push_and_print(&funcstr, &opr, &nodesCount, 3);
+        push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
       }
       push_backC(&nodesCount, &opr, '/');
     } else if (*inpstr == '*') {
       if (nodesCount > 0) {
         if (peekC(opr) != '+' && peekC(opr) != '-') {
-          push_and_print(&funcstr, &opr, &nodesCount, 3);
+          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
         }
       } 
       push_backC(&nodesCount, &opr, '*');
     } else if (*inpstr == 's') {
-      char* null_prot = inpstr;
-      if ((*(null_prot + 1) != '\0') && (*(null_prot + 2) != '\0')) {
-        if ((*(null_prot + 1) == 'i') && (*(null_prot + 2) == 'n')) {
-          push_backC(&nodesCount, &opr, 'S');
-        }
+      if (strncmp(inpstr, "sin", 3) == 0) {
+        push_backC(&nodesCount, &opr, 'S');
       }
+      // Verifiable accuracy of the fractional part is at least to 7 decimal places
     } else if (*inpstr == ')') {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
@@ -150,6 +130,9 @@ long double cal_oper(char* funcstr) {
     } else if (*funcstr == '/') {
       var = popper(&nums, &nodesCount);
       result = var.a2 / var.a1;
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'S') {
+      result = sin(popN(&nodesCount, &nums));
       push_backN(&nodesCount, &nums, result);
     }
   }
