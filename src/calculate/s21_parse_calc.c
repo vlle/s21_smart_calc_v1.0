@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include "../smartcalc.h"
-#define MAX_INP_SZ 256
 
 
 void push_and_print(char** funcstr, struct Node** opr, int* nodesCount, int prior) {
@@ -79,16 +78,11 @@ char* parse_oper(char* funcstr, char* inpo) {
       push_backC(&nodesCount, &opr, '/');
     } else if (*inpstr == '*') {
       if (nodesCount > 0) {
-        char cmpr = peekC(opr);
-        if (cmpr == '+' || cmpr == '-') {
-          push_backC(&nodesCount, &opr, '*');
-        } else {
+        if (peekC(opr) != '+' && peekC(opr) != '-') {
           push_and_print(&funcstr, &opr, &nodesCount, 3);
-          push_backC(&nodesCount, &opr, '*');
         }
-      } else {
-        push_backC(&nodesCount, &opr, '*');
-      }
+      } 
+      push_backC(&nodesCount, &opr, '*');
     } else if (*inpstr == 's') {
       char* null_prot = inpstr;
       if ((*(null_prot + 1) != '\0') && (*(null_prot + 2) != '\0')) {
