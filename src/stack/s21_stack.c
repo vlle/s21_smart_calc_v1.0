@@ -53,7 +53,7 @@ long double popN(int *nodesCount, struct Node **top) {
 char popC(int *nodesCount, struct Node **top) {
   char x = 0;
   if (IsEmpty(*top)) {
-    printf("SSSop stack is empty");
+    printf("Top stack is empty");
   } else {
     struct Node *node;
     x = peekC(*top);
