@@ -8,29 +8,29 @@
 #define MAX_INP_SZ 256
 
 
-void push_and_print(char** funcstr, struct Node** opr, int* nodesCount1, int prior) {
+void push_and_print(char** funcstr, struct Node** opr, int* nodesCount, int prior) {
   char symb = {0};
   int funcstr_i = strlen(*funcstr);
   if (prior == 2) {
-    while ((*nodesCount1 != 0) & (peekC(*opr) == '*' || peekC(*opr) == '-' || peekC(*opr) == '+' || peekC(*opr) == '/')) {
-        symb = popC(nodesCount1, opr);
+    while ((*nodesCount != 0) & (peekC(*opr) == '*' || peekC(*opr) == '-' || peekC(*opr) == '+' || peekC(*opr) == '/')) {
+        symb = popC(nodesCount, opr);
         if (symb == '(' || symb == ')') {
           continue;
         }
         (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
         (*funcstr)[funcstr_i++] = ' ';
-        if (*nodesCount1 == 0) break;
+        if (*nodesCount == 0) break;
       }
   } else if (prior == 3) {
     while ((peekC(*opr) == '*' || peekC(*opr) == '/') \
-      & (*(nodesCount1) > 0)) {
-        symb = popC(&(*nodesCount1), &(*opr));
+      & (*(nodesCount) > 0)) {
+        symb = popC(&(*nodesCount), &(*opr));
         if (symb == '(' || symb == ')') {
           continue;
         }
         (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
         (*funcstr)[funcstr_i++] = ' ';
-        if (*nodesCount1 == 0) break;
+        if (*nodesCount == 0) break;
       }
   }
 }
@@ -38,7 +38,7 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount1, int pri
 char* parse_oper(char* funcstr, char* inpo) {
   struct Node* opr = {0};
   // funcstr = "\0";
-  int nodesCount1 = 0;
+  int nodesCount = 0;
   int funcstr_i = 0;
   char* inpstr = inpo;
   for (; *inpstr != '\0'; inpstr++) {
@@ -50,7 +50,6 @@ char* parse_oper(char* funcstr, char* inpo) {
       inpstr = pEnd;
       strcat(num_str, " ");
       strcat(funcstr, num_str);
-      // strncpy(funcstr, num_str, strlen(num_str));
     }
     // While there is an token-operator O2 at the top of the stack, that has
     // greater precedence than O1 or they have the same precedence and O1 is
@@ -63,62 +62,55 @@ char* parse_oper(char* funcstr, char* inpo) {
          Добавление	+	2	Слева направо
          вычитание	—	2	Слева направо */
     if (*inpstr == '(') {
-      push_backC(&nodesCount1, &opr, '(');
+      push_backC(&nodesCount, &opr, '(');
     } else if (*inpstr == '+') {
-      if (nodesCount1 > 0) {
-        push_and_print(&funcstr, &opr, &nodesCount1, 2);
+      if (nodesCount > 0) {
+        push_and_print(&funcstr, &opr, &nodesCount, 2);
       }
-      push_backC(&nodesCount1, &opr, '+');
+      push_backC(&nodesCount, &opr, '+');
     } else if (*inpstr == '-') {
-      if (nodesCount1 > 0) {
-        push_and_print(&funcstr, &opr, &nodesCount1, 2);
+      if (nodesCount > 0) {
+        push_and_print(&funcstr, &opr, &nodesCount, 2);
       }
-      push_backC(&nodesCount1, &opr, '-');
+      push_backC(&nodesCount, &opr, '-');
     } else if (*inpstr == '/') {
-      if (nodesCount1 > 0) {
-        push_and_print(&funcstr, &opr, &nodesCount1, 3);
+      if (nodesCount > 0) {
+        push_and_print(&funcstr, &opr, &nodesCount, 3);
       }
-      push_backC(&nodesCount1, &opr, '/');
+      push_backC(&nodesCount, &opr, '/');
     } else if (*inpstr == '*') {
-      if (nodesCount1 > 0) {
+      if (nodesCount > 0) {
         char cmpr = peekC(opr);
         if (cmpr == '+' || cmpr == '-') {
-          push_backC(&nodesCount1, &opr, '*');
+          push_backC(&nodesCount, &opr, '*');
         } else {
-          push_and_print(&funcstr, &opr, &nodesCount1, 3);
-          push_backC(&nodesCount1, &opr, '*');
+          push_and_print(&funcstr, &opr, &nodesCount, 3);
+          push_backC(&nodesCount, &opr, '*');
         }
       } else {
-        push_backC(&nodesCount1, &opr, '*');
+        push_backC(&nodesCount, &opr, '*');
       }
     } else if (*inpstr == 's') {
       char* null_prot = inpstr;
       if ((*(null_prot + 1) != '\0') && (*(null_prot + 2) != '\0')) {
         if ((*(null_prot + 1) == 'i') && (*(null_prot + 2) == 'n')) {
-          push_backC(&nodesCount1, &opr, 'S');
+          push_backC(&nodesCount, &opr, 'S');
         }
       }
     } else if (*inpstr == ')') {
-      //char* brc = (char*)malloc((nodesCount1 + 2)*sizeof(char));
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
-        // brc[0] = popC(&nodesCount1, &opr);
-        // brc[1] = ' ';
-        // brc[2] = '\0';
-        // strncpy(funcstr, brc, 2);
-        funcstr[funcstr_i++] = popC(&nodesCount1, &opr);  // peek for preceding op
+        funcstr[funcstr_i++] = popC(&nodesCount, &opr);  // peek for preceding op
         funcstr[funcstr_i++] = ' ';
-        if (nodesCount1 == 0) {
+        if (nodesCount == 0) {
           perror("Wtf man");
         }
-        // printf("%s funcstr after copy %s\n", funcstr, brc);
       }
-      // free(brc);
     }
   }
   funcstr_i = strlen(funcstr);
-  while (nodesCount1 > 0) {
-    funcstr[funcstr_i++] = popC(&nodesCount1, &opr);  // peek for preceding op
+  while (nodesCount > 0) {
+    funcstr[funcstr_i++] = popC(&nodesCount, &opr);  // peek for preceding op
     funcstr[funcstr_i++] = ' ';
   }
   funcstr[funcstr_i] = '\0';
