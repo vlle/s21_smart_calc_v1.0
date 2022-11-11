@@ -32,7 +32,7 @@ int push_backC(int *nodesCount, struct Node **top, char oper);
 int push_backN(int *nodesCount, struct Node **top, long double oper);
 long double peekN(struct Node *a);
 char peekC(struct Node *a);
-int IsEmpty(struct Node *top);
+int IsEmpty(const struct Node *top);
 
 long double cal_oper(char *funcstr);
 char *parse_oper(char *funcstr, char *inpo);

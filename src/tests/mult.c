@@ -57,7 +57,6 @@ START_TEST(multwut) {
 }
 END_TEST
 
-
 START_TEST(tricky_multdiv) {
   char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "120 / 2 * 2";

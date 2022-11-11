@@ -4,28 +4,28 @@
 #include "../smartcalc.h"
 
 int push_backN(int *nodesCount, struct Node **top, long double oper) {
+  if (top == NULL) {
+    fprintf(stderr, "null err\n");
+    return 1;
+  }
   struct Node *newNode = NULL;
   newNode = (struct Node *)malloc(sizeof(struct Node));
   newNode->storage = oper;
-  if (top == NULL) {
-    newNode->next = NULL;
-  } else {
-    newNode->next = *top;
-  }
+  newNode->next = *top;
   *top = newNode;
   *nodesCount += 1;
   return 0;
 }
 
 int push_backC(int *nodesCount, struct Node **top, char oper) {
+  if (top == NULL) {
+    fprintf(stderr, "null err\n");
+    return 1;
+  }
   struct Node *newNode = NULL;
   newNode = (struct Node *)malloc(sizeof(struct Node));
   newNode->res = oper;
-  if (top == NULL) {
-    newNode->next = NULL;
-  } else {
-    newNode->next = *top;
-  }
+  newNode->next = *top;
   *top = newNode;
   *nodesCount += 1;
   return 0;
@@ -37,10 +37,10 @@ char peekC(struct Node *a) { return a->res; }
 
 long double popN(int *nodesCount, struct Node **top) {
   long double x = 0;
-  struct Node *node;
   if (IsEmpty(*top)) {
     printf("Top stack is empty");
   } else {
+    struct Node *node;
     x = peekN(*top);
     node = *top;
     *top = (*top)->next;
@@ -52,10 +52,10 @@ long double popN(int *nodesCount, struct Node **top) {
 
 char popC(int *nodesCount, struct Node **top) {
   char x = 0;
-  struct Node *node;
   if (IsEmpty(*top)) {
     printf("SSSop stack is empty");
   } else {
+    struct Node *node;
     x = peekC(*top);
     node = *top;
     *top = (*top)->next;
@@ -65,5 +65,4 @@ char popC(int *nodesCount, struct Node **top) {
   return x;
 }
 
-int IsEmpty(struct Node *top) { return top == NULL; }
-
+int IsEmpty(const struct Node *top) { return top == NULL; }

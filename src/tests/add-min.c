@@ -19,7 +19,7 @@ START_TEST(add_braces) {
   double res = 14;
   char *prs = parse_oper(funcstr, b);
   printf("%s WORKING\n", prs);
-  double my_res = cal_oper(prs); 
+  double my_res = cal_oper(prs);
   ck_assert_double_eq(res, my_res);
 }
 END_TEST

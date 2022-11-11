@@ -8,20 +8,18 @@
 #define HIGHPRIOR "*/"
 #define LOWPRIOR "*/+-"
 
-
-void push_and_print(char** funcstr, struct Node** opr, int* nodesCount, char* prior_str) {
-  char symb = {0};
+void push_and_print(char** funcstr, struct Node** opr, int* nodesCount,
+                    char* prior_str) {
   int funcstr_i = strlen(*funcstr);
-  while ((strchr(prior_str, peekC(*opr)) != NULL) \
-    & (*(nodesCount) > 0)) {
-      symb = popC(&(*nodesCount), &(*opr));
-      if (symb == '(' || symb == ')') {
-        continue;
-      }
-      (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
-      (*funcstr)[funcstr_i++] = ' ';
-      if (*nodesCount == 0) break;
+  while ((strchr(prior_str, peekC(*opr)) != NULL) & (*(nodesCount) > 0)) {
+    char symb = popC(nodesCount, opr);
+    if (symb == '(' || symb == ')') {
+      continue;
     }
+    (*funcstr)[funcstr_i++] = symb;  // peek for preceding op
+    (*funcstr)[funcstr_i++] = ' ';
+    if (*nodesCount == 0) break;
+  }
 }
 
 char* parse_oper(char* funcstr, char* inpo) {
@@ -40,7 +38,7 @@ char* parse_oper(char* funcstr, char* inpo) {
       strcat(funcstr, num_str);
     }
     /* Экспонента	^	4	Справа налево */
-    
+
     if (*inpstr == '(') {
       push_backC(&nodesCount, &opr, '(');
     } else if (*inpstr == '+') {
@@ -63,17 +61,19 @@ char* parse_oper(char* funcstr, char* inpo) {
         if (peekC(opr) != '+' && peekC(opr) != '-') {
           push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
         }
-      } 
+      }
       push_backC(&nodesCount, &opr, '*');
     } else if (*inpstr == 's') {
       if (strncmp(inpstr, "sin", 3) == 0) {
         push_backC(&nodesCount, &opr, 'S');
       }
-      // Verifiable accuracy of the fractional part is at least to 7 decimal places
+      // Verifiable accuracy of the fractional part is at least to 7 decimal
+      // places
     } else if (*inpstr == ')') {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
-        funcstr[funcstr_i++] = popC(&nodesCount, &opr);  // peek for preceding op
+        funcstr[funcstr_i++] =
+            popC(&nodesCount, &opr);  // peek for preceding op
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
@@ -96,7 +96,7 @@ struct Vars popper(struct Node** nums, int* nodesCount) {
     res.a1 = popN(nodesCount, nums);
     res.a2 = popN(nodesCount, nums);
   } else {
-    while (*nodesCount > 0 ) {
+    while (*nodesCount > 0) {
       popN(nodesCount, nums);
     }
     fprintf(stderr, "Wrong calculation. Returning -1\n");
@@ -141,4 +141,3 @@ long double cal_oper(char* funcstr) {
   }
   return result;
 }
-

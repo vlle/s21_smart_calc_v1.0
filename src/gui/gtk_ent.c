@@ -1,7 +1,8 @@
 #include <gtk/gtk.h>
-#include "../smartcalc.h"
 #include <stdio.h>
 #include <string.h>
+
+#include "../smartcalc.h"
 
 GtkWidget *window;
 GtkWidget *username_label, *password_label, *result;
@@ -10,39 +11,21 @@ GtkWidget *ok_button;
 GtkWidget *hbox1, *hbox2;
 GtkWidget *vbox;
 
-
 void calc(GtkWidget *button, gpointer data) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE * 4] = {0};
   char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)data));
   char *prs = parse_oper(funcstr, fc);
   g_print("%s\n", prs);
   double my_res = cal_oper(prs);
   g_print("%f\n", my_res);
-  char rs[100];
+  char rs[MAX_ENTRY_SIZE * 4];
   sprintf(rs, "%.2f", my_res);
-  gtk_label_set_text(GTK_LABEL (result), rs);
+  gtk_label_set_text(GTK_LABEL(result), rs);
 }
 
-const char *password = "secret";
+void closeApp(GtkWidget *window, gpointer data) { gtk_main_quit(); }
 
-void closeApp(GtkWidget *window, gpointer data)
-{
-  gtk_main_quit();
-}
-
-void button_clicked(GtkWidget *button, gpointer data)
-{
-  const char *password_text = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)data));
-
-  if (strcmp(password_text, password) == 0)
-    printf("Access granted!\n");
-  else
-    printf("Access denied!\n");
-}
-
-int main(int argc, char *argv[])
-{
-
+int main(int argc, char *argv[]) {
   gtk_init(&argc, &argv);
 
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -66,8 +49,11 @@ int main(int argc, char *argv[])
 
   ok_button = gtk_button_new_with_label("OK");
 
-  g_signal_connect(G_OBJECT(ok_button), "clicked", G_CALLBACK(calc), password_entry);
-  // g_signal_connect_swapped(G_OBJECT(ok_button), "clicked", G_CALLBACK(gtk_label_set_text(GTK_LABEL (username_label), "")), "Button is pressed!\n");
+  g_signal_connect(G_OBJECT(ok_button), "clicked", G_CALLBACK(calc),
+                   password_entry);
+  // g_signal_connect_swapped(G_OBJECT(ok_button), "clicked",
+  // G_CALLBACK(gtk_label_set_text(GTK_LABEL (username_label), "")), "Button is
+  // pressed!\n");
 
   hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
   hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
