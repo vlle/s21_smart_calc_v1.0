@@ -8,13 +8,13 @@
 #define HIGHPRIOR "*/"
 #define LOWPRIOR "*/+-stcSTC"
 
+/* These functions are for support.
 
-/* These functions are for support. 
+  CheckNodesPrior checks top of the stack to see, if there's any operator with
+  same or greater precedence than given.
 
-  CheckNodesPrior checks top of the stack to see, if there's any operator with same
-  or greater precedence than given.
-
-  push_and_print pushes all operators than greater or same predence than given. */
+  push_and_print pushes all operators than greater or same predence than given.
+*/
 
 int checkNodesPrior(int nodesCount, struct Node* opr, char* prior_str) {
   if (nodesCount > 0) {
@@ -39,7 +39,7 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount,
   }
 }
 
-/* This function parses INFIX string and create RPN string 
+/* This function parses INFIX string and create RPN string
    Algo: Parse nums, parse OPs (and check priority), parse TG func */
 
 char* parse_oper(char* funcstr, char* inpo) {
@@ -126,13 +126,13 @@ char* parse_oper(char* funcstr, char* inpo) {
             }
             push_backC(&nodesCount, &opr, 'C');
           }
-        } 
+        }
       }
     } else if (*inpstr == ')') {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
         funcstr[funcstr_i++] =
-          popC(&nodesCount, &opr);  // peek for preceding op
+            popC(&nodesCount, &opr);  // peek for preceding op
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
@@ -163,7 +163,6 @@ struct Vars popper(struct Node** nums, int* nodesCount) {
   }
   return res;
 }
-
 
 /* This function parses RPN string and calculate it */
 
