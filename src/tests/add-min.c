@@ -4,7 +4,7 @@
 #include "../smartcalc.h"
 
 START_TEST(add_minus) {
-  char funcstr[40] = {0};
+  char funcstr[40] = {"\0"};
   char b[100] = "2 + (11 - 1)";
   double res = 12;
   char *prs = parse_oper(funcstr, b);
@@ -14,12 +14,22 @@ START_TEST(add_minus) {
 END_TEST
 
 START_TEST(add_braces) {
-  char funcstr[40] = {0};
-  char b[100] = "2.5 + (2 + 10)";
-  double res = 14.5;
+  char funcstr[40] = {"\0"};
+  char b[100] = "2 + (2 + 10)";
+  double res = 14;
   char *prs = parse_oper(funcstr, b);
   printf("%s WORKING\n", prs);
   double my_res = cal_oper(prs); 
+  ck_assert_double_eq(res, my_res);
+}
+END_TEST
+
+START_TEST(minA) {
+  char funcstr[40] = {0};
+  char b[100] = "(2+2)-(2-2)/1";
+  double res = 4;
+  char *prs = parse_oper(funcstr, b);
+  double my_res = cal_oper(prs);
   ck_assert_double_eq(res, my_res);
 }
 END_TEST
@@ -77,6 +87,7 @@ Suite *add_min(void) {
   tcase_add_test(tc_core, add_minus);
   tcase_add_test(tc_core, add);
   tcase_add_test(tc_core, min);
+  tcase_add_test(tc_core, minA);
   tcase_add_test(tc_core, min_min);
   tcase_add_test(tc_core, min_mid);
   suite_add_tcase(s, tc_core);
