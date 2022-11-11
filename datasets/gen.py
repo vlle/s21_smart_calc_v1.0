@@ -11,23 +11,48 @@
 
 import random as r
 
-def generate(n):
+def generate(n, name):
     #b = r.randrange(0, 100) + r.randrange(0, 100)
-    t1 = "START_TEST(add"#) {"
-    templ = "char funcstr[MAX_ENTRY_SIZE] = {\"\\0\"};"
-    f1_tmpl = "char *prs = parse_oper(funcstr, b);"
-    f2_tmpl = "double my_res = cal_oper(prs);"
-    f3_tmpl = "ck_assert_double_eq_tol(res, my_res, 0.0001);"
+    inc1 = "#include <check.h>"
+    inc2 = "#include <stdio.h>"
+    inc3 = ""
+    inc4 = "#include \"../smartcalc.h\""
+    print(inc1)
+    print(inc2)
+    print(inc3)
+    print(inc4)
+    t1 = f"START_TEST({name}"#) {"
+    templ = "    char funcstr[MAX_ENTRY_SIZE] = {\"\\0\"};"
+    f1_tmpl = "    char *prs = parse_oper(funcstr, b);"
+    f2_tmpl = "    double my_res = cal_oper(prs);"
+    f3_tmpl = "    ck_assert_double_eq_tol(res, my_res, 0.0001);"
+
+    f4_tmpl = f"Suite *{name}_suite(void) " +"{"
+    f5_tmpl = "   Suite *s;"
+    f6_tmpl = "   TCase *tc_core;"
+    f7_tmpl = " "
+    f8_tmpl = f"   s = suite_create(\"{name}\");"
+    f9_tmpl = "   tc_core = tcase_create(\"Core\");"
+    f10_tmpl = "   suite_add_tcase(s, tc_core);"
+    f11_tmpl = ""
+    f12_tmpl = "   return s;"
+    f13_tmpl = "}"
+
+
     for i in range(n):
         print(" ")
         num1 = (r.randrange(0, 100) + r.random())
         num2 = (r.randrange(0, 100) + r.random())
-        res = (num1+num2)
+        num3 = (r.randrange(0, 100) + r.random())
+        num4 = (r.randrange(0, 100) + r.random())
+        res = (num1+num2-num3-num4)
         op1 = "{:f}".format(num1)
         op2 = "{:f}".format(num2)
+        op3 = "{:f}".format(num3)
+        op4 = "{:f}".format(num4)
         rs_s = "{:f}".format(res)
-        char_template = "char b[100] = " + '"' + op1 + ' + ' + op2 + '";' 
-        res_template = "double res = " + rs_s + ";"
+        char_template = f"    char b[100] = \"{op1} + {op2} - {op3} - {op4}\";"
+        res_template = "    double res = " + rs_s + ";"
         print(t1+str(i)+") {")
         print(templ)
         print(char_template)
@@ -38,10 +63,24 @@ def generate(n):
         print("}")
         print("END_TEST")
 
+    print(" ")
+    print(f4_tmpl)
+    print(f5_tmpl)
+    print(f6_tmpl)
+    print(f7_tmpl)
+    print(f8_tmpl)
+    print(f9_tmpl)
     for i in range(n):
-        print("tcase_add_test(tc_core, si" + str(i) + ");")
+        print(f"   tcase_add_test(tc_core, {name}" + str(i) + ");")
 
-generate(30)
+    print(f10_tmpl)
+    print(f11_tmpl)
+    print(f12_tmpl)
+    print(f13_tmpl)
+    print(" ")
+
+
+generate(30, "minusminus")
 
 
 
