@@ -36,7 +36,7 @@ END_TEST
 START_TEST(c) {
   char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "cos(1)";  //+2";
-  double res = 0.5;
+  double res = 0.540302;
   char *prs = parse_oper(funcstr, b);
   double my_res = cal_oper(prs);
   ck_assert_double_eq_tol(res, my_res, 0.0001);
