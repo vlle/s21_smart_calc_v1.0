@@ -4,7 +4,7 @@
 #include "../smartcalc.h"
 
 START_TEST(si) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "sin(1+4)";  //+2";
   double res = -0.9589;
   char *prs = parse_oper(funcstr, b);
@@ -14,7 +14,7 @@ START_TEST(si) {
 END_TEST
 
 START_TEST(si2) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "sin(1+4)-2";  //+2";
   double res = -2.9589;
   char *prs = parse_oper(funcstr, b);
@@ -24,7 +24,7 @@ START_TEST(si2) {
 END_TEST
 
 START_TEST(t) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "tan(1)";  //+2";
   double res = 1.55741;
   char *prs = parse_oper(funcstr, b);
@@ -34,9 +34,29 @@ START_TEST(t) {
 END_TEST
 
 START_TEST(c) {
-  char funcstr[40] = {0};
+  char funcstr[MAX_ENTRY_SIZE] = {0};
   char b[100] = "cos(1)";  //+2";
-  double res = 0.5403;
+  double res = 0.5;
+  char *prs = parse_oper(funcstr, b);
+  double my_res = cal_oper(prs);
+  ck_assert_double_eq_tol(res, my_res, 0.0001);
+}
+END_TEST
+
+START_TEST(arcc) {
+  char funcstr[MAX_ENTRY_SIZE] = {0};
+  char b[100] = "arccos(1)";  //+2";
+  double res = 0.0;
+  char *prs = parse_oper(funcstr, b);
+  double my_res = cal_oper(prs);
+  ck_assert_double_eq_tol(res, my_res, 0.0001);
+}
+END_TEST
+
+START_TEST(arct) {
+  char funcstr[MAX_ENTRY_SIZE] = {0};
+  char b[100] = "arctan(1)";  //+2";
+  double res = 0.78539;
   char *prs = parse_oper(funcstr, b);
   double my_res = cal_oper(prs);
   ck_assert_double_eq_tol(res, my_res, 0.0001);
@@ -53,6 +73,8 @@ Suite *trigo(void) {
   tcase_add_test(tc_core, si2);
   tcase_add_test(tc_core, t);
   tcase_add_test(tc_core, c);
+  tcase_add_test(tc_core, arcc);
+  tcase_add_test(tc_core, arct);
   suite_add_tcase(s, tc_core);
 
   return s;

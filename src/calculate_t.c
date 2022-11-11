@@ -6,11 +6,13 @@
 
 int main() {
   int no_failed = 0;
-  Suite *add = add_min();
+  Suite *add_m = add_min();
   Suite *mul = mult();
   Suite *trig = trigo();
-  SRunner *runner = srunner_create(add);
+  Suite *ad = add();
+  SRunner *runner = srunner_create(add_m);
   srunner_add_suite(runner, mul);
+  srunner_add_suite(runner, ad);
   srunner_add_suite(runner, trig);
   srunner_set_log(runner, "tests/test.log");
   srunner_set_fork_status(runner, CK_NOFORK);

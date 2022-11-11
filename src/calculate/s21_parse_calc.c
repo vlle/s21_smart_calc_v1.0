@@ -6,7 +6,15 @@
 #include "../smartcalc.h"
 
 #define HIGHPRIOR "*/"
-#define LOWPRIOR "*/+-stc"
+#define LOWPRIOR "*/+-stcSTC"
+
+
+/* These functions are for support. 
+
+  CheckNodesPrior checks top of the stack to see, if there's any operator with same
+  or greater precedence than given.
+
+  push_and_print pushes all operators than greater or same predence than given. */
 
 int checkNodesPrior(int nodesCount, struct Node* opr, char* prior_str) {
   if (nodesCount > 0) {
@@ -30,6 +38,9 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount,
     if (*nodesCount == 0) break;
   }
 }
+
+/* This function parses INFIX string and create RPN string 
+   Algo: Parse nums, parse OPs (and check priority), parse TG func */
 
 char* parse_oper(char* funcstr, char* inpo) {
   struct Node* opr = {0};
@@ -91,6 +102,32 @@ char* parse_oper(char* funcstr, char* inpo) {
         }
         push_backC(&nodesCount, &opr, 'c');
       }
+    } else if (*inpstr == 'a') {
+      if (strncmp(inpstr, "arc", 3) == 0) {
+        inpstr += 3;
+        if (*inpstr == 's') {
+          if (strncmp(inpstr, "sin", 3) == 0) {
+            if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
+              push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+            }
+            push_backC(&nodesCount, &opr, 'S');
+          }
+        } else if (*inpstr == 't') {
+          if (strncmp(inpstr, "tan", 3) == 0) {
+            if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
+              push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+            }
+            push_backC(&nodesCount, &opr, 'T');
+          }
+        } else if (*inpstr == 'c') {
+          if (strncmp(inpstr, "cos", 3) == 0) {
+            if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
+              push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+            }
+            push_backC(&nodesCount, &opr, 'C');
+          }
+        } 
+      }
     } else if (*inpstr == ')') {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
@@ -127,6 +164,9 @@ struct Vars popper(struct Node** nums, int* nodesCount) {
   return res;
 }
 
+
+/* This function parses RPN string and calculate it */
+
 long double cal_oper(char* funcstr) {
   long double result = 0.0;
   struct Node* nums;
@@ -162,6 +202,15 @@ long double cal_oper(char* funcstr) {
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == 'c') {
       result = cos(popN(&nodesCount, &nums));
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'S') {
+      result = asin(popN(&nodesCount, &nums));
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'T') {
+      result = atan(popN(&nodesCount, &nums));
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'C') {
+      result = acos(popN(&nodesCount, &nums));
       push_backN(&nodesCount, &nums, result);
     }
   }

@@ -1,7 +1,7 @@
 CC = gcc
 
 WARNING    = -Wall -Werror -Wextra
-CFLAGS     = -std=c11 -pedantic $(WARNING)# -fsanitize=address
+CFLAGS     = -std=c11 -pedantic $(WARNING) # -fsanitize=address
 LFLAGS    ?= $(shell pkg-config --cflags --libs check)
 INC_CHECK ?= $(shell pkg-config --cflags check)
 
