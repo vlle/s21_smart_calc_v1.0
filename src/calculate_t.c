@@ -14,12 +14,14 @@ int main() {
   Suite *ad = add();
   Suite *mi = minusminus_suite();
   Suite *si = sinus_suite();
+  Suite *tri = triglog_suite();
   SRunner *runner = srunner_create(add_m);
   srunner_add_suite(runner, mul);
   srunner_add_suite(runner, ad);
   srunner_add_suite(runner, trig);
   srunner_add_suite(runner, mi);
   srunner_add_suite(runner, si);
+  srunner_add_suite(runner, tri);
   srunner_set_log(runner, "tests/test.log");
   srunner_set_fork_status(runner, CK_NOFORK);
   srunner_run_all(runner, CK_NORMAL);

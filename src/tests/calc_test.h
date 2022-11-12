@@ -9,6 +9,7 @@ Suite *trigo(void);
 Suite *add(void);
 Suite *minusminus_suite(void);
 Suite *sinus_suite(void);
+Suite *triglog_suite(void);
 // Suite* eq_suite(void);
 // Suite* multnum_suite(void);
 // Suite* transpose_suite(void);

@@ -5,8 +5,8 @@
 
 #include "../smartcalc.h"
 
-#define HIGHPRIOR "*/"
-#define LOWPRIOR "*/+-stcSTC"
+#define HIGHPRIOR "*/STCstc%Ll"
+#define LOWPRIOR "*/+-stcSTC%Ll"
 
 /* These functions are for support.
 
@@ -48,7 +48,6 @@ char* parse_oper(char* funcstr, char* inpo) {
   int funcstr_i = 0;
   char* inpstr = inpo;
   for (; *inpstr != '\0'; inpstr++) {
-    /* If we encounter a number = we push it to output string*/
     if (*inpstr >= '0' && *inpstr <= '9') {
       char num_str[MAX_ENTRY_SIZE] = {0};
       char* pEnd;
@@ -127,11 +126,30 @@ char* parse_oper(char* funcstr, char* inpo) {
           push_backC(&nodesCount, &opr, 'C');
         }
       }
+    } else if (*inpstr == 'l') {
+      if (strncmp(inpstr, "ln", 2) == 0) {
+        if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
+          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+        }
+        push_backC(&nodesCount, &opr, 'l');
+      } else if (strncmp(inpstr, "log", 3) == 0) {
+        if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
+          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+        }
+        push_backC(&nodesCount, &opr, 'L');
+      }
+    } else if (*inpstr == 'm') {
+      if (strncmp(inpstr, "mod", 3) == 0) {
+        if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
+          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+        }
+        push_backC(&nodesCount, &opr, '%');
+      }
     } else if (*inpstr == ')') {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
         funcstr[funcstr_i++] =
-            popC(&nodesCount, &opr); /* peek for preceding op */
+          popC(&nodesCount, &opr); /* peek for preceding op */
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
@@ -176,7 +194,7 @@ long double cal_oper(char* funcstr) {
     if (*funcstr >= '0' && *funcstr <= '9') {
       char* pEnd;
       long double calc_num =
-          strtold(funcstr, &pEnd); /*strtold parses float num from str*/
+        strtold(funcstr, &pEnd); /*strtold parses float num from str*/
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
     } else if (*funcstr == '+') {
@@ -218,8 +236,18 @@ long double cal_oper(char* funcstr) {
     } else if (*funcstr == 'T') {
       result = atan(popN(&nodesCount, &nums));
       push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'l') {
+      result = log(popN(&nodesCount, &nums));
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'L') {
+      result = log10(popN(&nodesCount, &nums));
+      push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == 'C') {
       result = acos(popN(&nodesCount, &nums));
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == '%') {
+      var = popper(&nums, &nodesCount);
+      result = fmod(var.a2, var.a1);
       push_backN(&nodesCount, &nums, result);
     }
   }

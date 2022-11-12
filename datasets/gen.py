@@ -11,8 +11,9 @@
 
 import random as r
 import math as m
+import ast as a
 
-def generate(n, name):
+def generate(n, name, m_t=''):
     #b = r.randrange(0, 100) + r.randrange(0, 100)
     inc1 = "#include <check.h>"
     inc2 = "#include <stdio.h>"
@@ -22,6 +23,7 @@ def generate(n, name):
     print(inc2)
     print(inc3)
     print(inc4)
+    code = a.parse(m_t, mode='eval')
     t1 = f"START_TEST({name}"#) {"
     templ = "    char funcstr[MAX_ENTRY_SIZE] = {\"\\0\"};"
     f1_tmpl = "    char *prs = parse_oper(funcstr, b);"
@@ -39,25 +41,34 @@ def generate(n, name):
     f12_tmpl = "   return s;"
     f13_tmpl = "}"
 
+    mv = '"' + m_t.replace("m.","") + '";'
 
     for i in range(n):
         print(" ")
         num1 = (r.randrange(0, 1) + r.random())
-        ns = m.sin(num1)
-        num2 = (r.randrange(0, 100) + r.random())
-        num23 = (r.randrange(0, 100) + r.random())
-        num3 = (r.randrange(0, 100) + r.random())
-        num4 = (r.randrange(0, 100) + r.random())
-        num5 = (r.randrange(0, 100) + r.random())
-        res = (ns+num2*num23-(num3-num4) / num5)
+        num2 = (r.randrange(0, 1) + r.random())
+        num3 = (r.randrange(0, 1) + r.random())
+        num4 = (r.randrange(0, 1) + r.random())
+        num5 = (r.randrange(0, 1) + r.random())
+        # res = (m.asin(num1)+m.acos(num2*num23)-m.log(num3+num4) / m.log10(num5))
+        # res = eval
         op1 = "{:f}".format(num1)
         op2 = "{:f}".format(num2)
-        op23 = "{:f}".format(num23)
         op3 = "{:f}".format(num3)
         op4 = "{:f}".format(num4)
         op5 = "{:f}".format(num5)
+        m_g = m_t.replace("x1", op1)
+        m_g = m_g.replace("x2", op2)
+        m_g = m_g.replace("x3", op3)
+        m_g = m_g.replace("x4", op4)
+        m_g = m_g.replace("x5", op5)
+        mv = '"' + m_g.replace("m.","") + '";'
+        char_template = f"    char b[100] = " + mv
+        code = a.parse(m_g, mode='eval')
+        res = eval(compile(code, '', mode='eval'))
+        m_g = m_g.replace("log10", "log")
+        #m_g = m_g.replace("log", "ln")
         rs_s = "{:f}".format(res)
-        char_template = f"    char b[100] = \"sin({op1}) + {op2}*{op23} - ({op3} - {op4})/{op5}\";"
         res_template = "    double res = " + rs_s + ";"
         print(t1+str(i)+") {")
         print(templ)
@@ -86,7 +97,9 @@ def generate(n, name):
     print(" ")
 
 
-generate(300, "sinus")
+m_t = input()
+generate(30, "triglog", m_t)
+
 
 
 
