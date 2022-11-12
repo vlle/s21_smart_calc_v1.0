@@ -40,7 +40,6 @@ START_TEST(mult_brace) {
   char b[100] = "(123+123-123)*123";
   double res = 15129;
   char *prs = parse_oper(funcstr, b);
-  printf("%s working on that\n", prs);
   double my_res = cal_oper(prs);
   ck_assert_double_eq(res, my_res);
 }
@@ -51,7 +50,6 @@ START_TEST(multwut) {
   char b[100] = "1+1+2*4*5";
   double res = 42;
   char *prs = parse_oper(funcstr, b);
-  printf("%s working on that\n", prs);
   double my_res = cal_oper(prs);
   ck_assert_double_eq(res, my_res);
 }
