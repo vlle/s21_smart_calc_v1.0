@@ -10,6 +10,7 @@
 # END_TEST
 
 import random as r
+import math as m
 
 def generate(n, name):
     #b = r.randrange(0, 100) + r.randrange(0, 100)
@@ -41,17 +42,22 @@ def generate(n, name):
 
     for i in range(n):
         print(" ")
-        num1 = (r.randrange(0, 100) + r.random())
+        num1 = (r.randrange(0, 1) + r.random())
+        ns = m.sin(num1)
         num2 = (r.randrange(0, 100) + r.random())
+        num23 = (r.randrange(0, 100) + r.random())
         num3 = (r.randrange(0, 100) + r.random())
         num4 = (r.randrange(0, 100) + r.random())
-        res = (num1+num2-num3-num4)
+        num5 = (r.randrange(0, 100) + r.random())
+        res = (ns+num2*num23-(num3-num4) / num5)
         op1 = "{:f}".format(num1)
         op2 = "{:f}".format(num2)
+        op23 = "{:f}".format(num23)
         op3 = "{:f}".format(num3)
         op4 = "{:f}".format(num4)
+        op5 = "{:f}".format(num5)
         rs_s = "{:f}".format(res)
-        char_template = f"    char b[100] = \"{op1} + {op2} - {op3} - {op4}\";"
+        char_template = f"    char b[100] = \"sin({op1}) + {op2}*{op23} - ({op3} - {op4})/{op5}\";"
         res_template = "    double res = " + rs_s + ";"
         print(t1+str(i)+") {")
         print(templ)
@@ -80,7 +86,7 @@ def generate(n, name):
     print(" ")
 
 
-generate(30, "minusminus")
+generate(300, "sinus")
 
 
 
