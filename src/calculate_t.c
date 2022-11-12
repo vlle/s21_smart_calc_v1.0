@@ -16,6 +16,7 @@ int main() {
   Suite *si = sinus_suite();
   Suite *tri = triglog_suite();
   Suite *logmu = logmult_suite();
+  Suite *finti = trigfinal_suite();
   SRunner *runner = srunner_create(add_m);
   srunner_add_suite(runner, mul);
   srunner_add_suite(runner, ad);
@@ -24,6 +25,7 @@ int main() {
   srunner_add_suite(runner, si);
   srunner_add_suite(runner, tri);
   srunner_add_suite(runner, logmu);
+  srunner_add_suite(runner, finti);
   srunner_set_log(runner, "tests/test.log");
   srunner_set_fork_status(runner, CK_NOFORK);
   srunner_run_all(runner, CK_NORMAL);
