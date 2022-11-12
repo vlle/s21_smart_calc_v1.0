@@ -40,7 +40,7 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount,
 }
 
 /* This function parses INFIX string and create RPN string
-   Algo: Parse nums, parse OPs (and check priority), parse TG func */
+   Algo: Parse nums, parse OPs (and check priority), parse Trigonometry func */
 
 char* parse_oper(char* funcstr, char* inpo) {
   struct Node* opr = {0};
@@ -48,6 +48,7 @@ char* parse_oper(char* funcstr, char* inpo) {
   int funcstr_i = 0;
   char* inpstr = inpo;
   for (; *inpstr != '\0'; inpstr++) {
+      /* If we encounter a number = we push it to output string*/
     if (*inpstr >= '0' && *inpstr <= '9') {
       char num_str[MAX_ENTRY_SIZE] = {0};
       char* pEnd;
@@ -103,8 +104,7 @@ char* parse_oper(char* funcstr, char* inpo) {
         push_backC(&nodesCount, &opr, 'c');
       }
     } else if (*inpstr == 'a') {
-      if (strncmp(inpstr, "arc", 3) == 0) {
-        inpstr += 3;
+        inpstr += 1;
         if (*inpstr == 's') {
           if (strncmp(inpstr, "sin", 3) == 0) {
             if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
@@ -127,29 +127,31 @@ char* parse_oper(char* funcstr, char* inpo) {
             push_backC(&nodesCount, &opr, 'C');
           }
         }
-      }
     } else if (*inpstr == ')') {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
         funcstr[funcstr_i++] =
-            popC(&nodesCount, &opr);  // peek for preceding op
+          popC(&nodesCount, &opr);  /* peek for preceding op */
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
         }
       }
-      popC(&nodesCount, &opr);
+      popC(&nodesCount, &opr); /* removing '(' after we popped everything out */
     }
   }
   funcstr_i = strlen(funcstr);
+    /* poppint everything on output string after finishing parsing*/
   while (nodesCount > 0) {
-    funcstr[funcstr_i++] = popC(&nodesCount, &opr);  // peek for preceding op
+    funcstr[funcstr_i++] = popC(&nodesCount, &opr);  /* peek for preceding op */
     funcstr[funcstr_i++] = ' ';
   }
   funcstr[funcstr_i] = '\0';
   return funcstr;
 }
 
+
+/* Support function to pop 2 elemeents at once (if needed) */
 struct Vars popper(struct Node** nums, int* nodesCount) {
   struct Vars res = {0};
   if (*nodesCount > 1) {
@@ -174,7 +176,7 @@ long double cal_oper(char* funcstr) {
   for (; *funcstr != '\0'; funcstr++) {
     if (*funcstr >= '0' && *funcstr <= '9') {
       char* pEnd;
-      long double calc_num = strtold(funcstr, &pEnd);
+      long double calc_num = strtold(funcstr, &pEnd); /*strtold parses float num from str*/
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
     } else if (*funcstr == '+') {
@@ -182,7 +184,7 @@ long double cal_oper(char* funcstr) {
         var = popper(&nums, &nodesCount);
         result = var.a2 + var.a1;
       } else if (nodesCount == 1) {
-        result = +(popN(&nodesCount, &nums));
+        result = +(popN(&nodesCount, &nums)); /* Check for Unary plus*/
       }
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '-') {
@@ -190,7 +192,7 @@ long double cal_oper(char* funcstr) {
         var = popper(&nums, &nodesCount);
         result = var.a2 - var.a1;
       } else if (nodesCount == 1) {
-        result = -(popN(&nodesCount, &nums));
+        result = -(popN(&nodesCount, &nums)); /* Check for Unary minus*/
       }
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '*') {
@@ -222,7 +224,7 @@ long double cal_oper(char* funcstr) {
     }
   }
   while (nodesCount > 0) {
-    popN(&nodesCount, &nums);
+    popN(&nodesCount, &nums); /* Removing our stack after we finished calculations*/
   }
   return result;
 }

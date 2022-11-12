@@ -45,7 +45,7 @@ END_TEST
 
 START_TEST(arcc) {
   char funcstr[MAX_ENTRY_SIZE] = {0};
-  char b[100] = "arccos(1)";  //+2";
+  char b[100] = "acos(1)";  //+2";
   double res = 0.0;
   char *prs = parse_oper(funcstr, b);
   double my_res = cal_oper(prs);
@@ -55,7 +55,7 @@ END_TEST
 
 START_TEST(arct) {
   char funcstr[MAX_ENTRY_SIZE] = {0};
-  char b[100] = "arctan(1)";  //+2";
+  char b[100] = "atan(1)";  //+2";
   double res = 0.78539;
   char *prs = parse_oper(funcstr, b);
   double my_res = cal_oper(prs);
