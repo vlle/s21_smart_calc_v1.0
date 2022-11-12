@@ -27,4 +27,3 @@ int main() {
   srunner_free(runner);
   return (no_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
-

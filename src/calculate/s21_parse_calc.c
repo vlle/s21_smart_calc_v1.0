@@ -39,7 +39,6 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount,
   }
 }
 
-
 /* This function parses INFIX string and create RPN string
    Algo: Parse nums, parse OPs (and check priority), parse TG func */
 
@@ -180,18 +179,18 @@ long double cal_oper(char* funcstr) {
       funcstr = pEnd;
     } else if (*funcstr == '+') {
       if (nodesCount > 1) {
-      var = popper(&nums, &nodesCount);
-      result = var.a2 + var.a1;
+        var = popper(&nums, &nodesCount);
+        result = var.a2 + var.a1;
       } else if (nodesCount == 1) {
-        result = + (popN(&nodesCount, &nums));
+        result = +(popN(&nodesCount, &nums));
       }
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '-') {
       if (nodesCount > 1) {
-      var = popper(&nums, &nodesCount);
-      result = var.a2 - var.a1;
+        var = popper(&nums, &nodesCount);
+        result = var.a2 - var.a1;
       } else if (nodesCount == 1) {
-        result = - (popN(&nodesCount, &nums));
+        result = -(popN(&nodesCount, &nums));
       }
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '*') {
