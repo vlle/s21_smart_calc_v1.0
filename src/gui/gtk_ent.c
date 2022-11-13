@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "../smartcalc.h"
@@ -21,6 +22,52 @@ GtkWidget *hbox1, *hbox2, *hbox3, *hbox4;
 GtkWidget *vbox;
 GtkWidget *da;
 
+char *str_replace(char *orig, char *rep, char *with) {
+    char *result; // the return string
+    char *ins;    // the next insert point
+    char *tmp;    // varies
+    int len_rep;  // length of rep (the string to remove)
+    int len_with; // length of with (the string to replace rep with)
+    int len_front; // distance between rep and end of last rep
+    int count;    // number of replacements
+
+    // sanity checks and initialization
+    if (!orig || !rep)
+        return NULL;
+    len_rep = strlen(rep);
+    if (len_rep == 0)
+        return NULL; // empty rep causes infinite loop during count
+    if (!with)
+        with = "";
+    len_with = strlen(with);
+
+    // count the number of replacements needed
+    ins = orig;
+    for (count = 0; (tmp = strstr(ins, rep)); ++count) {
+        ins = tmp + len_rep;
+    }
+
+    tmp = result = malloc(strlen(orig) + (len_with - len_rep) * count + 1);
+
+    if (!result)
+        return NULL;
+
+    // first time through the loop, all the variable are set correctly
+    // from here on,
+    //    tmp points to the end of the result string
+    //    ins points to the next occurrence of rep in orig
+    //    orig points to the remainder of orig after "end of rep"
+    while (count--) {
+        ins = strstr(orig, rep);
+        len_front = ins - orig;
+        tmp = strncpy(tmp, orig, len_front) + len_front;
+        tmp = strcpy(tmp, with) + len_with;
+        orig += len_front + len_rep; // move to next "end of rep"
+    }
+    strcpy(tmp, orig);
+    return result;
+}
+
 void calc(GtkWidget *button, gpointer data) {
   char funcstr[MAX_ENTRY_SIZE * 4] = {0};
   char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)data));
@@ -33,14 +80,29 @@ void calc(GtkWidget *button, gpointer data) {
   gtk_label_set_text(GTK_LABEL(result), rs);
 }
 
-gfloat f (gfloat x)
+gfloat f (gfloat x, const char * parser)//, char* parser)
 {
-    return 0.03 * pow (x, 3);
+  // printf("%s IS AA\n",fc);
+  char funcstr[MAX_ENTRY_SIZE] = {'\0'};
+  char *newstr;
+  char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
+  // for (int i = 0; i < 30; i++) {
+  // memset(rs, 0, sizeof(rs));
+  // memset(newstr, 0, sizeof(newstr));
+  snprintf(rs, sizeof(rs), "%.2f", x);
+  newstr = str_replace((char*) parser, "x", rs);
+  char *prs = parse_oper(funcstr, newstr);
+  g_print("%s is cur str\n", parser);
+  g_print("%s is cur newstr\n", newstr);
+  g_print("%s is cur prs\n", prs);
+  // memset(prs, 0, strlen(prs));
+  double my_res = cal_oper(prs);
+  free(newstr);
+  // memset(newstr, 0, sizeof(newstr));
+  return my_res;
 }
 
 void closeApp(GtkWidget *window, gpointer data) { gtk_main_quit(); }
-
-
 
 static gboolean
 on_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data)
@@ -79,19 +141,19 @@ on_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data)
   cairo_stroke (cr);
 
   /* Link each data point */
-  char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)user_data));
-  printf("%s IS AA\n",fc);
-  char *prs = parse_oper(funcstr, fc);
-  g_print("%s\n", prs);
-  double my_res = cal_oper(prs);
-  g_print("%f\n", my_res);
-  char rs[MAX_ENTRY_SIZE * 4];
-  sprintf(rs, "%.2f", my_res);
+  const char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)user_data));
+  // printf("%s IS AA\n",fc);
+  // char *prs = parse_oper(funcstr, fc);
+  // g_print("%s\n", prs);
+  // double my_res = cal_oper(prs);
+  // g_print("%f\n", my_res);
+  // char rs[MAX_ENTRY_SIZE * 4];
+  // sprintf(rs, "%.2f", my_res);
   for (i = clip_x1; i < clip_x2; i += dx)
-    cairo_line_to (cr, i, f (i));
+      cairo_line_to (cr, i, f (i, fc));
 
   /* Draw the curve */
-  cairo_set_source_rgba (cr, 1, 0.2, 0.2, 0.6);
+  cairo_set_source_rgba (cr, 3, 0.2, 0.2, 0.6);
   cairo_stroke (cr);
 
   return FALSE;
@@ -104,6 +166,7 @@ void startdraw(GtkWidget *window, gpointer data) {
 int main(int argc, char *argv[]) {
   gtk_init(&argc, &argv);
 
+  GtkWidget *q_button;
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(window), "Artemii's Calculator");
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
@@ -116,7 +179,7 @@ int main(int argc, char *argv[]) {
   result = gtk_label_new("?");
   password_label = gtk_label_new("Calculate: ");
 
-  gtk_label_set_width_chars(GTK_LABEL(username_label), 12);
+  gtk_label_set_width_chars(GTK_LABEL(username_label), 0);
   gtk_label_set_width_chars(GTK_LABEL(password_label), 12);
 
   username_entry = gtk_entry_new();
@@ -125,7 +188,7 @@ int main(int argc, char *argv[]) {
   gtk_entry_set_visibility(GTK_ENTRY(password_entry), TRUE);
   gtk_entry_set_visibility(GTK_ENTRY(graph_entry), TRUE);
 
-  ok_button = gtk_button_new_with_label("Ok");
+  ok_button = gtk_button_new_with_label("=");
   draw_button = gtk_button_new_with_label("Draw");
 
   g_signal_connect(G_OBJECT(ok_button), "clicked", G_CALLBACK(calc),
@@ -155,7 +218,13 @@ int main(int argc, char *argv[]) {
   gtk_box_pack_start(GTK_BOX(hbox4), da, TRUE, TRUE, 50);
   gtk_box_pack_start(GTK_BOX(vbox), hbox3, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox), hbox4, TRUE, TRUE, 5);
+  q_button = gtk_button_new_with_label("Quit");
+  gtk_container_set_border_width (GTK_CONTAINER (q_button), 10);
+  gtk_box_pack_end (GTK_BOX(vbox), q_button, FALSE, FALSE, 10);
 
+  /* Событие, которое отрабатывает на нажатие кнопки */
+  g_signal_connect(GTK_BUTTON(q_button), "clicked", 
+                   G_CALLBACK(closeApp), NULL);
   g_signal_connect (G_OBJECT (draw_button), "clicked", G_CALLBACK (startdraw), password_entry);
 
 
