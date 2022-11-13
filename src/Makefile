@@ -29,26 +29,30 @@ lgtk=$(shell pkg-config --cflags gtk+-3.0)
 llgtk=$(shell pkg-config --libs gtk+-3.0)
 
 #all: algo #example
+# The program must be built with Makefile which contains standard set of targets for GNU-programs: 
+# all, install, uninstall, clean, dvi, dist, tests, gcov_report. 
+# Installation directory could be arbitrary, except the building one
 
-all: $(LIB) test
+all: dist test
+
+install:
+	brew install gtk+3
+
+uninstall:
+	brew uninstall gtk+3
+
+dist: $(LIB)
+
+dvi: gui_tst1
 
 test: test.out
 	./test.out
 
-algo:
-	gcc stack/stack.c calculate/parse_calc.c -o hello
-
-gui_wip: $(LIB)
-	gcc $(lgtk) s21_calc.a -o t1 gui/s2.c $(llgtk) 
-
-gui_tst: $(LIB)
-	gcc $(lgtk) s21_calc.a -o t1 gui/gtk_con.c $(llgtk) 
-
 gui_tst1: $(LIB)
 	gcc $(lgtk) s21_calc.a -o t1 gui/gtk_ent.c $(llgtk) 
 
-gui_tst2: $(LIB)
-	gcc $(lgtk) s21_calc.a -o t1 gui/spin.c $(llgtk) 
+dvi: $(LIB)
+	gcc $(lgtk) s21_calc.a -o t2 gui/graph.c $(llgtk) 
 
 rebuild: clean all
 
@@ -89,7 +93,6 @@ $(BUILD_TEST_DIR)/main.o: $(DEC_TEST)
 
 $(BUILD_TEST_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	#$(CC) $(CFLAGS) $(INC_CHECK) -c $^ -o $@
 	$(CC)  $(INC_CHECK) -c $^ -o $@
 
 $(GCOV_OBJ_DIR)/%.o: %.c
