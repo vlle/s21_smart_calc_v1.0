@@ -5,7 +5,8 @@
 
 #include "../smartcalc.h"
 
-#define HIGHPRIOR "*/STCstc%Ll"
+#define VERYHIGH "^"
+#define HIGHPRIOR "*/STCstc%Ll" // ^ 
 #define LOWPRIOR "*/+-stcSTC%Ll"
 
 /* These functions are for support.
@@ -81,6 +82,11 @@ char* parse_oper(char* funcstr, const char* inpo) {
         push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
       }
       push_backC(&nodesCount, &opr, '*');
+    } else if (*inpstr == '^') {
+      if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+        push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
+      }
+      push_backC(&nodesCount, &opr, '^');
     } else if (*inpstr == 's') {
       if (strncmp(inpstr, "sin", 3) == 0) {
         if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
@@ -221,6 +227,10 @@ long double cal_oper(char* funcstr) {
       var = popper(&nums, &nodesCount);
       result = var.a2 / var.a1;
       push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == '^') {
+      var = popper(&nums, &nodesCount);
+      result = powl(var.a2, var.a1);
+      push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == 's') {
       result = sin(popN(&nodesCount, &nums));
       push_backN(&nodesCount, &nums, result);
@@ -236,14 +246,14 @@ long double cal_oper(char* funcstr) {
     } else if (*funcstr == 'T') {
       result = atan(popN(&nodesCount, &nums));
       push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'C') {
+      result = acos(popN(&nodesCount, &nums));
+      push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == 'l') {
       result = log(popN(&nodesCount, &nums));
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == 'L') {
       result = log10(popN(&nodesCount, &nums));
-      push_backN(&nodesCount, &nums, result);
-    } else if (*funcstr == 'C') {
-      result = acos(popN(&nodesCount, &nums));
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '%') {
       var = popper(&nums, &nodesCount);
