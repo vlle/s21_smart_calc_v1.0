@@ -23,60 +23,64 @@ GtkWidget *vbox;
 GtkWidget *da;
 
 char *str_replace(char *orig, char *rep, char *with) {
-    char *result; // the return string
-    char *ins;    // the next insert point
-    char *tmp;    // varies
-    int len_rep;  // length of rep (the string to remove)
-    int len_with; // length of with (the string to replace rep with)
-    int len_front; // distance between rep and end of last rep
-    int count;    // number of replacements
+  char *result; // the return string
+  char *ins;    // the next insert point
+  char *tmp;    // varies
+  int len_rep;  // length of rep (the string to remove)
+  int len_with; // length of with (the string to replace rep with)
+  int len_front; // distance between rep and end of last rep
+  int count;    // number of replacements
 
-    // sanity checks and initialization
-    if (!orig || !rep)
-        return NULL;
-    len_rep = strlen(rep);
-    if (len_rep == 0)
-        return NULL; // empty rep causes infinite loop during count
-    if (!with)
-        with = "";
-    len_with = strlen(with);
+  // sanity checks and initialization
+  if (!orig || !rep)
+    return NULL;
+  len_rep = strlen(rep);
+  if (len_rep == 0)
+    return NULL; // empty rep causes infinite loop during count
+  if (!with)
+    with = "";
+  len_with = strlen(with);
 
-    // count the number of replacements needed
-    ins = orig;
-    for (count = 0; (tmp = strstr(ins, rep)); ++count) {
-        ins = tmp + len_rep;
-    }
+  // count the number of replacements needed
+  ins = orig;
+  for (count = 0; (tmp = strstr(ins, rep)); ++count) {
+    ins = tmp + len_rep;
+  }
 
-    tmp = result = malloc(strlen(orig) + (len_with - len_rep) * count + 1);
+  tmp = result = malloc(strlen(orig) + (len_with - len_rep) * count + 1);
 
-    if (!result)
-        return NULL;
+  if (!result)
+    return NULL;
 
-    // first time through the loop, all the variable are set correctly
-    // from here on,
-    //    tmp points to the end of the result string
-    //    ins points to the next occurrence of rep in orig
-    //    orig points to the remainder of orig after "end of rep"
-    while (count--) {
-        ins = strstr(orig, rep);
-        len_front = ins - orig;
-        tmp = strncpy(tmp, orig, len_front) + len_front;
-        tmp = strcpy(tmp, with) + len_with;
-        orig += len_front + len_rep; // move to next "end of rep"
-    }
-    strcpy(tmp, orig);
-    return result;
+  // first time through the loop, all the variable are set correctly
+  // from here on,
+  //    tmp points to the end of the result string
+  //    ins points to the next occurrence of rep in orig
+  //    orig points to the remainder of orig after "end of rep"
+  while (count--) {
+    ins = strstr(orig, rep);
+    len_front = ins - orig;
+    tmp = strncpy(tmp, orig, len_front) + len_front;
+    tmp = strcpy(tmp, with) + len_with;
+    orig += len_front + len_rep; // move to next "end of rep"
+  }
+  strcpy(tmp, orig);
+  return result;
+}
+
+void debug(char*prs , double my_res ) {
+  g_print("%s\n", prs);
+  g_print("%f\n", my_res);
 }
 
 void calc(GtkWidget *button, gpointer data) {
-  char funcstr[MAX_ENTRY_SIZE * 4] = {0};
-  char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)data));
+  char funcstr[MAX_ENTRY_SIZE * 4] = {'\0'};
+  char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
+  const char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)data));
   char *prs = parse_oper(funcstr, fc);
-  g_print("%s\n", prs);
-  double my_res = cal_oper(prs);
-  g_print("%f\n", my_res);
-  char rs[MAX_ENTRY_SIZE * 4];
-  sprintf(rs, "%.2f", my_res);
+  long double resul = cal_oper(prs);
+  sprintf(rs, "%.2Lf", resul);
+  debug(prs, resul);
   gtk_label_set_text(GTK_LABEL(result), rs);
 }
 
@@ -86,19 +90,14 @@ gfloat f (gfloat x, const char * parser)//, char* parser)
   char funcstr[MAX_ENTRY_SIZE] = {'\0'};
   char *newstr;
   char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
-  // for (int i = 0; i < 30; i++) {
-  // memset(rs, 0, sizeof(rs));
-  // memset(newstr, 0, sizeof(newstr));
   snprintf(rs, sizeof(rs), "%.2f", x);
   newstr = str_replace((char*) parser, "x", rs);
   char *prs = parse_oper(funcstr, newstr);
-  g_print("%s is cur str\n", parser);
-  g_print("%s is cur newstr\n", newstr);
-  g_print("%s is cur prs\n", prs);
-  // memset(prs, 0, strlen(prs));
+  // g_print("%s is cur str\n", parser);
+  // g_print("%s is cur newstr\n", newstr);
+  // g_print("%s is cur prs\n", prs);
   double my_res = cal_oper(prs);
   free(newstr);
-  // memset(newstr, 0, sizeof(newstr));
   return my_res;
 }
 
@@ -142,15 +141,8 @@ on_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
   /* Link each data point */
   const char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)user_data));
-  // printf("%s IS AA\n",fc);
-  // char *prs = parse_oper(funcstr, fc);
-  // g_print("%s\n", prs);
-  // double my_res = cal_oper(prs);
-  // g_print("%f\n", my_res);
-  // char rs[MAX_ENTRY_SIZE * 4];
-  // sprintf(rs, "%.2f", my_res);
   for (i = clip_x1; i < clip_x2; i += dx)
-      cairo_line_to (cr, i, f (i, fc));
+    cairo_line_to (cr, i, f (i, fc));
 
   /* Draw the curve */
   cairo_set_source_rgba (cr, 3, 0.2, 0.2, 0.6);
