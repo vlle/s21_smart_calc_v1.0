@@ -42,11 +42,11 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount,
 /* This function parses INFIX string and create RPN string
    Algo: Parse nums, parse OPs (and check priority), parse Trigonometry func */
 
-char* parse_oper(char* funcstr, char* inpo) {
+char* parse_oper(char* funcstr, const char* inpo) {
   struct Node* opr = {0};
   int nodesCount = 0;
   int funcstr_i = 0;
-  char* inpstr = inpo;
+  char* inpstr = (char*) inpo;
   for (; *inpstr != '\0'; inpstr++) {
     if (*inpstr >= '0' && *inpstr <= '9') {
       char num_str[MAX_ENTRY_SIZE] = {0};
@@ -202,7 +202,7 @@ long double cal_oper(char* funcstr) {
         var = popper(&nums, &nodesCount);
         result = var.a2 + var.a1;
       } else if (nodesCount == 1) {
-        result = +(popN(&nodesCount, &nums)); /* Check for Unary plus*/
+          result = +(popN(&nodesCount, &nums)); /* Check for Unary plus*/
       }
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '-') {
@@ -257,3 +257,4 @@ long double cal_oper(char* funcstr) {
   }
   return result;
 }
+
