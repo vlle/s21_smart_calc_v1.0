@@ -2,6 +2,7 @@
 #define SRC_SMARTCALC_H_
 #define MAX_ENTRY_SIZE 256
 
+
 typedef enum {
   minus,
   plus,
@@ -43,6 +44,7 @@ int IsEmpty(const struct Node *top);
 long double cal_oper(char *funcstr);
 char *parse_oper(char *funcstr, const char *inpo);
 
+char *str_replace(char *orig, char *rep, char *with);
 
 finance_info credit_calculate(long double total_credit_amount, long double term, long double interest_rate, char type);
 int deposit_calculate(long double total_credit_amount, long double term, long double interest_rate);
