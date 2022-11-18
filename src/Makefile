@@ -33,7 +33,7 @@ llgtk=$(shell pkg-config --libs gtk+-3.0)
 # all, install, uninstall, clean, dvi, dist, tests, gcov_report. 
 # Installation directory could be arbitrary, except the building one
 
-all: dist test
+all: dist tests
 
 install:
 	brew install gtk+3
@@ -43,16 +43,17 @@ uninstall:
 
 dist: $(LIB)
 
-dvi: gui_tst1
+dvi: gui_back
 
-test: test.out
+tests: test.out
 	./test.out
 
-gui_tst1: $(LIB)
-	gcc $(lgtk) s21_calc.a -o t1 gui/gtk_ent.c $(llgtk) 
+gui_back: $(LIB)
+	echo "Building Graphical Calculator"
+	gcc $(lgtk)  -c gui/func_graph.c -o func_graph.o
+	@gcc  $(lgtk) -c gui/additional_graph.c -o nice_graph.o
+	@gcc $(lgtk)  func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o t1  $(llgtk) 
 
-dvi: $(LIB)
-	gcc $(lgtk) s21_calc.a -o t2 gui/graph.c $(llgtk) 
 
 rebuild: clean all
 
