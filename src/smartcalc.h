@@ -14,6 +14,16 @@ typedef enum {
   etc
 } math_oper;
 
+enum {
+
+  TOTAL_CREDIT = 0,
+  MONTHLY_PAYMENT,
+  OVERPAYMENT,
+  N_COLUMNS
+};
+
+
+
 struct Node {
   long double storage;  // integer data
   char res;
@@ -45,6 +55,11 @@ long double cal_oper(char *funcstr);
 char *parse_oper(char *funcstr, const char *inpo);
 
 char *str_replace(char *orig, char *rep, char *with);
+void init_list(GtkWidget *list);
+void add_to_list(GtkWidget *list, const gchar *total, const gchar* month, const gchar*over);
+void debug(char*prs , double my_res );
+void on_changed(GtkWidget *widget, gpointer label);
+void cb_create_entry(int argc, char *argv[]);
 
 finance_info credit_calculate(long double total_credit_amount, long double term, long double interest_rate, char type);
 int deposit_calculate(long double total_credit_amount, long double term, long double interest_rate);
