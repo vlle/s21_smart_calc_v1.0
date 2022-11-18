@@ -16,10 +16,10 @@
 
 
 GtkWidget *window;
-GtkWidget *username_label, *password_label, *result;
-GtkWidget *username_entry, *password_entry, *graph_entry;
+GtkWidget *result_label, *calc_label, *result;
+GtkWidget *password_entry, *graph_entry;
 GtkWidget *ok_button, *draw_button;
-GtkWidget *hbox1, *hbox2, *hbox3, *hbox4;
+GtkWidget *hbox1, *hbox2, *hbox3, *hbox4, *hbox5;
 GtkWidget *vbox;
 GtkWidget *da;
 GtkWidget *list;  
@@ -80,22 +80,36 @@ void debug(char*prs , double my_res ) {
 
 enum {
 
-  LIST_ITEM = 0,
+  TOTAL_CREDIT = 0,
+  MONTHLY_PAYMENT,
+  OVERPAYMENT,
   N_COLUMNS
 };
 
 void init_list(GtkWidget *list) {
 
   GtkCellRenderer *renderer;
-  GtkTreeViewColumn *column;
+  GtkTreeViewColumn *total, *month, *over;
   GtkListStore *store;
 
   renderer = gtk_cell_renderer_text_new ();
-  column = gtk_tree_view_column_new_with_attributes("List Items",
-                                                    renderer, "text", LIST_ITEM, NULL);
-  gtk_tree_view_append_column(GTK_TREE_VIEW(list), column);
+  g_object_set (G_OBJECT (renderer),
+                "foreground", "red",
+                NULL);
+  total = gtk_tree_view_column_new_with_attributes("Total Credit",
+                                                    renderer, "text", TOTAL_CREDIT, NULL);
+  gtk_tree_view_column_set_title (total, "Total Credit");
+  gtk_tree_view_append_column(GTK_TREE_VIEW(list), total);
+  month = gtk_tree_view_column_new_with_attributes("Monthly Payment",
+                                                    renderer, "text", MONTHLY_PAYMENT, NULL);
+  gtk_tree_view_column_set_title (month, "Monthly Payment");
+  gtk_tree_view_append_column(GTK_TREE_VIEW(list), month);
+  over = gtk_tree_view_column_new_with_attributes("Overpayment",
+                                                    renderer, "text", OVERPAYMENT, NULL);
+  gtk_tree_view_column_set_title (over, "Overpayment");
+  gtk_tree_view_append_column(GTK_TREE_VIEW(list), over);
 
-  store = gtk_list_store_new(N_COLUMNS, G_TYPE_STRING);
+  store = gtk_list_store_new(N_COLUMNS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
   gtk_tree_view_set_model(GTK_TREE_VIEW(list), 
                           GTK_TREE_MODEL(store));
@@ -103,7 +117,7 @@ void init_list(GtkWidget *list) {
   g_object_unref(store);
 }
 
-void add_to_list(GtkWidget *list, const gchar *str) {
+void add_to_list(GtkWidget *list, const gchar *total, const gchar* month, const gchar*over) {
 
   GtkListStore *store;
   GtkTreeIter iter;
@@ -112,7 +126,7 @@ void add_to_list(GtkWidget *list, const gchar *str) {
                          (GTK_TREE_VIEW(list)));
 
   gtk_list_store_append(store, &iter);
-  gtk_list_store_set(store, &iter, LIST_ITEM, str, -1);
+  gtk_list_store_set(store, &iter, TOTAL_CREDIT, total, MONTHLY_PAYMENT, month, OVERPAYMENT, over, -1);
 }
 
 void on_changed(GtkWidget *widget, gpointer label) {
@@ -124,27 +138,28 @@ void on_changed(GtkWidget *widget, gpointer label) {
   if (gtk_tree_selection_get_selected(
       GTK_TREE_SELECTION(widget), &model, &iter)) {
 
-    gtk_tree_model_get(model, &iter, LIST_ITEM, &value,  -1);
+    gtk_tree_model_get(model, &iter, TOTAL_CREDIT, &value,  -1);
     gtk_label_set_text(GTK_LABEL(label), value);
     g_free(value);
   }
 }
 
 
+void closeApp(GtkWidget *window, gpointer data) { gtk_main_quit(); }
 
 void cb_create_entry(int argc, char *argv[]){
-  
+
   gtk_init(&argc, &argv);
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   list = gtk_tree_view_new();
   gtk_window_set_title(GTK_WINDOW(window), "List view");
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
   gtk_container_set_border_width(GTK_CONTAINER(window), 10);
-  gtk_window_set_default_size(GTK_WINDOW(window), 270, 250);
+  gtk_window_set_default_size(GTK_WINDOW(window), 670, 450);
 
-  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(list), FALSE);
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(list), TRUE);
 
-  vbox = gtk_vbox_new(FALSE, 0);
+  vbox = gtk_box_new(FALSE, 0);
 
   gtk_box_pack_start(GTK_BOX(vbox), list, TRUE, TRUE, 5);
 
@@ -154,19 +169,15 @@ void cb_create_entry(int argc, char *argv[]){
   gtk_container_add(GTK_CONTAINER(window), vbox);
 
   init_list(list);
-  add_to_list(list, "Aliens");
-  add_to_list(list, "Leon");
-  add_to_list(list, "The Verdict");
-  add_to_list(list, "North Face");
-  add_to_list(list, "Der Untergang");
+  add_to_list(list, "5000", "3000", "4000");
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(list));
 
   g_signal_connect(selection, "changed", 
-      G_CALLBACK(on_changed), label);
+                   G_CALLBACK(on_changed), label);
 
-  g_signal_connect(G_OBJECT (window), "destroy",
-      G_CALLBACK(gtk_main_quit), NULL);
+  // g_signal_connect(G_OBJECT (window), "destroy",
+  //     G_CALLBACK(), NULL);
 
   gtk_widget_show_all(window);
 
@@ -197,7 +208,6 @@ gfloat f (gfloat x, const char * parser)//, char* parser)
   return my_res;
 }
 
-void closeApp(GtkWidget *window, gpointer data) { gtk_main_quit(); }
 
 static gboolean
 on_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data)
@@ -255,23 +265,22 @@ int main(int argc, char *argv[]) {
   gtk_init(&argc, &argv);
 
   GtkWidget *q_button;
-  GtkWidget *new_button;
+  GtkWidget *f_button;
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(window), "Artemii's Calculator");
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-  gtk_window_set_default_size(GTK_WINDOW(window), 400, 400);
+  gtk_window_set_default_size(GTK_WINDOW(window), 800, 800);
   gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(closeApp), NULL);
 
-  username_label = gtk_label_new("Result: ");
+  result_label = gtk_label_new("Result: ");
   result = gtk_label_new("?");
-  password_label = gtk_label_new("Calculate: ");
+  calc_label = gtk_label_new("Calculate: ");
 
-  gtk_label_set_width_chars(GTK_LABEL(username_label), 0);
-  gtk_label_set_width_chars(GTK_LABEL(password_label), 12);
+  gtk_label_set_width_chars(GTK_LABEL(result_label), 0);
+  gtk_label_set_width_chars(GTK_LABEL(calc_label), 12);
 
-  username_entry = gtk_entry_new();
   password_entry = gtk_entry_new();
   graph_entry = gtk_entry_new();
   gtk_entry_set_visibility(GTK_ENTRY(password_entry), TRUE);
@@ -285,20 +294,21 @@ int main(int argc, char *argv[]) {
   gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(list), FALSE);
   hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
   hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-  hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 15);
+  hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
   hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 
   vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 
-  gtk_box_pack_start(GTK_BOX(hbox1), username_label, TRUE, FALSE, 5);
-  gtk_box_pack_start(GTK_BOX(hbox1), result, TRUE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(hbox1), result_label, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(hbox1), result, FALSE, FALSE, 5);
 
-  gtk_box_pack_start(GTK_BOX(hbox2), password_label, TRUE, FALSE, 5);
-  gtk_box_pack_start(GTK_BOX(hbox2), password_entry, TRUE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(hbox2), calc_label, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(hbox2), password_entry, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(hbox2), ok_button, FALSE, FALSE, 5);
 
   gtk_box_pack_start(GTK_BOX(vbox), hbox2, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 5);
-  gtk_box_pack_start(GTK_BOX(vbox), ok_button, FALSE, FALSE, 5);
+  // gtk_box_pack_start(GTK_BOX(vbox), ok_button, FALSE, FALSE, 5);
 
 
   da = gtk_drawing_area_new();
@@ -307,16 +317,16 @@ int main(int argc, char *argv[]) {
   gtk_box_pack_start(GTK_BOX(hbox4), da, TRUE, TRUE, 50);
   gtk_box_pack_start(GTK_BOX(vbox), hbox3, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox), hbox4, TRUE, TRUE, 5);
-  q_button = gtk_button_new_with_label("Quit");
-  new_button = gtk_button_new_with_label("Finance");
+  q_button = gtk_button_new_with_label("Quit   ");
+  f_button = gtk_button_new_with_label("Finance");
   gtk_container_set_border_width (GTK_CONTAINER (q_button), 10);
-  gtk_box_pack_start(GTK_BOX(vbox), new_button, TRUE, TRUE, 5);
-  gtk_box_pack_end (GTK_BOX(vbox), q_button, FALSE, FALSE, 10);
+  gtk_box_pack_start(GTK_BOX(vbox), f_button, FALSE, FALSE, 10);
+  gtk_box_pack_start (GTK_BOX(vbox), q_button, FALSE, FALSE, 10);
 
   /* Событие, которое отрабатывает на нажатие кнопки */
   g_signal_connect(GTK_BUTTON(q_button), "clicked", 
                    G_CALLBACK(closeApp), NULL);
-  g_signal_connect(GTK_BUTTON(new_button), "clicked", 
+  g_signal_connect(GTK_BUTTON(f_button), "clicked", 
                    G_CALLBACK(cb_create_entry), NULL);
   g_signal_connect (G_OBJECT (draw_button), "clicked", G_CALLBACK (startdraw), password_entry);
 
