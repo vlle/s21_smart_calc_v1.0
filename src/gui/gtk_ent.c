@@ -1,15 +1,15 @@
+#include <cairo.h>
 #include <gtk/gtk.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "../smartcalc.h"
 #include "gui_header.h"
-#include <math.h>
-#include <cairo.h>
 
-#define WIDTH   640
-#define HEIGHT  480
+#define WIDTH 640
+#define HEIGHT 480
 
 // #define ZOOM_X  100.0
 // #define ZOOM_Y  100.0
@@ -20,10 +20,9 @@ GtkWidget *password_entry, *graph_entry;
 GtkWidget *ok_button, *draw_button;
 GtkWidget *hbox1, *hbox2, *hbox3, *hbox4, *hbox5;
 GtkWidget *vbox;
-GtkWidget *list;  
+GtkWidget *list;
 GtkWidget *label;
-GtkTreeSelection *selection; 
-
+GtkTreeSelection *selection;
 
 GtkWidget *da;
 void closeApp(GtkWidget *window, gpointer data) { gtk_main_quit(); }
@@ -52,8 +51,8 @@ void calc(GtkWidget *button, gpointer data) {
 //   free(newstr);
 //   return my_res;
 // }
-// 
-// 
+//
+//
 // static gboolean
 // on_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data)
 // {
@@ -61,27 +60,26 @@ void calc(GtkWidget *button, gpointer data) {
 //   gdouble dx = 5.0, dy = 5.0; /* Pixels between each point */
 //   gdouble i, clip_x1 = 0.0, clip_y1 = 0.0, clip_x2 = 0.0, clip_y2 = 0.0;
 //   GdkWindow *window = gtk_widget_get_window(widget);
-// 
+//
 //   /* Determine GtkDrawingArea dimensions */
 //   gdk_window_get_geometry (window,
 //                            &da.x,
 //                            &da.y,
 //                            &da.width,
 //                            &da.height);
-// 
+//
 //   /* Draw on a black background */
 //   cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
 //   cairo_paint (cr);
-// 
+//
 //   /* Change the transformation matrix */
 //   cairo_translate (cr, da.width / 2, da.height / 2);
 //   cairo_scale (cr, ZOOM_X, -ZOOM_Y);
-// 
-//   /* Determine the data points to calculate (ie. those in the clipping zone */
-//   cairo_device_to_user_distance (cr, &dx, &dy);
-//   cairo_clip_extents (cr, &clip_x1, &clip_y1, &clip_x2, &clip_y2);
-//   cairo_set_line_width (cr, dx);
-// 
+//
+//   /* Determine the data points to calculate (ie. those in the clipping zone
+//   */ cairo_device_to_user_distance (cr, &dx, &dy); cairo_clip_extents (cr,
+//   &clip_x1, &clip_y1, &clip_x2, &clip_y2); cairo_set_line_width (cr, dx);
+//
 //   /* Draws x and y axis */
 //   cairo_set_source_rgb (cr, 0.0, 1.0, 0.0);
 //   cairo_move_to (cr, clip_x1, 0.0);
@@ -89,21 +87,22 @@ void calc(GtkWidget *button, gpointer data) {
 //   cairo_move_to (cr, 0.0, clip_y1);
 //   cairo_line_to (cr, 0.0, clip_y2);
 //   cairo_stroke (cr);
-// 
+//
 //   /* Link each data point */
 //   const char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)user_data));
 //   for (i = clip_x1; i < clip_x2; i += dx)
 //     cairo_line_to (cr, i, f (i, fc));
-// 
+//
 //   /* Draw the curve */
 //   cairo_set_source_rgba (cr, 3, 0.2, 0.2, 0.6);
 //   cairo_stroke (cr);
-// 
+//
 //   return FALSE;
 // }
-// 
+//
 // void startdraw(GtkWidget *window, gpointer data) {
-//   g_signal_connect (G_OBJECT (da), "draw", G_CALLBACK (on_draw), graph_entry);
+//   g_signal_connect (G_OBJECT (da), "draw", G_CALLBACK (on_draw),
+//   graph_entry);
 // }
 
 int main(int argc, char *argv[]) {
@@ -155,7 +154,6 @@ int main(int argc, char *argv[]) {
   gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 5);
   // gtk_box_pack_start(GTK_BOX(vbox), ok_button, FALSE, FALSE, 5);
 
-
   da = gtk_drawing_area_new();
   gtk_box_pack_start(GTK_BOX(hbox3), draw_button, TRUE, TRUE, 5);
   gtk_box_pack_start(GTK_BOX(hbox3), graph_entry, TRUE, TRUE, 5);
@@ -164,17 +162,16 @@ int main(int argc, char *argv[]) {
   gtk_box_pack_start(GTK_BOX(vbox), hbox4, TRUE, TRUE, 5);
   q_button = gtk_button_new_with_label("Quit   ");
   f_button = gtk_button_new_with_label("Finance");
-  gtk_container_set_border_width (GTK_CONTAINER (q_button), 10);
+  gtk_container_set_border_width(GTK_CONTAINER(q_button), 10);
   gtk_box_pack_start(GTK_BOX(vbox), f_button, FALSE, FALSE, 10);
-  gtk_box_pack_start (GTK_BOX(vbox), q_button, FALSE, FALSE, 10);
+  gtk_box_pack_start(GTK_BOX(vbox), q_button, FALSE, FALSE, 10);
 
   /* Событие, которое отрабатывает на нажатие кнопки */
-  g_signal_connect(GTK_BUTTON(q_button), "clicked", 
-                   G_CALLBACK(closeApp), NULL);
-  g_signal_connect(GTK_BUTTON(f_button), "clicked", 
-                   G_CALLBACK(cb_create_entry), NULL);
-  g_signal_connect (G_OBJECT (draw_button), "clicked", G_CALLBACK (startdraw), password_entry);
-
+  g_signal_connect(GTK_BUTTON(q_button), "clicked", G_CALLBACK(closeApp), NULL);
+  g_signal_connect(GTK_BUTTON(f_button), "clicked", G_CALLBACK(cb_create_entry),
+                   NULL);
+  g_signal_connect(G_OBJECT(draw_button), "clicked", G_CALLBACK(startdraw),
+                   password_entry);
 
   gtk_container_add(GTK_CONTAINER(window), vbox);
 

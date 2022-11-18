@@ -1,79 +1,71 @@
 #include <gtk/gtk.h>
+
 #include "../smartcalc.h"
 
-GtkWidget *list;  
+GtkWidget *list;
 GtkWidget *window;
 GtkWidget *label;
-GtkTreeSelection *selection; 
+GtkTreeSelection *selection;
 
-void debug(char*prs , double my_res ) {
+void debug(char *prs, double my_res) {
   g_print("%f\n", my_res);
   g_print("%s\n", prs);
 }
 
-
 void init_list(GtkWidget *list) {
-
   GtkCellRenderer *renderer;
   GtkTreeViewColumn *total, *month, *over;
   GtkListStore *store;
 
-  renderer = gtk_cell_renderer_text_new ();
-  g_object_set (G_OBJECT (renderer),
-                "foreground", "red",
-                NULL);
-  total = gtk_tree_view_column_new_with_attributes("Total Credit",
-                                                    renderer, "text", TOTAL_CREDIT, NULL);
-  gtk_tree_view_column_set_title (total, "Total Credit");
+  renderer = gtk_cell_renderer_text_new();
+  g_object_set(G_OBJECT(renderer), "foreground", "red", NULL);
+  total = gtk_tree_view_column_new_with_attributes("Total Credit", renderer,
+                                                   "text", TOTAL_CREDIT, NULL);
+  gtk_tree_view_column_set_title(total, "Total Credit");
   gtk_tree_view_append_column(GTK_TREE_VIEW(list), total);
-  month = gtk_tree_view_column_new_with_attributes("Monthly Payment",
-                                                    renderer, "text", MONTHLY_PAYMENT, NULL);
-  gtk_tree_view_column_set_title (month, "Monthly Payment");
+  month = gtk_tree_view_column_new_with_attributes(
+      "Monthly Payment", renderer, "text", MONTHLY_PAYMENT, NULL);
+  gtk_tree_view_column_set_title(month, "Monthly Payment");
   gtk_tree_view_append_column(GTK_TREE_VIEW(list), month);
-  over = gtk_tree_view_column_new_with_attributes("Overpayment",
-                                                    renderer, "text", OVERPAYMENT, NULL);
-  gtk_tree_view_column_set_title (over, "Overpayment");
+  over = gtk_tree_view_column_new_with_attributes("Overpayment", renderer,
+                                                  "text", OVERPAYMENT, NULL);
+  gtk_tree_view_column_set_title(over, "Overpayment");
   gtk_tree_view_append_column(GTK_TREE_VIEW(list), over);
 
-  store = gtk_list_store_new(N_COLUMNS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+  store = gtk_list_store_new(N_COLUMNS, G_TYPE_STRING, G_TYPE_STRING,
+                             G_TYPE_STRING);
 
-  gtk_tree_view_set_model(GTK_TREE_VIEW(list), 
-                          GTK_TREE_MODEL(store));
+  gtk_tree_view_set_model(GTK_TREE_VIEW(list), GTK_TREE_MODEL(store));
 
   g_object_unref(store);
 }
 
-void add_to_list(GtkWidget *list, const gchar *total, const gchar* month, const gchar*over) {
-
+void add_to_list(GtkWidget *list, const gchar *total, const gchar *month,
+                 const gchar *over) {
   GtkListStore *store;
   GtkTreeIter iter;
 
-  store = GTK_LIST_STORE(gtk_tree_view_get_model
-                         (GTK_TREE_VIEW(list)));
+  store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(list)));
 
   gtk_list_store_append(store, &iter);
-  gtk_list_store_set(store, &iter, TOTAL_CREDIT, total, MONTHLY_PAYMENT, month, OVERPAYMENT, over, -1);
+  gtk_list_store_set(store, &iter, TOTAL_CREDIT, total, MONTHLY_PAYMENT, month,
+                     OVERPAYMENT, over, -1);
 }
 
 void on_changed(GtkWidget *widget, gpointer label) {
-
   GtkTreeIter iter;
   GtkTreeModel *model;
   gchar *value;
 
-  if (gtk_tree_selection_get_selected(
-      GTK_TREE_SELECTION(widget), &model, &iter)) {
-
-    gtk_tree_model_get(model, &iter, TOTAL_CREDIT, &value,  -1);
+  if (gtk_tree_selection_get_selected(GTK_TREE_SELECTION(widget), &model,
+                                      &iter)) {
+    gtk_tree_model_get(model, &iter, TOTAL_CREDIT, &value, -1);
     gtk_label_set_text(GTK_LABEL(label), value);
     g_free(value);
   }
 }
 
-
-
-void cb_create_entry(int argc, char *argv[]){
-
+void cb_create_entry(int argc, char *argv[]) {
   char total[1024];
   char month[1024];
   char over[1024];
@@ -131,8 +123,7 @@ void cb_create_entry(int argc, char *argv[]){
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(list));
 
-  g_signal_connect(selection, "changed", 
-                   G_CALLBACK(on_changed), label);
+  g_signal_connect(selection, "changed", G_CALLBACK(on_changed), label);
   finance_info tmp = {0};
   tmp = credit_calculate(100000, 24, 0.15, 'a');
   sprintf(total, "%.2Lf", tmp.total_payment);
@@ -144,5 +135,4 @@ void cb_create_entry(int argc, char *argv[]){
   //     G_CALLBACK(), NULL);
 
   gtk_widget_show_all(window);
-
 }

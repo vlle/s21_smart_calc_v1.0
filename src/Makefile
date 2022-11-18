@@ -105,8 +105,8 @@ leaks: test.out
 
 lint:
 	-cp ../materials/linters/.clang-format .
-	-find . -type f -name "*.c" | xargs clang-format -n
-	-find . -type f -name "*.h" | xargs clang-format -n
+	-find . -type f -name "*.c" | xargs clang-format --style=Google -n
+	-find . -type f -name "*.h" | xargs clang-format --style=Google -n
 	-find . -type f -name "*.c" | xargs cppcheck --enable=all --suppress=missingIncludeSystem
 
 flint: lint

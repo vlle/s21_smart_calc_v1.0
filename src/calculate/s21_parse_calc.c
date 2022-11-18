@@ -6,7 +6,7 @@
 #include "../smartcalc.h"
 
 #define VERYHIGH "^"
-#define HIGHPRIOR "^*/STCstc%Ll" // ^ 
+#define HIGHPRIOR "^*/STCstc%Ll"  // ^
 #define LOWPRIOR "^*/+-stcSTC%Ll"
 
 /* These functions are for support.
@@ -17,65 +17,60 @@
   push_and_print pushes all operators than greater or same predence than given.
 */
 
-
 int s21_isdigit(const char c, int base) {
-    int s21_num = 0;
-    if (base == 10) {
-        s21_num = ((c >= 48) && (c <= 57)) ? 1 : 0;
-    } else if (base == 8) {
-        s21_num = ((c >= 48) && (c < 56)) ? 1 : 0;
-    } else if (base == 16) {
-        s21_num = (((c >= 97) && (c <= 102)) || \
-                (((c >= 65) && (c <= 70))) || \
-                ((c >= 48) && (c <= 57)))  ? 1 : 0;
-    }
-    return s21_num;
+  int s21_num = 0;
+  if (base == 10) {
+    s21_num = ((c >= 48) && (c <= 57)) ? 1 : 0;
+  } else if (base == 8) {
+    s21_num = ((c >= 48) && (c < 56)) ? 1 : 0;
+  } else if (base == 16) {
+    s21_num = (((c >= 97) && (c <= 102)) || (((c >= 65) && (c <= 70))) ||
+               ((c >= 48) && (c <= 57)))
+                  ? 1
+                  : 0;
+  }
+  return s21_num;
 }
 
-
-int s21_isspace(const char *str) {
-    return (((*str == '\n') || (*str == ' ') || (*str == '\t')) ? 1 : 0);
+int s21_isspace(const char* str) {
+  return (((*str == '\n') || (*str == ' ') || (*str == '\t')) ? 1 : 0);
 }
 
 unsigned int s21_digitizer(const char c) {
-    int res = 0;
-    if (c >= '0' && c <= '9')
-        res = c - '0';
-    if (c >= 'A' && c <= 'F')
-        res = c - 'A' + 10;
-    if (c >= 'a' && c <= 'f')
-        res = c - 'a' + 10;
-    return res;
+  int res = 0;
+  if (c >= '0' && c <= '9') res = c - '0';
+  if (c >= 'A' && c <= 'F') res = c - 'A' + 10;
+  if (c >= 'a' && c <= 'f') res = c - 'a' + 10;
+  return res;
 }
 
-
-int s21_size_check(const char * format, int base, int width) {
-    int count = 0;
-    if (width == 0) width = -1;
-    while ((*format != '\0') && ((s21_isdigit(*format, base)) && (width != 0))) {
-        format++;
-        count++;
-        width--;
-    }
-    return count;
+int s21_size_check(const char* format, int base, int width) {
+  int count = 0;
+  if (width == 0) width = -1;
+  while ((*format != '\0') && ((s21_isdigit(*format, base)) && (width != 0))) {
+    format++;
+    count++;
+    width--;
+  }
+  return count;
 }  // 123123V
 
 long s21_num2numLONG(const char* format, int base, int width) {
-    long a = 0;
-    int count = s21_size_check(format, base, width) - 1;
-    int flag = 0;
-    if (width == 0) width -= 1;
-    while (((*format != '\0')) && (s21_isdigit(*format, base))  && (width != 0)) {
-        a += (s21_digitizer(*format) * pow(base, count));
-        count--;
-        format++;
-        flag++;
-        width--;
-    }
-    return (flag) ? a : -1683532;
+  long a = 0;
+  int count = s21_size_check(format, base, width) - 1;
+  int flag = 0;
+  if (width == 0) width -= 1;
+  while (((*format != '\0')) && (s21_isdigit(*format, base)) && (width != 0)) {
+    a += (s21_digitizer(*format) * pow(base, count));
+    count--;
+    format++;
+    flag++;
+    width--;
+  }
+  return (flag) ? a : -1683532;
 }
 
-long double expon_check(char*str, char ** str_end) {
+long double expon_check(char* str, char** str_end) {
   char sign_e;
   double a_exponent = 0.1;
   int flag = 0;
@@ -134,7 +129,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
   struct Node* opr = {0};
   int nodesCount = 0;
   int funcstr_i = 0;
-  char* inpstr = (char*) inpo;
+  char* inpstr = (char*)inpo;
   for (; *inpstr != '\0'; inpstr++) {
     if (*inpstr >= '0' && *inpstr <= '9') {
       char num_str[MAX_ENTRY_SIZE] = {0};
@@ -243,7 +238,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
         funcstr[funcstr_i++] =
-          popC(&nodesCount, &opr); /* peek for preceding op */
+            popC(&nodesCount, &opr); /* peek for preceding op */
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
@@ -288,7 +283,7 @@ long double cal_oper(char* funcstr) {
     if (*funcstr >= '0' && *funcstr <= '9') {
       char* pEnd;
       long double calc_num =
-        strtold(funcstr, &pEnd); /*strtold parses float num from str*/
+          strtold(funcstr, &pEnd); /*strtold parses float num from str*/
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
     } else if (*funcstr == '+') {
@@ -355,4 +350,3 @@ long double cal_oper(char* funcstr) {
   }
   return result;
 }
-
