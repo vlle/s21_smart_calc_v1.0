@@ -24,6 +24,12 @@ struct Vars {
   long double a2;
 };
 
+typedef struct {
+  long double total_payment;
+  long double monthly_payment;
+  long double overpayment;
+} finance_info;
+
 // Stack functions
 
 long double popN(int *nodesCount, struct Node **top);
@@ -36,5 +42,9 @@ int IsEmpty(const struct Node *top);
 
 long double cal_oper(char *funcstr);
 char *parse_oper(char *funcstr, const char *inpo);
+
+
+finance_info credit_calculate(long double total_credit_amount, long double term, long double interest_rate, char type);
+int deposit_calculate(long double total_credit_amount, long double term, long double interest_rate);
 
 #endif

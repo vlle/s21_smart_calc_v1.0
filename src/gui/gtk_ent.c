@@ -149,6 +149,9 @@ void closeApp(GtkWidget *window, gpointer data) { gtk_main_quit(); }
 
 void cb_create_entry(int argc, char *argv[]){
 
+  char total[1024];
+  char month[1024];
+  char over[1024];
   gtk_init(&argc, &argv);
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   list = gtk_tree_view_new();
@@ -158,24 +161,66 @@ void cb_create_entry(int argc, char *argv[]){
   gtk_window_set_default_size(GTK_WINDOW(window), 670, 450);
 
   gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(list), TRUE);
+  GtkWidget *total_amount, *term, *interest_rate;
+  GtkWidget *total_amount_label, *term_label, *interest_rate_label;
+  GtkWidget *vbox, *vbox_t, *vbox_term, *vbox_intr;
+  GtkWidget *vbox_e;
+  // result_label = gtk_label_new("Result: ");
+  // result = gtk_label_new("?");
+  // calc_label = gtk_label_new("Calculate: ");
 
-  vbox = gtk_box_new(FALSE, 0);
+  // gtk_label_set_width_chars(GTK_LABEL(result_label), 0);
+  // gtk_label_set_width_chars(GTK_LABEL(calc_label), 12);
 
+  total_amount = gtk_entry_new();
+  term = gtk_entry_new();
+  interest_rate = gtk_entry_new();
+  const char *tt = gtk_entry_get_text(GTK_ENTRY(total_amount));
+  const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
+  const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
+  gtk_entry_set_visibility(GTK_ENTRY(total_amount), TRUE);
+  gtk_entry_set_visibility(GTK_ENTRY(term), TRUE);
+  gtk_entry_set_visibility(GTK_ENTRY(interest_rate), TRUE);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  vbox_e = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  vbox_t = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  vbox_term = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  vbox_intr = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
+  total_amount_label = gtk_label_new("Total money amount");
+  term_label = gtk_label_new("Term");
+  interest_rate_label = gtk_label_new("Interest rate");
+  gtk_box_pack_start(GTK_BOX(vbox_t), total_amount, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_t), total_amount_label, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_term), term, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_term), term_label, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_intr), interest_rate, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_intr), interest_rate_label, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox), list, TRUE, TRUE, 5);
 
   label = gtk_label_new("");
-  gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_e), vbox_t, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_e), vbox_term, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_e), vbox_intr, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_e), vbox, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_e), label, FALSE, FALSE, 5);
 
-  gtk_container_add(GTK_CONTAINER(window), vbox);
+  gtk_container_add(GTK_CONTAINER(window), vbox_e);
+  // gtk_container_add(GTK_CONTAINER(window), hbox);
 
   init_list(list);
-  add_to_list(list, "5000", "3000", "4000");
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(list));
 
   g_signal_connect(selection, "changed", 
                    G_CALLBACK(on_changed), label);
-
+  finance_info tmp = {0};
+  tmp = credit_calculate(100000, 24, 0.15, 'a');
+  sprintf(total, "%.2Lf", tmp.total_payment);
+  sprintf(month, "%.2Lf", tmp.monthly_payment);
+  sprintf(over, "%.2Lf", tmp.overpayment);
+  add_to_list(list, total, month, over);
+  g_print("%s", total);
   // g_signal_connect(G_OBJECT (window), "destroy",
   //     G_CALLBACK(), NULL);
 
