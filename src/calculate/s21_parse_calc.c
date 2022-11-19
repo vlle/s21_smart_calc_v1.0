@@ -207,6 +207,7 @@ long double cal_oper(char* funcstr) {
           strtold(funcstr, &pEnd); /*strtold parses float num from str*/
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
+      result = calc_num;
     } else if (*funcstr == '+') {
       if (nodesCount > 1) {
         var = popper(&nums, &nodesCount);
@@ -272,7 +273,7 @@ long double cal_oper(char* funcstr) {
   return result;
 }
 
-long double calculate(char* b) {
+long double calculate(const char* b) {
   char funcstr[MAX_ENTRY_SIZE] = {"\0"};
   char *prs = parse_oper(funcstr, b);
   double my_res = cal_oper(prs);

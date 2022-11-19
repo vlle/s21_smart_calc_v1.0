@@ -6,11 +6,16 @@ GtkWidget *lst;
 GtkWidget *windw;
 GtkWidget *labl;
 GtkTreeSelection *selecton;
+GtkWidget *total_amount, *term, *interest_rate;
 
 void debug(char *prs, double my_res) {
   g_print("%f\n", my_res);
   g_print("%s\n", prs);
 }
+
+  // const char *tt = gtk_entry_get_text(GTK_ENTRY(total_amount));
+  // const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
+  // const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
 
 void init_list(GtkWidget *lst) {
   GtkCellRenderer *renderer;
@@ -65,10 +70,47 @@ void on_changed(GtkWidget *widget, gpointer label) {
   }
 }
 
+void finances(GtkWidget *widnow, gpointer data) {
+  char total[1024];
+  char month[1024];
+  char over[1024];
+
+  finance_info tmp = {0};
+  const char *tt = gtk_entry_get_text(GTK_ENTRY(total_amount));
+  const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
+  const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
+  long double a1 = calculate(tt);
+  long double b1 = calculate(trm);
+  long double c1 = calculate(intrst);
+  tmp = credit_calculate(a1, b1, c1, 'a');
+  sprintf(total, "%.2Lf", tmp.total_payment);
+  sprintf(month, "%.2Lf", tmp.monthly_payment);
+  sprintf(over, "%.2Lf", tmp.overpayment);
+  add_to_list(lst, total, month, over);
+  while (tmp.total_payment > 0) {
+    tmp.total_payment -= tmp.monthly_payment;
+    sprintf(total, "%.2Lf", tmp.total_payment);
+    sprintf(month, "%.2Lf", tmp.monthly_payment);
+    sprintf(over, "%.2Lf", tmp.overpayment);
+    add_to_list(lst, total, month, over);
+  }
+  // sprintf(total, "%.2Lf", tmp.total_payment);
+  // sprintf(month, "%.2Lf", tmp.monthly_payment);
+  // sprintf(over, "%.2Lf", tmp.overpayment);
+  // add_to_list(lst, total, month, over);
+}
+
 void cb_create_entry(int argc, char *argv[]) {
   char total[1024];
   char month[1024];
   char over[1024];
+  GtkEntryBuffer* def1, *def2, *def3;
+  GtkWidget *total_amount_label, *term_label, *interest_rate_label;
+  GtkWidget *vbox, *vbox_t, *vbox_term, *vbox_intr;
+  GtkWidget *vbox_e;
+  GtkWidget *fineq;
+
+
   gtk_init(&argc, &argv);
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   lst = gtk_tree_view_new();
@@ -78,17 +120,13 @@ void cb_create_entry(int argc, char *argv[]) {
   gtk_window_set_default_size(GTK_WINDOW(windw), 670, 450);
 
   gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(lst), TRUE);
-  GtkWidget *total_amount, *term, *interest_rate;
-  GtkWidget *total_amount_label, *term_label, *interest_rate_label;
-  GtkWidget *vbox, *vbox_t, *vbox_term, *vbox_intr;
-  GtkWidget *vbox_e;
-
-  total_amount = gtk_entry_new();
-  term = gtk_entry_new();
-  interest_rate = gtk_entry_new();
-  const char *tt = gtk_entry_get_text(GTK_ENTRY(total_amount));
-  const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
-  const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
+  def1 = gtk_entry_buffer_new("100000", 6);
+  def2 = gtk_entry_buffer_new("24", 2);
+  def3 = gtk_entry_buffer_new("0.51", 4);
+  total_amount = gtk_entry_new_with_buffer(def1);
+  term = gtk_entry_new_with_buffer(def2);
+  interest_rate = gtk_entry_new_with_buffer(def3);
+  fineq = gtk_button_new_with_label("Calculate");
   gtk_entry_set_visibility(GTK_ENTRY(total_amount), TRUE);
   gtk_entry_set_visibility(GTK_ENTRY(term), TRUE);
   gtk_entry_set_visibility(GTK_ENTRY(interest_rate), TRUE);
@@ -113,26 +151,28 @@ void cb_create_entry(int argc, char *argv[]) {
   gtk_box_pack_start(GTK_BOX(vbox_e), vbox_t, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), vbox_term, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), vbox_intr, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_e), fineq, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), vbox, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), labl, FALSE, FALSE, 5);
 
   gtk_container_add(GTK_CONTAINER(windw), vbox_e);
-  // gtk_container_add(GTK_CONTAINER(window), hbox);
 
   init_list(lst);
 
   selecton = gtk_tree_view_get_selection(GTK_TREE_VIEW(lst));
 
   g_signal_connect(selecton, "changed", G_CALLBACK(on_changed), labl);
-  finance_info tmp = {0};
-  tmp = credit_calculate(100000, 24, 0.15, 'a');
-  sprintf(total, "%.2Lf", tmp.total_payment);
-  sprintf(month, "%.2Lf", tmp.monthly_payment);
-  sprintf(over, "%.2Lf", tmp.overpayment);
-  add_to_list(lst, total, month, over);
-  g_print("%s", total);
+  g_signal_connect(fineq, "clicked", G_CALLBACK(finances), NULL);
+  // const char *tt = gtk_entry_get_text(GTK_ENTRY(total_amount));
+  // const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
+  // const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
+  // tmp = credit_calculate(a1, b1, c1, 'a');
+  // add_to_list(lst, total, month, over);
+  // g_print("%s", total);
   // g_signal_connect(G_OBJECT (window), "destroy",
   //     G_CALLBACK(), NULL);
 
   gtk_widget_show_all(windw);
 }
+
+
