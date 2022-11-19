@@ -17,87 +17,6 @@
   push_and_print pushes all operators than greater or same predence than given.
 */
 
-int s21_isdigit(const char c, int base) {
-  int s21_num = 0;
-  if (base == 10) {
-    s21_num = ((c >= 48) && (c <= 57)) ? 1 : 0;
-  } else if (base == 8) {
-    s21_num = ((c >= 48) && (c < 56)) ? 1 : 0;
-  } else if (base == 16) {
-    s21_num = (((c >= 97) && (c <= 102)) || (((c >= 65) && (c <= 70))) ||
-               ((c >= 48) && (c <= 57)))
-                  ? 1
-                  : 0;
-  }
-  return s21_num;
-}
-
-int s21_isspace(const char* str) {
-  return (((*str == '\n') || (*str == ' ') || (*str == '\t')) ? 1 : 0);
-}
-
-unsigned int s21_digitizer(const char c) {
-  int res = 0;
-  if (c >= '0' && c <= '9') res = c - '0';
-  if (c >= 'A' && c <= 'F') res = c - 'A' + 10;
-  if (c >= 'a' && c <= 'f') res = c - 'a' + 10;
-  return res;
-}
-
-int s21_size_check(const char* format, int base, int width) {
-  int count = 0;
-  if (width == 0) width = -1;
-  while ((*format != '\0') && ((s21_isdigit(*format, base)) && (width != 0))) {
-    format++;
-    count++;
-    width--;
-  }
-  return count;
-}  // 123123V
-
-long s21_num2numLONG(const char* format, int base, int width) {
-  long a = 0;
-  int count = s21_size_check(format, base, width) - 1;
-  int flag = 0;
-  if (width == 0) width -= 1;
-  while (((*format != '\0')) && (s21_isdigit(*format, base)) && (width != 0)) {
-    a += (s21_digitizer(*format) * pow(base, count));
-    count--;
-    format++;
-    flag++;
-    width--;
-  }
-  return (flag) ? a : -1683532;
-}
-
-long double expon_check(char* str, char** str_end) {
-  char sign_e;
-  double a_exponent = 0.1;
-  int flag = 0;
-  long double res = 0.0;
-  long double res_beforedot = 0.0;
-  long double res_afterdot = 0.0;
-  if (('E' == *str) || ('e' == *str)) {
-    str++;
-    sign_e = *str;
-    if ((sign_e == '+') || (sign_e == '-')) {
-      str++;
-      int count = s21_size_check(str, 10, 0);
-      a_exponent = s21_num2numLONG(str, 10, 0);
-      flag++;
-      for (; count > 0; count--) str++;
-    }
-  }
-  res = res_beforedot + res_afterdot;
-  if (flag) {
-    for (; a_exponent; a_exponent--) {
-      if (sign_e == '+') res *= 10;
-      if (sign_e == '-') res *= 0.1;
-    }
-  }
-  *str_end = str;
-  return res;
-}
 
 int checkNodesPrior(int nodesCount, struct Node* opr, char* prior_str) {
   if (nodesCount > 0) {
@@ -140,8 +59,6 @@ char* parse_oper(char* funcstr, const char* inpo) {
       strcat(num_str, " ");
       strcat(funcstr, num_str);
     }
-
-    /* Экспонента	^	4	Справа налево */
 
     if (*inpstr == '(') {
       push_backC(&nodesCount, &opr, '(');
@@ -242,6 +159,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
+          return NULL;
         }
       }
       popC(&nodesCount, &opr); /* removing '(' after we popped everything out */
@@ -279,6 +197,9 @@ long double cal_oper(char* funcstr) {
   struct Node* nums;
   int nodesCount = 0;
   struct Vars var;
+  if (!funcstr) {
+    return NAN;
+  }
   for (; *funcstr != '\0'; funcstr++) {
     if (*funcstr >= '0' && *funcstr <= '9') {
       char* pEnd;
@@ -350,3 +271,11 @@ long double cal_oper(char* funcstr) {
   }
   return result;
 }
+
+long double calculate(char* b) {
+  char funcstr[MAX_ENTRY_SIZE] = {"\0"};
+  char *prs = parse_oper(funcstr, b);
+  double my_res = cal_oper(prs);
+  return my_res;
+}
+

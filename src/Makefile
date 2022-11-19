@@ -25,8 +25,8 @@ GCOV_OBJS := $(SRC:%.c=$(GCOV_OBJ_DIR)/%.o)
 
 DEC_TEST := calculate_t.c
 LIB      := s21_calc.a
-lgtk=$(shell pkg-config --cflags gtk+-3.0)
-llgtk=$(shell pkg-config --libs gtk+-3.0)
+lgtk     ?=$(shell pkg-config --cflags gtk+-3.0)
+llgtk    ?=$(shell pkg-config --libs gtk+-3.0)
 
 #all: algo #example
 # The program must be built with Makefile which contains standard set of targets for GNU-programs: 
@@ -49,10 +49,11 @@ tests: test.out
 	./test.out
 
 gui_back: $(LIB)
-	echo "Building Graphical Calculator"
-	gcc $(lgtk)  -c gui/func_graph.c -o func_graph.o
-	@gcc  $(lgtk) -c gui/additional_graph.c -o nice_graph.o
-	@gcc $(lgtk)  func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o t1  $(llgtk) 
+	@echo "Building Graphical Calculator"
+	@gcc $(lgtk)  -c gui/func_graph.c -o func_graph.o
+	@gcc  $(lgtk) -c gui/finance_gui.c -o nice_graph.o
+	@gcc $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o smartcalc  $(llgtk)
+	@echo "Build was successful. Start your smartcalc with ./smartcalc"
 
 
 rebuild: clean all

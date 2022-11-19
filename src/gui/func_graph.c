@@ -3,8 +3,10 @@
 #include "../smartcalc.h"
 #include "gui_header.h"
 
+#define ZOOM_X 100.0
+#define ZOOM_Y 100.0
+
 GtkWidget *da;
-GtkWidget *graph_entry;
 
 gfloat f(gfloat x, const char *parser) {
   char funcstr[MAX_ENTRY_SIZE] = {'\0'};
@@ -18,7 +20,10 @@ gfloat f(gfloat x, const char *parser) {
   return my_res;
 }
 
-static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
+gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
+  if (!user_data) {
+    return FALSE;
+  }
   GdkRectangle da;            /* GtkDrawingArea size */
   gdouble dx = 5.0, dy = 5.0; /* Pixels between each point */
   gdouble i, clip_x1 = 0.0, clip_y1 = 0.0, clip_x2 = 0.0, clip_y2 = 0.0;
@@ -59,6 +64,6 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   return FALSE;
 }
 
-void startdraw(GtkWidget *window, gpointer data) {
-  g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw), graph_entry);
-}
+// void startdraw(GtkWidget *window, gpointer data) {
+//   g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw), graph_enter);
+// }

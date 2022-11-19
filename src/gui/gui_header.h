@@ -2,8 +2,6 @@
 #define SRC_GUI_GUI_HEADER_H_
 #define MAX_ENTRY_SIZE 256
 
-#define ZOOM_X 100.0
-#define ZOOM_Y 100.0
 
 char *str_replace(char *orig, char *rep, char *with);
 void init_list(GtkWidget *list);
@@ -13,7 +11,7 @@ void debug(char *prs, double my_res);
 void on_changed(GtkWidget *widget, gpointer label);
 void cb_create_entry(int argc, char *argv[]);
 gfloat f(gfloat x, const char *parser);  //, char* parse
-static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 void startdraw(GtkWidget *window, gpointer data);
 
 #endif  // SRC_GUI_GUI_HEADER_H_
