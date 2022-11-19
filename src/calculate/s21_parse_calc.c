@@ -17,7 +17,6 @@
   push_and_print pushes all operators than greater or same predence than given.
 */
 
-
 int checkNodesPrior(int nodesCount, struct Node* opr, char* prior_str) {
   if (nodesCount > 0) {
     if (strchr(prior_str, peekC(opr)) != NULL) {
@@ -275,8 +274,7 @@ long double cal_oper(char* funcstr) {
 
 long double calculate(const char* b) {
   char funcstr[MAX_ENTRY_SIZE] = {"\0"};
-  char *prs = parse_oper(funcstr, b);
+  char* prs = parse_oper(funcstr, b);
   double my_res = cal_oper(prs);
   return my_res;
 }
-

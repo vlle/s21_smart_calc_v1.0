@@ -13,10 +13,6 @@ void debug(char *prs, double my_res) {
   g_print("%s\n", prs);
 }
 
-  // const char *tt = gtk_entry_get_text(GTK_ENTRY(total_amount));
-  // const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
-  // const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
-
 void init_list(GtkWidget *lst) {
   GtkCellRenderer *renderer;
   GtkTreeViewColumn *total, *month, *over;
@@ -77,7 +73,6 @@ void finances(GtkWidget *widnow, gpointer data) {
 
   finance_info tmp = {0};
   GtkListStore *store;
-  GtkTreeIter iter;
 
   store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(lst)));
   gtk_list_store_clear(store);
@@ -102,15 +97,11 @@ void finances(GtkWidget *widnow, gpointer data) {
 }
 
 void cb_create_entry(int argc, char *argv[]) {
-  char total[1024];
-  char month[1024];
-  char over[1024];
-  GtkEntryBuffer* def1, *def2, *def3;
+  GtkEntryBuffer *def1, *def2, *def3;
   GtkWidget *total_amount_label, *term_label, *interest_rate_label;
   GtkWidget *vbox, *vbox_t, *vbox_term, *vbox_intr;
   GtkWidget *vbox_e;
   GtkWidget *fineq;
-
 
   gtk_init(&argc, &argv);
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -164,16 +155,5 @@ void cb_create_entry(int argc, char *argv[]) {
 
   g_signal_connect(selecton, "changed", G_CALLBACK(on_changed), labl);
   g_signal_connect(fineq, "clicked", G_CALLBACK(finances), NULL);
-  // const char *tt = gtk_entry_get_text(GTK_ENTRY(total_amount));
-  // const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
-  // const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
-  // tmp = credit_calculate(a1, b1, c1, 'a');
-  // add_to_list(lst, total, month, over);
-  // g_print("%s", total);
-  // g_signal_connect(G_OBJECT (window), "destroy",
-  //     G_CALLBACK(), NULL);
-
   gtk_widget_show_all(windw);
 }
-
-

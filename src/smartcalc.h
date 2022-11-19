@@ -55,7 +55,7 @@ int IsEmpty(const struct Node *top);
 
 long double cal_oper(char *funcstr);
 char *parse_oper(char *funcstr, const char *inpo);
-long double calculate(const char* b);
+long double calculate(const char *b);
 finance_info credit_calculate(long double total_credit_amount, long double term,
                               long double interest_rate, char type);
 // int deposit_calculate(long double total_credit_amount, long double term,

@@ -30,7 +30,8 @@ GtkWidget *dra;
 void closeApp(GtkWidget *window, gpointer data) { gtk_main_quit(); }
 
 void startdraw(GtkWidget *window, gpointer data) {
-  g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), data);//, graph_enter);
+  g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw),
+                   data);  //, graph_enter);
 }
 
 void calc(GtkWidget *button, gpointer data) {
@@ -44,8 +45,7 @@ void calc(GtkWidget *button, gpointer data) {
   gtk_label_set_text(GTK_LABEL(result), rs);
 }
 
-
-void smartcalc(int argc, char*argv[]) {
+void smartcalc(int argc, char *argv[]) {
   GtkWidget *q_button;
   GtkWidget *f_button;
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);

@@ -6,8 +6,6 @@
 #define ZOOM_X 100.0
 #define ZOOM_Y 100.0
 
-GtkWidget *da;
-
 gfloat f(gfloat x, const char *parser) {
   char funcstr[MAX_ENTRY_SIZE] = {'\0'};
   char *newstr;

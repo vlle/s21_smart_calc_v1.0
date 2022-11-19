@@ -2,7 +2,6 @@
 #define SRC_GUI_GUI_HEADER_H_
 #define MAX_ENTRY_SIZE 256
 
-
 char *str_replace(char *orig, char *rep, char *with);
 void init_list(GtkWidget *list);
 void add_to_list(GtkWidget *list, const gchar *total, const gchar *month,

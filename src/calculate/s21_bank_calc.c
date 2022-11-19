@@ -12,7 +12,7 @@ finance_info credit_calculate(long double total_credit_amount, long double term,
   finance_info credit;
   if (type == 'a') {
     total_payment =
-      total_credit_amount + total_credit_amount * (term/12) * interest_rate;
+        total_credit_amount + total_credit_amount * (term / 12) * interest_rate;
     monthly_payment = total_payment / term;
     overpayment = total_payment - total_credit_amount;
   } else {
@@ -20,7 +20,7 @@ finance_info credit_calculate(long double total_credit_amount, long double term,
   }
 
   printf("%Lf = total\n%Lf = monthly\n%Lf = overpay", total_payment,
-      monthly_payment, overpayment);
+         monthly_payment, overpayment);
   credit.total_payment = total_payment;
   credit.monthly_payment = monthly_payment;
   credit.overpayment = overpayment;
@@ -29,8 +29,10 @@ finance_info credit_calculate(long double total_credit_amount, long double term,
 
 // int deposit_calculate(long double total_credit_amount, long double term,
 //                       long double interest_rate, long double tax_rate) {
-// //                       long double period_pay, long double capitalize_of_interest,
-// //                       long double replenishments, long double partial_withdrawals) {
+// //                       long double period_pay, long double
+// capitalize_of_interest,
+// //                       long double replenishments, long double
+// partial_withdrawals) {
 //   //long double monthly_payment;
 //   // long double total_payment, overpayment;
 //   // total_deposit_amount = 100000.0;
@@ -40,7 +42,7 @@ finance_info credit_calculate(long double total_credit_amount, long double term,
 //   //   total_credit_amount + total_credit_amount * term * interest_rate;
 //   // monthly_payment = total_payment / term;
 //   // overpayment = total_payment - total_credit_amount;
-// 
+//
 //   // printf("%Lf = total\n%Lf = monthly\n%Lf = overpay", total_payment,
 //   //     monthly_payment, overpayment);
 //   return 1;
