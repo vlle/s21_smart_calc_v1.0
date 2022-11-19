@@ -59,11 +59,14 @@ void on_changed(GtkWidget *widget, gpointer label) {
   GtkTreeIter iter;
   GtkTreeModel *model;
   gchar *value;
+  char total_cred[128];
+  strcpy(total_cred, "Total credit: ");
 
   if (gtk_tree_selection_get_selected(GTK_TREE_SELECTION(widget), &model,
                                       &iter)) {
     gtk_tree_model_get(model, &iter, TOTAL_CREDIT, &value, -1);
-    gtk_label_set_text(GTK_LABEL(label), value);
+    strcat(total_cred, (char*) value);
+    gtk_label_set_text(GTK_LABEL(label), (gchar*) total_cred);
     g_free(value);
   }
 }
@@ -76,7 +79,7 @@ char typeb() {
     return 'b';
 }
 
-void finances(GtkWidget *widnow, gpointer data) {
+void finances() {
   char total[1024];
   char month[1024];
   char over[1024];
@@ -108,6 +111,7 @@ void finances(GtkWidget *widnow, gpointer data) {
     sprintf(total, "%.2Lf", tmp.total_payment);
     sprintf(month, "%.2Lf", tmp.monthly_payment);
     sprintf(over, "%.2Lf", tmp.overpayment);
+    if (tmp.total_payment == 0) break;
     add_to_list(lst, total, month, over);
   }
 }
@@ -125,12 +129,12 @@ void cb_create_entry(int argc, char *argv[]) {
   gtk_window_set_title(GTK_WINDOW(windw), "Finance Calculation");
   gtk_window_set_position(GTK_WINDOW(windw), GTK_WIN_POS_CENTER);
   gtk_container_set_border_width(GTK_CONTAINER(windw), 10);
-  gtk_window_set_default_size(GTK_WINDOW(windw), 770, 550);
+  gtk_window_set_default_size(GTK_WINDOW(windw), 670, 450);
 
   gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(lst), TRUE);
   def1 = gtk_entry_buffer_new("100000", 6);
   def2 = gtk_entry_buffer_new("24", 2);
-  def3 = gtk_entry_buffer_new("0.51", 4);
+  def3 = gtk_entry_buffer_new("51", 2);
   total_amount = gtk_entry_new_with_buffer(def1);
   term = gtk_entry_new_with_buffer(def2);
   interest_rate = gtk_entry_new_with_buffer(def3);
@@ -170,9 +174,6 @@ void cb_create_entry(int argc, char *argv[]) {
   // gtk_box_pack_start(GTK_BOX(vbox_upper), vbox_radio, FALSE, FALSE, 5);
 
   labl = gtk_label_new("");
-  // gtk_box_pack_start(GTK_BOX(vbox_e), hbox_t, FALSE, FALSE, 5);
-  // gtk_box_pack_start(GTK_BOX(vbox_e), hbox_term, FALSE, FALSE, 5);
-  // gtk_box_pack_start(GTK_BOX(vbox_e), hbox_intr, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), vbox_upper, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), fineq, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), vbox, FALSE, FALSE, 5);

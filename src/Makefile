@@ -50,9 +50,9 @@ tests: test.out
 
 gui_back: $(LIB)
 	@echo "Building Graphical Calculator"
-	@gcc $(lgtk)  -c gui/func_graph.c -o func_graph.o
-	@gcc  $(lgtk) -c gui/finance_gui.c -o nice_graph.o
-	@gcc $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o smartcalc  $(llgtk)
+	@gcc $(CFLAGS) $(lgtk)  -c gui/func_graph.c -o func_graph.o
+	@gcc $(CFLAGS) $(lgtk) -c gui/finance_gui.c -o nice_graph.o
+	@gcc $(CFLAGS) $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o smartcalc  $(llgtk)
 	@echo "Build was successful. Start your smartcalc with ./smartcalc"
 
 

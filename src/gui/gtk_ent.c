@@ -27,14 +27,14 @@ GtkTreeSelection *selection;
 GtkWidget *graph_enter;
 GtkWidget *dra;
 
-void closeApp(GtkWidget *window, gpointer data) { gtk_main_quit(); }
+void closeApp() { gtk_main_quit(); }
 
-void startdraw(GtkWidget *window, gpointer data) {
+void startdraw(gpointer data) {
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw),
                    data);  //, graph_enter);
 }
 
-void calc(GtkWidget *button, gpointer data) {
+void calc(gpointer data) {
   char funcstr[MAX_ENTRY_SIZE * 4] = {'\0'};
   char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
   const char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)data));
@@ -45,13 +45,13 @@ void calc(GtkWidget *button, gpointer data) {
   gtk_label_set_text(GTK_LABEL(result), rs);
 }
 
-void smartcalc(int argc, char *argv[]) {
+void smartcalc() {
   GtkWidget *q_button;
   GtkWidget *f_button;
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(window), "Artemii's Calculator");
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-  gtk_window_set_default_size(GTK_WINDOW(window), 800, 800);
+  gtk_window_set_default_size(GTK_WINDOW(window), 770, 650);
   gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(closeApp), NULL);
@@ -120,7 +120,7 @@ void smartcalc(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
   gtk_init(&argc, &argv);
-  smartcalc(argc, argv);
+  smartcalc();
 
   return 0;
 }

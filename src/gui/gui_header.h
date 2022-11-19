@@ -11,6 +11,6 @@ void on_changed(GtkWidget *widget, gpointer label);
 void cb_create_entry(int argc, char *argv[]);
 gfloat f(gfloat x, const char *parser);  //, char* parse
 gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
-void startdraw(GtkWidget *window, gpointer data);
+void startdraw(gpointer data);
 
 #endif  // SRC_GUI_GUI_HEADER_H_
