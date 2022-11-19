@@ -76,6 +76,11 @@ void finances(GtkWidget *widnow, gpointer data) {
   char over[1024];
 
   finance_info tmp = {0};
+  GtkListStore *store;
+  GtkTreeIter iter;
+
+  store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(lst)));
+  gtk_list_store_clear(store);
   const char *tt = gtk_entry_get_text(GTK_ENTRY(total_amount));
   const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
   const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
@@ -94,10 +99,6 @@ void finances(GtkWidget *widnow, gpointer data) {
     sprintf(over, "%.2Lf", tmp.overpayment);
     add_to_list(lst, total, month, over);
   }
-  // sprintf(total, "%.2Lf", tmp.total_payment);
-  // sprintf(month, "%.2Lf", tmp.monthly_payment);
-  // sprintf(over, "%.2Lf", tmp.overpayment);
-  // add_to_list(lst, total, month, over);
 }
 
 void cb_create_entry(int argc, char *argv[]) {
@@ -114,7 +115,7 @@ void cb_create_entry(int argc, char *argv[]) {
   gtk_init(&argc, &argv);
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   lst = gtk_tree_view_new();
-  gtk_window_set_title(GTK_WINDOW(windw), "List view");
+  gtk_window_set_title(GTK_WINDOW(windw), "Finance Calculation");
   gtk_window_set_position(GTK_WINDOW(windw), GTK_WIN_POS_CENTER);
   gtk_container_set_border_width(GTK_CONTAINER(windw), 10);
   gtk_window_set_default_size(GTK_WINDOW(windw), 670, 450);
