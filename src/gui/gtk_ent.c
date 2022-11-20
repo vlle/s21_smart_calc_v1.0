@@ -34,10 +34,10 @@ void startdraw(gpointer data) {
                    data);  //, graph_enter);
 }
 
-void calc(gpointer data) {
+void calc() {
   char funcstr[MAX_ENTRY_SIZE * 4] = {'\0'};
   char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
-  const char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)data));
+  const char *fc = gtk_entry_get_text(GTK_ENTRY(password_entry));
   char *prs = parse_oper(funcstr, fc);
   long double resul = cal_oper(prs);
   sprintf(rs, "%.2Lf", resul);
