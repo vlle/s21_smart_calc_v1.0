@@ -73,17 +73,19 @@ void on_changed(GtkWidget *widget, gpointer label) {
 
 char typea() {
     return 'a';
+    g_print("%c", 'a');
 }
 
 char typeb() {
     return 'b';
+    g_print("%c", 'b');
 }
 
 void finances() {
   char total[1024];
   char month[1024];
   char over[1024];
-  char type = 'a';
+  char type;
 
   finance_info tmp = {0};
   GtkListStore *store;
@@ -101,18 +103,33 @@ void finances() {
   long double a1 = calculate(tt);
   long double b1 = calculate(trm);
   long double c1 = calculate(intrst);
-  tmp = credit_calculate(a1, b1, c1, type);
+  tmp = put_data(a1, b1, c1, type, 1);
+  tmp = credit_calculate(tmp);
   sprintf(total, "%.2Lf", tmp.total_payment);
   sprintf(month, "%.2Lf", tmp.monthly_payment);
   sprintf(over, "%.2Lf", tmp.overpayment);
   add_to_list(lst, total, month, over);
-  while (tmp.total_payment > 0) {
-    tmp.total_payment -= tmp.monthly_payment;
-    sprintf(total, "%.2Lf", tmp.total_payment);
-    sprintf(month, "%.2Lf", tmp.monthly_payment);
-    sprintf(over, "%.2Lf", tmp.overpayment);
-    if (tmp.total_payment == 0) break;
-    add_to_list(lst, total, month, over);
+  if (type == 'a') {
+    while (tmp.total_payment > 0) {
+      tmp.total_payment -= tmp.monthly_payment;
+      sprintf(total, "%.2Lf", tmp.total_payment);
+      sprintf(month, "%.2Lf", tmp.monthly_payment);
+      sprintf(over, "%.2Lf", tmp.overpayment);
+      if (tmp.total_payment == 0) break;
+      add_to_list(lst, total, month, over);
+    }
+  } else if (type == 'b') {
+    tmp = credit_calculate(tmp);
+    while (tmp.total_credit_amount > 0) {
+      tmp.total_credit_amount -= tmp.monthly_payment;
+      tmp.days_with_cred += 30;
+      tmp = credit_calculate(tmp);
+      sprintf(total, "%.2Lf", tmp.total_payment);
+      sprintf(month, "%.2Lf", tmp.monthly_payment);
+      sprintf(over, "%.2Lf", tmp.overpayment);
+      if (tmp.total_payment == 0) break;
+      add_to_list(lst, total, month, over);
+    }
   }
 }
 

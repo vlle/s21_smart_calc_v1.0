@@ -5,28 +5,39 @@
 
 #include "../smartcalc.h"
 
-finance_info credit_calculate(long double total_credit_amount, long double term,
-                              long double interest_rate, char type) {
-  long double monthly_payment;
-  long double total_payment, overpayment;
-  long double annuity_coeff;
+finance_info put_data(long double total_credit_amount, long double term,
+                              long double interest_rate, char type, long double days_with_cred) {
   finance_info credit = {0};
-  long double monthly_inter = interest_rate/12/100;
-  annuity_coeff = ((monthly_inter * powl((1+monthly_inter), term))/(powl((1+monthly_inter), term)-1));
+  credit.total_credit_amount = total_credit_amount;
+  credit.term = term;
+  credit.interest_rate = interest_rate;
+  credit.type_credit = type;
+  credit.days_with_cred = days_with_cred + 1;
+  if (type == 'b') {
+    credit.diff_payment_part = credit.total_credit_amount / term;
+  }
+  return credit;
+}
+
+finance_info credit_calculate(finance_info credit) {
+  long double annuity_coeff;
+  long double monthly_inter = credit.interest_rate/12/100;
+  char type = credit.type_credit;
   if (type == 'a') {
-    monthly_payment = total_credit_amount * annuity_coeff;
-    total_payment = monthly_payment * term;
-    overpayment = total_payment - total_credit_amount;
-  } else {
-    return credit;
-    // exit(1);
+    annuity_coeff = ((monthly_inter * powl((1+monthly_inter), credit.term))/(powl((1+monthly_inter), credit.term)-1));
+    credit.monthly_payment = credit.total_credit_amount * annuity_coeff;
+    credit.total_payment = credit.monthly_payment * credit.term;
+    credit.overpayment = credit.total_payment - credit.total_credit_amount;
+  } else if (type == 'b') {
+    credit.diff_payment_part = credit.total_credit_amount / credit.term;
+    credit.pay_percent = credit.total_credit_amount * credit.interest_rate/1200;
+    credit.monthly_payment = credit.diff_payment_part + credit.pay_percent;
+    credit.overpayment += credit.pay_percent;
+    credit.total_payment = credit.overpayment + credit.total_credit_amount;
   }
 
-  printf("%Lf = total\n%Lf = monthly\n%Lf = overpay", total_payment,
-         monthly_payment, overpayment);
-  credit.total_payment = total_payment;
-  credit.monthly_payment = monthly_payment;
-  credit.overpayment = overpayment;
+  printf("%Lf = total\n%Lf = monthly\n%Lf = overpay", credit.total_payment,
+         credit.monthly_payment, credit.overpayment);
   return credit;
 }
 

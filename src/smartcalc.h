@@ -39,6 +39,13 @@ typedef struct {
   long double total_payment;
   long double monthly_payment;
   long double overpayment;
+  long double days_with_cred;
+  long double total_credit_amount;
+  long double term;
+  long double interest_rate;
+  long double diff_payment_part;
+  long double pay_percent;
+  char type_credit;
 } finance_info;
 
 // Stack functions
@@ -56,8 +63,9 @@ int IsEmpty(const struct Node *top);
 long double cal_oper(char *funcstr);
 char *parse_oper(char *funcstr, const char *inpo);
 long double calculate(const char *b);
-finance_info credit_calculate(long double total_credit_amount, long double term,
-                              long double interest_rate, char type);
+finance_info put_data(long double total_credit_amount, long double term,
+                              long double interest_rate, char type, long double days_with_cred);
+finance_info credit_calculate(finance_info credit);
 // int deposit_calculate(long double total_credit_amount, long double term,
 //                      long double interest_rate);
 

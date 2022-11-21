@@ -35,13 +35,11 @@ void startdraw(gpointer data) {
 }
 
 void calc() {
-  char funcstr[MAX_ENTRY_SIZE * 4] = {'\0'};
-  char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
-  const char *fc = gtk_entry_get_text(GTK_ENTRY(password_entry));
-  char *prs = parse_oper(funcstr, fc);
-  long double resul = cal_oper(prs);
-  sprintf(rs, "%.2Lf", resul);
-  debug(prs, resul);
+  char rs[128*4] = {0};
+  const char *infix_string = gtk_entry_get_text(GTK_ENTRY(password_entry));
+  long double result_num = calculate(infix_string);
+  sprintf(rs, "%.2Lf", result_num);
+  // debug(prs, result_num);
   gtk_label_set_text(GTK_LABEL(result), rs);
 }
 
