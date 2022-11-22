@@ -126,12 +126,15 @@ GtkWidget *dra;
 void comeon(GtkWidget *window, gpointer data) {
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), GTK_ENTRY(data));
 }
+void closeFunc(GtkWidget *window, gpointer data) {
+  gtk_widget_destroy(data);
+}
 
 void draw_create_entry(GtkWidget *button, gpointer data) {
   GtkWidget *hbox, *hbox_entrys, *windw;
   GtkEntryBuffer *def1, *def2, *def3, *def4;
   GtkWidget *label_codomain1, *label_codomain2, *label_codomain3, *label_codomain4;
-  GtkWidget *butn;
+  GtkWidget *butn, *q_butn;
   GtkWidget **entry_arr = {0};
   dra = gtk_drawing_area_new();
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -150,6 +153,7 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   label_codomain3 = gtk_label_new("X");
   label_codomain4 = gtk_label_new("Y");
   butn = gtk_button_new_with_label("Redraw");
+  q_butn = gtk_button_new_with_label("Quit");
   gtk_window_set_title(GTK_WINDOW(windw), "Function graphic");
   gtk_window_set_position(GTK_WINDOW(windw), GTK_WIN_POS_CENTER);
   gtk_container_set_border_width(GTK_CONTAINER(windw), 10);
@@ -164,10 +168,12 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   gtk_box_pack_start(GTK_BOX(hbox_entrys), codomain4, FALSE, FALSE, 3);
   gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain4, FALSE, FALSE, 3);
   gtk_box_pack_start(GTK_BOX(hbox_entrys), butn, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), q_butn, FALSE, FALSE, 3);
   gtk_box_pack_start(GTK_BOX(hbox), dra, TRUE, TRUE, 50);
   gtk_box_pack_start(GTK_BOX(hbox), hbox_entrys, TRUE, TRUE, 2);
   gtk_container_add(GTK_CONTAINER(windw), hbox);
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), GTK_ENTRY(data));
   g_signal_connect(G_OBJECT(butn), "clicked", G_CALLBACK(comeon), GTK_ENTRY(data));
+  g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeFunc), GTK_WINDOW(windw));
   gtk_widget_show_all(windw);
 }
