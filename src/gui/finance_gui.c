@@ -109,6 +109,7 @@ void finances() {
   sprintf(month, "%.2Lf", tmp.monthly_payment);
   sprintf(over, "%.2Lf", tmp.overpayment);
   add_to_list(lst, total, month, over);
+  int cnt = 0;
   if (type == 'a') {
     while (tmp.total_payment > 0) {
       tmp.total_payment -= tmp.monthly_payment;
@@ -121,6 +122,7 @@ void finances() {
   } else if (type == 'b') {
     tmp = credit_calculate(tmp);
     while (tmp.total_credit_amount > 0) {
+      cnt += 1;
       tmp.total_credit_amount -= tmp.monthly_payment;
       tmp.days_with_cred += 30;
       tmp = credit_calculate(tmp);
@@ -129,18 +131,21 @@ void finances() {
       sprintf(over, "%.2Lf", tmp.overpayment);
       if (tmp.total_payment == 0) break;
       add_to_list(lst, total, month, over);
+      if (cnt > tmp.term * 2) break;
     }
   }
 }
 
-void cb_create_entry(int argc, char *argv[]) {
+void cb_create_entry() {
   GtkEntryBuffer *def1, *def2, *def3;
   GtkWidget *total_amount_label, *term_label, *interest_rate_label;
-  GtkWidget *vbox, *hbox_t, *hbox_term, *hbox_intr;
+  GtkWidget *hbox_t, *hbox_term, *hbox_intr;
   GtkWidget *vbox_e, *vbox_radio, *vbox_upper;
-  GtkWidget *fineq;
+  GtkWidget *fineq, *scroll;
+  scroll = gtk_scrolled_window_new(NULL, NULL);
+  gtk_widget_set_hexpand(scroll, TRUE);
+  gtk_widget_set_vexpand(scroll, TRUE);
 
-  gtk_init(&argc, &argv);
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   lst = gtk_tree_view_new();
   gtk_window_set_title(GTK_WINDOW(windw), "Finance Calculation");
@@ -159,7 +164,6 @@ void cb_create_entry(int argc, char *argv[]) {
   gtk_entry_set_visibility(GTK_ENTRY(total_amount), TRUE);
   gtk_entry_set_visibility(GTK_ENTRY(term), TRUE);
   gtk_entry_set_visibility(GTK_ENTRY(interest_rate), TRUE);
-  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   vbox_e = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   vbox_upper = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   hbox_t = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -180,7 +184,7 @@ void cb_create_entry(int argc, char *argv[]) {
   gtk_box_pack_start(GTK_BOX(hbox_term), term_label, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(hbox_intr), interest_rate, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(hbox_intr), interest_rate_label, FALSE, FALSE, 5);
-  gtk_box_pack_start(GTK_BOX(vbox), lst, TRUE, TRUE, 5);
+  gtk_container_add(GTK_CONTAINER(scroll), lst);//;, TRUE, TRUE, 5);
 
   gtk_box_pack_start(GTK_BOX(hbox_intr), type_credit, FALSE, FALSE, 45);
   gtk_box_pack_start(GTK_BOX(hbox_intr), type_credit2, FALSE, FALSE, 25);
@@ -193,7 +197,7 @@ void cb_create_entry(int argc, char *argv[]) {
   labl = gtk_label_new("");
   gtk_box_pack_start(GTK_BOX(vbox_e), vbox_upper, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), fineq, FALSE, FALSE, 5);
-  gtk_box_pack_start(GTK_BOX(vbox_e), vbox, FALSE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox_e), scroll, TRUE, TRUE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), labl, FALSE, FALSE, 5);
 
   gtk_container_add(GTK_CONTAINER(windw), vbox_e);
