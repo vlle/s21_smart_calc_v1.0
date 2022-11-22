@@ -29,9 +29,9 @@ GtkWidget *dra;
 
 void closeApp() { gtk_main_quit(); }
 
-void startdraw(gpointer data) {
+void startdraw() {
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw),
-                   data);  //, graph_enter);
+                   graph_entry);  //, graph_enter);
 }
 
 void calc() {

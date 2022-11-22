@@ -52,7 +52,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   cairo_stroke(cr);
 
   /* Link each data point */
-  const char *fc = gtk_entry_get_text(GTK_ENTRY((GtkWidget *)user_data));
+  const char *fc = gtk_entry_get_text(GTK_ENTRY(user_data));
   for (i = clip_x1; i < clip_x2; i += dx) cairo_line_to(cr, i, f(i, fc));
 
   /* Draw the curve */
