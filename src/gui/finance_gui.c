@@ -3,8 +3,6 @@
 #include "../smartcalc.h"
 
 GtkWidget *lst;
-GtkWidget *windw;
-GtkWidget *labl;
 GtkTreeSelection *selecton;
 GtkWidget *total_amount, *term, *interest_rate;
 GtkWidget *type_credit, *type_credit2;
@@ -138,6 +136,7 @@ void finances() {
 
 void cb_create_entry() {
   GtkEntryBuffer *def1, *def2, *def3;
+  GtkWidget *windw, *labl;
   GtkWidget *total_amount_label, *term_label, *interest_rate_label;
   GtkWidget *hbox_t, *hbox_term, *hbox_intr;
   GtkWidget *vbox_e, *vbox_radio, *vbox_upper;
