@@ -14,6 +14,18 @@ START_TEST(sinus0) {
 }
 END_TEST
 
+START_TEST(sinuscheck) {
+  char funcstr[MAX_ENTRY_SIZE] = {"\0"};
+  char b[100] =
+      "asin(1) mod 5";
+  double res = 1.5707;
+  char *prs = parse_oper(funcstr, b);
+  double my_res = cal_oper(prs);
+  ck_assert_double_eq_tol(res, my_res, 0.0001);
+}
+END_TEST
+
+
 START_TEST(sinus1) {
   char funcstr[MAX_ENTRY_SIZE] = {"\0"};
   char b[100] =
@@ -3597,6 +3609,7 @@ Suite *sinus_suite(void) {
   tcase_add_test(tc_core, sinus297);
   tcase_add_test(tc_core, sinus298);
   tcase_add_test(tc_core, sinus299);
+  tcase_add_test(tc_core, sinuscheck);
   suite_add_tcase(s, tc_core);
 
   return s;
