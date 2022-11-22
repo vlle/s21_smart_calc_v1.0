@@ -29,17 +29,16 @@ GtkWidget *dra;
 
 void closeApp() { gtk_main_quit(); }
 
-void startdraw() {
-  g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw),
-                   graph_entry);  //, graph_enter);
-}
+// void startdraw(int argc, char**argv) {
+//   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(fin_create_entry(argc, argv)),
+//                    graph_entry);  //, graph_enter);
+// }
 
 void calc() {
   char rs[128*4] = {0};
   const char *infix_string = gtk_entry_get_text(GTK_ENTRY(password_entry));
   long double result_num = calculate(infix_string);
   sprintf(rs, "%.2Lf", result_num);
-  // debug(prs, result_num);
   gtk_label_set_text(GTK_LABEL(result), rs);
 }
 
@@ -106,8 +105,8 @@ void smartcalc() {
   g_signal_connect(GTK_BUTTON(q_button), "clicked", G_CALLBACK(closeApp), NULL);
   g_signal_connect(GTK_BUTTON(f_button), "clicked", G_CALLBACK(cb_create_entry),
                    NULL);
-  g_signal_connect(G_OBJECT(draw_button), "clicked", G_CALLBACK(startdraw),
-                   graph_entry);
+  g_signal_connect(G_OBJECT(draw_button), "clicked", G_CALLBACK(draw_create_entry),
+                   GTK_ENTRY(graph_entry));
 
   gtk_container_add(GTK_CONTAINER(window), vbox);
 
@@ -117,8 +116,14 @@ void smartcalc() {
 }
 
 int main(int argc, char *argv[]) {
-  gtk_init(&argc, &argv);
-  smartcalc();
+  GtkApplication *app;
+  int status;
+  
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_DEFAULT_FLAGS);
+  g_signal_connect (app, "activate", G_CALLBACK (smartcalc), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
 
-  return 0;
+
+  return status;
 }

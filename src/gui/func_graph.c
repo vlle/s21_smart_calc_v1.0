@@ -5,15 +5,20 @@
 
 #define ZOOM_X 100.0
 #define ZOOM_Y 100.0
+GtkWidget *lst;
+GtkWidget *windw;
+GtkWidget *labl;
+GtkTreeSelection *selecton;
+GtkWidget *total_amount, *term, *interest_rate;
+GtkWidget *type_credit, *type_credit2;
+
 
 gfloat f(gfloat x, const char *parser) {
-  char funcstr[MAX_ENTRY_SIZE] = {'\0'};
   char *newstr;
   char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
   snprintf(rs, sizeof(rs), "%.2f", x);
   newstr = str_replace((char *)parser, "x", rs);
-  char *prs = parse_oper(funcstr, newstr);
-  double my_res = cal_oper(prs);
+  double my_res = calculate(newstr);
   free(newstr);
   return my_res;
 }
@@ -62,6 +67,21 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   return FALSE;
 }
 
+void draw_create_entry(GtkWidget* button, gpointer data) {
+  GtkWidget *dra, *hbox;
+  dra = gtk_drawing_area_new();
+  windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+  gtk_window_set_title(GTK_WINDOW(windw), "Finance Calculation");
+  gtk_window_set_position(GTK_WINDOW(windw), GTK_WIN_POS_CENTER);
+  gtk_container_set_border_width(GTK_CONTAINER(windw), 10);
+  gtk_window_set_default_size(GTK_WINDOW(windw), 670, 450);
+
+  gtk_box_pack_start(GTK_BOX(hbox), dra, TRUE, TRUE, 50);
+  gtk_container_add(GTK_CONTAINER(windw), hbox);
+  g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), GTK_ENTRY(data));
+  gtk_widget_show_all(windw);
+}
 // void startdraw(GtkWidget *window, gpointer data) {
 //   g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw), graph_enter);
 // }

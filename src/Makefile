@@ -1,7 +1,7 @@
 CC = gcc
 
 WARNING    = -Wall -Werror -Wextra
-CFLAGS     = -std=c11 -pedantic $(WARNING) # -fsanitize=address
+CFLAGS     = -std=c11 -pedantic $(WARNING)#  -fsanitize=address
 LFLAGS    ?= $(shell pkg-config --cflags --libs check)
 INC_CHECK ?= $(shell pkg-config --cflags check)
 
@@ -50,7 +50,7 @@ tests: test.out
 
 gui_back: $(LIB)
 	@echo "Building Graphical Calculator"
-	@gcc $(CFLAGS) $(lgtk)  -c gui/func_graph.c -o func_graph.o
+	@gcc  $(lgtk)  -c gui/func_graph.c -o func_graph.o
 	@gcc $(CFLAGS) $(lgtk) -c gui/finance_gui.c -o nice_graph.o
 	@gcc $(CFLAGS) $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o smartcalc  $(llgtk)
 	@echo "Build was successful. Start your smartcalc with ./smartcalc"
