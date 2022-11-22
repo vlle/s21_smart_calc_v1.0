@@ -6,8 +6,8 @@
 #include "../smartcalc.h"
 
 #define VERYHIGH "^"
-#define HIGHPRIOR "^*/STCstc%Ll"  // ^
-#define LOWPRIOR "^*/+-stcSTC%Ll"
+#define HIGHPRIOR "^*/STCstc%Llv"  // ^
+#define LOWPRIOR "^*/+-stcSTC%Llv"
 
 /* These functions are for support.
 
@@ -86,13 +86,11 @@ char* parse_oper(char* funcstr, const char* inpo) {
         push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
       }
       push_backC(&nodesCount, &opr, '^');
-    } else if (*inpstr == 's') {
-      if (strncmp(inpstr, "sin", 3) == 0) {
-        if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
-        }
-        push_backC(&nodesCount, &opr, 's');
+    } else if ((*inpstr == 's') & (strncmp(inpstr, "sin", 3) == 0)) {
+      if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
+        push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
       }
+      push_backC(&nodesCount, &opr, 's');
     } else if (*inpstr == 't') {
       if (strncmp(inpstr, "tan", 3) == 0) {
         if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
@@ -100,6 +98,11 @@ char* parse_oper(char* funcstr, const char* inpo) {
         }
         push_backC(&nodesCount, &opr, 't');
       }
+    } else if ((*inpstr == 's') && (strncmp(inpstr, "sqrt", 4) == 0)) {
+      if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
+        push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+      }
+      push_backC(&nodesCount, &opr, 'v');
     } else if (*inpstr == 'c') {
       if (strncmp(inpstr, "cos", 3) == 0) {
         if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
@@ -154,7 +157,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
         funcstr[funcstr_i++] =
-            popC(&nodesCount, &opr); /* peek for preceding op */
+          popC(&nodesCount, &opr); /* peek for preceding op */
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
@@ -203,7 +206,7 @@ long double cal_oper(char* funcstr) {
     if (*funcstr >= '0' && *funcstr <= '9') {
       char* pEnd;
       long double calc_num =
-          strtold(funcstr, &pEnd); /*strtold parses float num from str*/
+        strtold(funcstr, &pEnd); /*strtold parses float num from str*/
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
       result = calc_num;
@@ -234,6 +237,9 @@ long double cal_oper(char* funcstr) {
     } else if (*funcstr == '^') {
       var = popper(&nums, &nodesCount);
       result = powl(var.a2, var.a1);
+      push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == 'v') {
+      result = sqrt(popN(&nodesCount, &nums));
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == 's') {
       result = sin(popN(&nodesCount, &nums));

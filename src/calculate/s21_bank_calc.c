@@ -6,7 +6,8 @@
 #include "../smartcalc.h"
 
 finance_info put_data(long double total_credit_amount, long double term,
-                              long double interest_rate, char type, long double days_with_cred) {
+                      long double interest_rate, char type,
+                      long double days_with_cred) {
   finance_info credit = {0};
   credit.total_credit_amount = total_credit_amount;
   credit.term = term;
@@ -21,19 +22,21 @@ finance_info put_data(long double total_credit_amount, long double term,
 
 finance_info credit_calculate(finance_info credit) {
   long double annuity_coeff;
-  long double monthly_inter = credit.interest_rate/12/100;
+  long double monthly_inter = credit.interest_rate / 12 / 100;
   char type = credit.type_credit;
   if (type == 'a') {
-    annuity_coeff = ((monthly_inter * powl((1+monthly_inter), credit.term))/(powl((1+monthly_inter), credit.term)-1));
+    annuity_coeff = ((monthly_inter * powl((1 + monthly_inter), credit.term)) /
+      (powl((1 + monthly_inter), credit.term) - 1));
     credit.monthly_payment = credit.total_credit_amount * annuity_coeff;
     credit.total_payment = credit.monthly_payment * credit.term;
     credit.overpayment = credit.total_payment - credit.total_credit_amount;
   } else if (type == 'b') {
-    credit.diff_payment_part = credit.total_credit_amount / credit.term;
-    credit.pay_percent = credit.total_credit_amount * credit.interest_rate/1200;
-    credit.monthly_payment = credit.diff_payment_part + credit.pay_percent;
-    credit.overpayment += credit.pay_percent;
-    credit.total_payment = credit.overpayment + credit.total_credit_amount;
+    credit.monthly_payment =
+      (credit.total_credit_amount / credit.term) +
+      (credit.total_payment) * (credit.interest_rate / 100 / 12);
+    credit.overpayment =
+      credit.monthly_payment - (credit.total_credit_amount / credit.term);
+    credit.total_payment = credit.total_credit_amount + credit.overpayment;
   }
 
   printf("%Lf = total\n%Lf = monthly\n%Lf = overpay", credit.total_payment,
