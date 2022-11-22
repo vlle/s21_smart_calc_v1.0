@@ -92,7 +92,6 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
       cairo_line_to(cr, +da.width / f1, i);
       cairo_move_to(cr, -da.width / f1, -i);
       cairo_line_to(cr, +da.width / f1, -i);
-      // cairo_move_to(cr, -da.width / f1, -f1);
       cairo_move_to(cr, 0, -i);
       sprintf(legend, "%g", i);
       cairo_show_text(cr, legend);

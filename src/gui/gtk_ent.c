@@ -11,17 +11,8 @@
 #define WIDTH 640
 #define HEIGHT 480
 
-GtkWidget *window;
 GtkWidget *result_label, *calc_label, *result;
 GtkWidget *infix_entry;
-GtkWidget *ok_button, *draw_button;
-GtkWidget *hbox1, *hbox2, *hbox3, *hbox5;
-GtkWidget *vbox;
-GtkWidget *list;
-GtkWidget *label;
-GtkTreeSelection *selection;
-
-GtkWidget *graph_enter;
 
 void closeApp() { gtk_main_quit(); }
 
@@ -34,6 +25,12 @@ void calc() {
 }
 
 void smartcalc() {
+  GtkWidget *window;
+  GtkWidget *ok_button, *draw_button;
+  GtkWidget *hbox1, *hbox2, *hbox3;
+  GtkWidget *vbox;
+  GtkWidget *list;
+
   GtkWidget *q_button;
   GtkWidget *f_button;
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
