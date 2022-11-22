@@ -10,8 +10,8 @@ void debug(char *prs, double my_res);
 void on_changed(GtkWidget *widget, gpointer label);
 void cb_create_entry();
 gfloat f(gfloat x, const char *parser);  //, char* parse
-void draw_create_entry(GtkWidget* button, gpointer data);
+void draw_create_entry(GtkWidget *button, gpointer data);
 gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
-void startdraw(int argc, char**argv);
+void startdraw(int argc, char **argv);
 
 #endif  // SRC_GUI_GUI_HEADER_H_

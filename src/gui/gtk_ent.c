@@ -11,7 +11,6 @@
 #define WIDTH 640
 #define HEIGHT 480
 
-
 GtkWidget *window;
 GtkWidget *result_label, *calc_label, *result;
 GtkWidget *infix_entry;
@@ -26,12 +25,11 @@ GtkWidget *graph_enter;
 
 void closeApp() { gtk_main_quit(); }
 
-
 void calc() {
-  char rs[128*4] = {0};
+  char rs[128 * 4] = {0};
   const char *infix_string = gtk_entry_get_text(GTK_ENTRY(infix_entry));
   long double result_num = calculate(infix_string);
-  sprintf(rs, "%.2Lf", result_num);
+  sprintf(rs, "%Lf", result_num);
   gtk_label_set_text(GTK_LABEL(result), rs);
 }
 
@@ -90,8 +88,8 @@ void smartcalc() {
   g_signal_connect(GTK_BUTTON(q_button), "clicked", G_CALLBACK(closeApp), NULL);
   g_signal_connect(GTK_BUTTON(f_button), "clicked", G_CALLBACK(cb_create_entry),
                    NULL);
-  g_signal_connect(G_OBJECT(draw_button), "clicked", G_CALLBACK(draw_create_entry),
-                   GTK_ENTRY(infix_entry));
+  g_signal_connect(G_OBJECT(draw_button), "clicked",
+                   G_CALLBACK(draw_create_entry), GTK_ENTRY(infix_entry));
 
   gtk_container_add(GTK_CONTAINER(window), vbox);
 
@@ -103,11 +101,11 @@ void smartcalc() {
 int main(int argc, char *argv[]) {
   GtkApplication *app;
   int status;
-  
-  app = gtk_application_new ("org.gtk.example", G_APPLICATION_DEFAULT_FLAGS);
-  g_signal_connect (app, "activate", G_CALLBACK (smartcalc), NULL);
-  status = g_application_run (G_APPLICATION (app), argc, argv);
-  g_object_unref (app);
+
+  app = gtk_application_new("org.gtk.example", G_APPLICATION_DEFAULT_FLAGS);
+  g_signal_connect(app, "activate", G_CALLBACK(smartcalc), NULL);
+  status = g_application_run(G_APPLICATION(app), argc, argv);
+  g_object_unref(app);
 
   return status;
 }

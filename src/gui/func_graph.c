@@ -1,16 +1,11 @@
 #include <gtk/gtk.h>
+#include <math.h>
 
 #include "../smartcalc.h"
 #include "gui_header.h"
 
 #define ZOOM_X 100.0
 #define ZOOM_Y 100.0
-GtkWidget *lst;
-GtkWidget *windw;
-GtkWidget *labl;
-GtkTreeSelection *selecton;
-GtkWidget *total_amount, *term, *interest_rate;
-GtkWidget *type_credit, *type_credit2;
 
 
 gfloat f(gfloat x, const char *parser) {
@@ -31,6 +26,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   gdouble dx = 5.0, dy = 5.0; /* Pixels between each point */
   gdouble i, clip_x1 = 0.0, clip_y1 = 0.0, clip_x2 = 0.0, clip_y2 = 0.0;
   GdkWindow *window = gtk_widget_get_window(widget);
+  cairo_select_font_face(cr, "monospace", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 
   /* Determine GtkDrawingArea dimensions */
   gdk_window_get_geometry(window, &da.x, &da.y, &da.width, &da.height);
@@ -40,7 +36,12 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   cairo_paint(cr);
 
   /* Change the transformation matrix */
-  cairo_translate(cr, da.width / 2, da.height / 2);
+  long double f1, f2, f3, f4;
+  f1 = 2;
+  f2 = 2;
+  f3 = 4;
+  f4 = 4;
+  cairo_translate(cr, da.width / f1, da.height / f2);
   cairo_scale(cr, ZOOM_X, -ZOOM_Y);
 
   /* Determine the data points to calculate (ie. those in the clipping zone */
@@ -56,9 +57,41 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   cairo_line_to(cr, 0.0, clip_y2);
   cairo_stroke(cr);
 
+  double iterator_x = (fabs(f1)+fabs(f2))+10;
+  double iterator_y = (fabs(f3)+fabs(f4))+10;
+  // cairo_set_source_rgb(cr, 2.0, 1.0, 0.0);
+  // cairo_set_source_rgba(cr, 255.0, 204, 0.0, 0.8);
+  cairo_set_source_rgba(cr, 82.0, 56, 112.0, 0.3);
+  for (i = -da.width; i < da.width; i += 1) {
+    if (fabs(i-1) > 1) {
+      cairo_move_to(cr, i, -da.height / 2);
+      cairo_line_to(cr, i, +da.height / 2);
+      cairo_move_to(cr, -i, -da.height / 2);
+      cairo_line_to(cr, -i, +da.height / 2);
+    }
+  }
+  cairo_set_source_rgba(cr, 82.0, 56, 112.0, 0.3);
+  cairo_stroke(cr);
+  for (i = -da.height; i < da.height; i += 1) {
+    if (fabs(i-1) > 1) {
+      cairo_move_to(cr, -da.width / 2, i) ;
+      cairo_line_to(cr, +da.width / 2,i) ;
+      cairo_move_to(cr,  -da.width / 2,-i);
+      cairo_line_to(cr,  +da.width / 2, -i);
+
+    }
+  }
+
+  cairo_stroke(cr);
+
   /* Link each data point */
   const char *fc = gtk_entry_get_text(GTK_ENTRY(user_data));
-  for (i = clip_x1; i < clip_x2; i += dx) cairo_line_to(cr, i, f(i, fc));
+  for (i = clip_x1; i < clip_x2; i += dx) {
+    long double dot = f(i, fc);
+    if ((!isnan(dot)) && (!isinf(dot))) {
+      cairo_line_to(cr, i, dot);
+    }
+  }
 
   /* Draw the curve */
   cairo_set_source_rgba(cr, 3, 0.2, 0.2, 0.6);
@@ -67,8 +100,8 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   return FALSE;
 }
 
-void draw_create_entry(GtkWidget* button, gpointer data) {
-  GtkWidget *dra, *hbox;
+void draw_create_entry(GtkWidget *button, gpointer data) {
+  GtkWidget *dra, *hbox, *windw;
   dra = gtk_drawing_area_new();
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);

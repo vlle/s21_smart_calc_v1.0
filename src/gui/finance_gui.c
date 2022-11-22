@@ -65,20 +65,20 @@ void on_changed(GtkWidget *widget, gpointer label) {
   if (gtk_tree_selection_get_selected(GTK_TREE_SELECTION(widget), &model,
                                       &iter)) {
     gtk_tree_model_get(model, &iter, TOTAL_CREDIT, &value, -1);
-    strcat(total_cred, (char*) value);
-    gtk_label_set_text(GTK_LABEL(label), (gchar*) total_cred);
+    strcat(total_cred, (char *)value);
+    gtk_label_set_text(GTK_LABEL(label), (gchar *)total_cred);
     g_free(value);
   }
 }
 
 char typea() {
-    return 'a';
-    g_print("%c", 'a');
+  return 'a';
+  g_print("%c", 'a');
 }
 
 char typeb() {
-    return 'b';
-    g_print("%c", 'b');
+  return 'b';
+  g_print("%c", 'b');
 }
 
 void finances() {
@@ -95,7 +95,7 @@ void finances() {
   const char *tt = gtk_entry_get_text(GTK_ENTRY(total_amount));
   const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
   const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
-  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(type_credit))) {
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(type_credit))) {
     type = typea();
   } else {
     type = typeb();
@@ -169,22 +169,24 @@ void cb_create_entry() {
   hbox_t = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   hbox_term = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   hbox_intr = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-  vbox_radio =  gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
-  gtk_box_set_homogeneous (GTK_BOX (vbox_radio), TRUE);
+  vbox_radio = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
+  gtk_box_set_homogeneous(GTK_BOX(vbox_radio), TRUE);
 
   total_amount_label = gtk_label_new("Total money amount");
   term_label = gtk_label_new("Term");
   interest_rate_label = gtk_label_new("Interest rate");
   type_credit = gtk_radio_button_new_with_label(NULL, "Annuity type");
   // type_credit = gtk_radio_button_new_with_label(NULL, "Annuity type");
-  type_credit2 = gtk_radio_button_new_with_label(gtk_radio_button_get_group(GTK_RADIO_BUTTON (type_credit)), "Differentiated type");
+  type_credit2 = gtk_radio_button_new_with_label(
+      gtk_radio_button_get_group(GTK_RADIO_BUTTON(type_credit)),
+      "Differentiated type");
   gtk_box_pack_start(GTK_BOX(hbox_t), total_amount, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(hbox_t), total_amount_label, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(hbox_term), term, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(hbox_term), term_label, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(hbox_intr), interest_rate, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(hbox_intr), interest_rate_label, FALSE, FALSE, 5);
-  gtk_container_add(GTK_CONTAINER(scroll), lst);//;, TRUE, TRUE, 5);
+  gtk_container_add(GTK_CONTAINER(scroll), lst);  //;, TRUE, TRUE, 5);
 
   gtk_box_pack_start(GTK_BOX(hbox_intr), type_credit, FALSE, FALSE, 45);
   gtk_box_pack_start(GTK_BOX(hbox_intr), type_credit2, FALSE, FALSE, 25);
