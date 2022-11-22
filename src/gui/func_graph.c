@@ -7,6 +7,8 @@
 #define ZOOM_X 100.0
 #define ZOOM_Y 100.0
 
+GtkWidget *codomain1, *codomain2, *codomain3, *codomain4;
+
 
 gfloat f(gfloat x, const char *parser) {
   char *newstr;
@@ -36,13 +38,17 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   cairo_paint(cr);
 
   /* Change the transformation matrix */
+  const char *x1_c = gtk_entry_get_text(GTK_ENTRY(codomain1));
+  const char *x2_c = gtk_entry_get_text(GTK_ENTRY(codomain2));
+  const char *y1_c = gtk_entry_get_text(GTK_ENTRY(codomain3));
+  const char *y2_c = gtk_entry_get_text(GTK_ENTRY(codomain4));
   long double f1, f2, f3, f4;
-  f1 = 2;
-  f2 = 2;
-  f3 = 4;
-  f4 = 4;
+  f1 = fabs(calculate(x1_c));
+  f2 = fabs(calculate(x2_c));
+  f3 = fabs(calculate(y1_c));
+  f4 = fabs(calculate(y2_c));
   cairo_translate(cr, da.width / f1, da.height / f2);
-  cairo_scale(cr, ZOOM_X, -ZOOM_Y);
+  cairo_scale(cr, ZOOM_X /f3, ZOOM_Y/f4);
 
   /* Determine the data points to calculate (ie. those in the clipping zone */
   cairo_device_to_user_distance(cr, &dx, &dy);
@@ -61,24 +67,38 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   double iterator_y = (fabs(f3)+fabs(f4))+10;
   // cairo_set_source_rgb(cr, 2.0, 1.0, 0.0);
   // cairo_set_source_rgba(cr, 255.0, 204, 0.0, 0.8);
+  char legend[33];
   cairo_set_source_rgba(cr, 82.0, 56, 112.0, 0.3);
+  cairo_set_font_size(cr, 0.5);
   for (i = -da.width; i < da.width; i += 1) {
     if (fabs(i-1) > 1) {
-      cairo_move_to(cr, i, -da.height / 2);
-      cairo_line_to(cr, i, +da.height / 2);
-      cairo_move_to(cr, -i, -da.height / 2);
-      cairo_line_to(cr, -i, +da.height / 2);
+      cairo_move_to(cr, i, -da.height / f2);
+      cairo_line_to(cr, i, +da.height / f2);
+      cairo_move_to(cr, -i, -da.height / f2);
+      cairo_line_to(cr, -i, +da.height / f2);
+      cairo_move_to(cr, i, 0);
+      sprintf(legend, "%g", i);
+      cairo_show_text(cr, legend);
+      cairo_move_to(cr, -i, 0);
+      sprintf(legend, "%g", -i);
+      cairo_show_text(cr, legend);
     }
   }
   cairo_set_source_rgba(cr, 82.0, 56, 112.0, 0.3);
   cairo_stroke(cr);
   for (i = -da.height; i < da.height; i += 1) {
     if (fabs(i-1) > 1) {
-      cairo_move_to(cr, -da.width / 2, i) ;
-      cairo_line_to(cr, +da.width / 2,i) ;
-      cairo_move_to(cr,  -da.width / 2,-i);
-      cairo_line_to(cr,  +da.width / 2, -i);
-
+      cairo_move_to(cr, -da.width / f1, i);
+      cairo_line_to(cr, +da.width / f1, i);
+      cairo_move_to(cr, -da.width / f1, -i);
+      cairo_line_to(cr, +da.width / f1, -i);
+      // cairo_move_to(cr, -da.width / f1, -f1);
+      cairo_move_to(cr, 0, -i);
+      sprintf(legend, "%g", i);
+      cairo_show_text(cr, legend);
+      cairo_move_to(cr, 0, i);
+      sprintf(legend, "%g", -i);
+      cairo_show_text(cr, legend);
     }
   }
 
@@ -88,8 +108,10 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   const char *fc = gtk_entry_get_text(GTK_ENTRY(user_data));
   for (i = clip_x1; i < clip_x2; i += dx) {
     long double dot = f(i, fc);
-    if ((!isnan(dot)) && (!isinf(dot))) {
-      cairo_line_to(cr, i, dot);
+    if ((isnan(dot)) || (isinf(dot))) {
+      cairo_new_sub_path(cr);
+    } else {
+      cairo_line_to(cr, i, -dot);
     }
   }
 
@@ -99,14 +121,16 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
 
   return FALSE;
 }
+
 GtkWidget *dra;
 
 void comeon(GtkWidget *window, gpointer data) {
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), GTK_ENTRY(data));
 }
+
 void draw_create_entry(GtkWidget *button, gpointer data) {
   GtkWidget *hbox, *hbox_entrys, *windw;
-  GtkWidget *codomain1, *codomain2, *codomain3, *codomain4;
+  GtkEntryBuffer *def1, *def2, *def3, *def4;
   GtkWidget *label_codomain1, *label_codomain2, *label_codomain3, *label_codomain4;
   GtkWidget *butn;
   GtkWidget **entry_arr = {0};
@@ -114,10 +138,14 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
   hbox_entrys = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-  codomain1 = gtk_entry_new();
-  codomain2 = gtk_entry_new();
-  codomain3 = gtk_entry_new();
-  codomain4 = gtk_entry_new();
+  def1 = gtk_entry_buffer_new("2", 1);
+  def2 = gtk_entry_buffer_new("2", 1);
+  def3 = gtk_entry_buffer_new("1", 1);
+  def4 = gtk_entry_buffer_new("1", 1);
+  codomain1 = gtk_entry_new_with_buffer(def1);
+  codomain2 = gtk_entry_new_with_buffer(def2);
+  codomain3 = gtk_entry_new_with_buffer(def3);
+  codomain4 = gtk_entry_new_with_buffer(def4);
   label_codomain1 = gtk_label_new("X");
   label_codomain2 = gtk_label_new("Y");
   label_codomain3 = gtk_label_new("X");
@@ -126,7 +154,7 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   gtk_window_set_title(GTK_WINDOW(windw), "Function graphic");
   gtk_window_set_position(GTK_WINDOW(windw), GTK_WIN_POS_CENTER);
   gtk_container_set_border_width(GTK_CONTAINER(windw), 10);
-  gtk_window_set_default_size(GTK_WINDOW(windw), 670, 450);
+  gtk_window_set_default_size(GTK_WINDOW(windw), 870, 350);
 
   gtk_box_pack_start(GTK_BOX(hbox_entrys), codomain1, FALSE, FALSE, 3);
   gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain1, FALSE, FALSE, 3);
