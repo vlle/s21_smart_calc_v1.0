@@ -50,7 +50,7 @@ void smartcalc() {
   result = gtk_label_new("?");
   calc_label = gtk_label_new("Calculate: ");
 
-  gtk_label_set_width_chars(GTK_LABEL(result_label), 0);
+  gtk_label_set_width_chars(GTK_LABEL(result_label), 12);
   gtk_label_set_width_chars(GTK_LABEL(calc_label), 12);
 
   infix_entry = gtk_entry_new();
