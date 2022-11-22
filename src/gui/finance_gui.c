@@ -176,7 +176,6 @@ void cb_create_entry() {
   term_label = gtk_label_new("Term");
   interest_rate_label = gtk_label_new("Interest rate");
   type_credit = gtk_radio_button_new_with_label(NULL, "Annuity type");
-  // type_credit = gtk_radio_button_new_with_label(NULL, "Annuity type");
   type_credit2 = gtk_radio_button_new_with_label(
       gtk_radio_button_get_group(GTK_RADIO_BUTTON(type_credit)),
       "Differentiated type");

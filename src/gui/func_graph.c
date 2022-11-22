@@ -99,19 +99,48 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
 
   return FALSE;
 }
+GtkWidget *dra;
 
+void comeon(GtkWidget *window, gpointer data) {
+  g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), GTK_ENTRY(data));
+}
 void draw_create_entry(GtkWidget *button, gpointer data) {
-  GtkWidget *dra, *hbox, *windw;
+  GtkWidget *hbox, *hbox_entrys, *windw;
+  GtkWidget *codomain1, *codomain2, *codomain3, *codomain4;
+  GtkWidget *label_codomain1, *label_codomain2, *label_codomain3, *label_codomain4;
+  GtkWidget *butn;
+  GtkWidget **entry_arr = {0};
   dra = gtk_drawing_area_new();
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+  hbox_entrys = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+  codomain1 = gtk_entry_new();
+  codomain2 = gtk_entry_new();
+  codomain3 = gtk_entry_new();
+  codomain4 = gtk_entry_new();
+  label_codomain1 = gtk_label_new("X");
+  label_codomain2 = gtk_label_new("Y");
+  label_codomain3 = gtk_label_new("X");
+  label_codomain4 = gtk_label_new("Y");
+  butn = gtk_button_new_with_label("Redraw");
   gtk_window_set_title(GTK_WINDOW(windw), "Function graphic");
   gtk_window_set_position(GTK_WINDOW(windw), GTK_WIN_POS_CENTER);
   gtk_container_set_border_width(GTK_CONTAINER(windw), 10);
   gtk_window_set_default_size(GTK_WINDOW(windw), 670, 450);
 
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), codomain1, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain1, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), codomain2, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain2, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), codomain3, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain3, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), codomain4, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain4, FALSE, FALSE, 3);
+  gtk_box_pack_start(GTK_BOX(hbox_entrys), butn, FALSE, FALSE, 3);
   gtk_box_pack_start(GTK_BOX(hbox), dra, TRUE, TRUE, 50);
+  gtk_box_pack_start(GTK_BOX(hbox), hbox_entrys, TRUE, TRUE, 2);
   gtk_container_add(GTK_CONTAINER(windw), hbox);
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), GTK_ENTRY(data));
+  g_signal_connect(G_OBJECT(butn), "clicked", G_CALLBACK(comeon), GTK_ENTRY(data));
   gtk_widget_show_all(windw);
 }
