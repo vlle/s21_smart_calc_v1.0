@@ -72,7 +72,7 @@ void draw_create_entry(GtkWidget* button, gpointer data) {
   dra = gtk_drawing_area_new();
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-  gtk_window_set_title(GTK_WINDOW(windw), "Finance Calculation");
+  gtk_window_set_title(GTK_WINDOW(windw), "Function graphic");
   gtk_window_set_position(GTK_WINDOW(windw), GTK_WIN_POS_CENTER);
   gtk_container_set_border_width(GTK_CONTAINER(windw), 10);
   gtk_window_set_default_size(GTK_WINDOW(windw), 670, 450);
@@ -82,6 +82,3 @@ void draw_create_entry(GtkWidget* button, gpointer data) {
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), GTK_ENTRY(data));
   gtk_widget_show_all(windw);
 }
-// void startdraw(GtkWidget *window, gpointer data) {
-//   g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw), graph_enter);
-// }
