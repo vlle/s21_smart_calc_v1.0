@@ -16,6 +16,7 @@ finance_info put_data(long double total_credit_amount, long double term,
   credit.days_with_cred = days_with_cred + 1;
   if (type == 'b') {
     credit.diff_payment_part = credit.total_credit_amount / term;
+    credit.remainder_credit = credit.total_credit_amount;
   }
   return credit;
 }
@@ -31,12 +32,12 @@ finance_info credit_calculate(finance_info credit) {
     credit.total_payment = credit.monthly_payment * credit.term;
     credit.overpayment = credit.total_payment - credit.total_credit_amount;
   } else if (type == 'b') {
+      long double percent_sum = (credit.remainder_credit) * (credit.interest_rate / 100 / 12);
     credit.monthly_payment =
-      (credit.total_credit_amount / credit.term) +
-      (credit.total_payment) * (credit.interest_rate / 100 / 12);
-    credit.overpayment =
-      credit.monthly_payment - (credit.total_credit_amount / credit.term);
-    credit.total_payment = credit.total_credit_amount + credit.overpayment;
+      (credit.diff_payment_part + percent_sum);
+    credit.overpayment += credit.monthly_payment; 
+    credit.total_payment = credit.remainder_credit;// + credit.overpayment;
+    credit.remainder_credit -= credit.diff_payment_part;
   }
 
   printf("%Lf = total\n%Lf = monthly\n%Lf = overpay", credit.total_payment,

@@ -118,16 +118,15 @@ void finances() {
       add_to_list(lst, total, month, over);
     }
   } else if (type == 'b') {
-    tmp = credit_calculate(tmp);
     while (tmp.total_credit_amount > 0) {
       cnt += 1;
-      tmp.total_credit_amount -= tmp.monthly_payment;
-      tmp.days_with_cred += 30;
+      // tmp.total_payment -= tmp.monthly_payment;
+      // tmp.days_with_cred += 30;
       tmp = credit_calculate(tmp);
       sprintf(total, "%.2Lf", tmp.total_payment);
       sprintf(month, "%.2Lf", tmp.monthly_payment);
       sprintf(over, "%.2Lf", tmp.overpayment);
-      if (tmp.total_payment == 0) break;
+      if (tmp.total_payment <= 0) break;
       add_to_list(lst, total, month, over);
       if (cnt > tmp.term * 2) break;
     }
