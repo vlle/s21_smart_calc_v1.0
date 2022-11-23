@@ -1,16 +1,9 @@
 #include <gtk/gtk.h>
 
 #include "../smartcalc.h"
+#include "gui_header.h"
 
 GtkWidget *lst;
-GtkTreeSelection *selecton;
-GtkWidget *total_amount, *term, *interest_rate;
-GtkWidget *type_credit, *type_credit2;
-
-// void debug(char *prs, double my_res) {
-//   g_print("%f\n", my_res);
-//   g_print("%s\n", prs);
-// }
 
 void init_list(GtkWidget *lst) {
   GtkCellRenderer *renderer;
@@ -68,17 +61,24 @@ void on_changed(GtkWidget *widget, gpointer label) {
   }
 }
 
-char typea() { return 'a'; }
 
-char typeb() { return 'b'; }
-
-void finances() {
-  char total[1024];
-  char month[1024];
-  char over[1024];
+void finances(GtkWidget* button, gpointer data) {
+  (void) button;
+  if (!data) {
+    exit(1);
+  }
+  char total[256];
+  char month[256];
+  char over[256];
   char type;
 
+
+  finance_i *stuff = (finance_i*) data;
   finance_info tmp = {0};
+  GtkWidget *total_amount = stuff->total_amount;
+  GtkWidget *term = stuff->term;
+  GtkWidget *interest_rate = stuff->interest_rate;
+  GtkWidget *type_credit = stuff->type_credit;
   GtkListStore *store;
 
   store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(lst)));
@@ -87,9 +87,9 @@ void finances() {
   const char *trm = gtk_entry_get_text(GTK_ENTRY(term));
   const char *intrst = gtk_entry_get_text(GTK_ENTRY(interest_rate));
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(type_credit))) {
-    type = typea();
+    type = 'a';
   } else {
-    type = typeb();
+    type = 'b';
   }
   long double a1 = calculate(tt);
   long double b1 = calculate(trm);
@@ -113,8 +113,6 @@ void finances() {
   } else if (type == 'b') {
     while (tmp.total_credit_amount > 0) {
       cnt += 1;
-      // tmp.total_payment -= tmp.monthly_payment;
-      // tmp.days_with_cred += 30;
       tmp = credit_calculate(tmp);
       sprintf(total, "%.2Lf", tmp.total_payment);
       sprintf(month, "%.2Lf", tmp.monthly_payment);
@@ -126,18 +124,31 @@ void finances() {
   }
 }
 
+void closeWin(GtkWidget *button, gpointer data) {
+  (void) button;
+  finance_i* check = (finance_i*) data;
+  GtkWidget* destroy_window = check->window;
+  free(check);
+  gtk_widget_destroy(destroy_window); 
+}
+
 void cb_create_entry() {
   GtkEntryBuffer *def1, *def2, *def3;
   GtkWidget *windw, *labl;
   GtkWidget *total_amount_label, *term_label, *interest_rate_label;
   GtkWidget *hbox_t, *hbox_term, *hbox_intr;
   GtkWidget *vbox_e, *vbox_radio, *vbox_upper;
-  GtkWidget *fineq, *scroll;
+  GtkWidget *fineq, *scroll, *q_butn;
+  GtkWidget *total_amount, *term, *interest_rate;
+
+  GtkTreeSelection *selecton;
+  finance_i *data = malloc(sizeof(finance_i)*1);
   scroll = gtk_scrolled_window_new(NULL, NULL);
   gtk_widget_set_hexpand(scroll, TRUE);
   gtk_widget_set_vexpand(scroll, TRUE);
 
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  data->window = windw;
   lst = gtk_tree_view_new();
   gtk_window_set_title(GTK_WINDOW(windw), "Finance Calculation");
   gtk_window_set_position(GTK_WINDOW(windw), GTK_WIN_POS_CENTER);
@@ -152,6 +163,7 @@ void cb_create_entry() {
   term = gtk_entry_new_with_buffer(def2);
   interest_rate = gtk_entry_new_with_buffer(def3);
   fineq = gtk_button_new_with_label("Calculate");
+  q_butn = gtk_button_new_with_label("Quit");
   gtk_entry_set_visibility(GTK_ENTRY(total_amount), TRUE);
   gtk_entry_set_visibility(GTK_ENTRY(term), TRUE);
   gtk_entry_set_visibility(GTK_ENTRY(interest_rate), TRUE);
@@ -166,9 +178,12 @@ void cb_create_entry() {
   total_amount_label = gtk_label_new("Total money amount");
   term_label = gtk_label_new("Term");
   interest_rate_label = gtk_label_new("Interest rate");
-  type_credit = gtk_radio_button_new_with_label(NULL, "Annuity type");
-  type_credit2 = gtk_radio_button_new_with_label(
-      gtk_radio_button_get_group(GTK_RADIO_BUTTON(type_credit)),
+  data->total_amount = total_amount; 
+  data->term = term;
+  data->interest_rate = interest_rate;
+  data->type_credit = gtk_radio_button_new_with_label(NULL, "Annuity type");
+  data->type_credit2 = gtk_radio_button_new_with_label(
+      gtk_radio_button_get_group(GTK_RADIO_BUTTON(data->type_credit)),
       "Differentiated type");
   gtk_box_pack_start(GTK_BOX(hbox_t), total_amount, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(hbox_t), total_amount_label, FALSE, FALSE, 5);
@@ -178,18 +193,18 @@ void cb_create_entry() {
   gtk_box_pack_start(GTK_BOX(hbox_intr), interest_rate_label, FALSE, FALSE, 5);
   gtk_container_add(GTK_CONTAINER(scroll), lst);  //;, TRUE, TRUE, 5);
 
-  gtk_box_pack_start(GTK_BOX(hbox_intr), type_credit, FALSE, FALSE, 45);
-  gtk_box_pack_start(GTK_BOX(hbox_intr), type_credit2, FALSE, FALSE, 25);
+  gtk_box_pack_start(GTK_BOX(hbox_intr), data->type_credit, FALSE, FALSE, 45);
+  gtk_box_pack_start(GTK_BOX(hbox_intr), data->type_credit2, FALSE, FALSE, 25);
 
   gtk_box_pack_start(GTK_BOX(vbox_upper), hbox_t, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_upper), hbox_term, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_upper), hbox_intr, FALSE, FALSE, 5);
-  // gtk_box_pack_start(GTK_BOX(vbox_upper), vbox_radio, FALSE, FALSE, 5);
 
   labl = gtk_label_new("");
   gtk_box_pack_start(GTK_BOX(vbox_e), vbox_upper, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), fineq, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), scroll, TRUE, TRUE, 5);
+  gtk_box_pack_end(GTK_BOX(vbox_e), q_butn, FALSE, FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox_e), labl, FALSE, FALSE, 5);
 
   gtk_container_add(GTK_CONTAINER(windw), vbox_e);
@@ -199,6 +214,7 @@ void cb_create_entry() {
   selecton = gtk_tree_view_get_selection(GTK_TREE_VIEW(lst));
 
   g_signal_connect(selecton, "changed", G_CALLBACK(on_changed), labl);
-  g_signal_connect(fineq, "clicked", G_CALLBACK(finances), NULL);
+  g_signal_connect(fineq, "clicked", G_CALLBACK(finances), data);
+  g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeWin), data);
   gtk_widget_show_all(windw);
 }
