@@ -7,7 +7,8 @@ typedef struct {
   GtkWidget *codomain2;
   GtkWidget *codomain3;
   GtkWidget *codomain4;
-  GtkWidget *data;
+  GtkEntry* data;
+  GtkWidget* window;
 } codomains;
 
 char *str_replace(char *orig, char *rep, char *with);

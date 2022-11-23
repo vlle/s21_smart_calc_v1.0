@@ -11,13 +11,14 @@
 #define WIDTH 640
 #define HEIGHT 480
 
-GtkWidget *result_label, *calc_label, *result;
-GtkWidget *infix_entry;
+GtkWidget *result;
 
 void closeApp() { gtk_main_quit(); }
 
-void calc() {
+void calc(GtkWidget*button, gpointer user_data) {
+  (void) button; // need this to get rid of error
   char rs[128 * 4] = {0};
+  GtkWidget* infix_entry = (GtkWidget*) user_data;
   const char *infix_string = gtk_entry_get_text(GTK_ENTRY(infix_entry));
   long double result_num = calculate(infix_string);
   sprintf(rs, "%Lf", result_num);
@@ -25,7 +26,8 @@ void calc() {
 }
 
 void smartcalc() {
-  GtkWidget *window;
+  GtkWidget *infix_entry;
+  GtkWidget *window, *calc_label, *result_label;
   GtkWidget *ok_button, *draw_button;
   GtkWidget *hbox1, *hbox2, *hbox3;
   GtkWidget *vbox;

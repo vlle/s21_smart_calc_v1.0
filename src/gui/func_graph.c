@@ -7,14 +7,6 @@
 #define ZOOM_X 100.0
 #define ZOOM_Y 100.0
 
-typedef struct {
-        GtkWidget *host;
-} example;
-
-void b_clicked (GtkButton *c_button, example *test){
-        g_print("Hostname: %s\n", gtk_entry_get_text (GTK_ENTRY(test->host)));
-}
-
 gfloat f(gfloat x, const char *parser) {
   char *newstr;
   char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
@@ -116,7 +108,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   cairo_stroke(cr);
 
   /* Link each data point */
-  const char *fc = gtk_entry_get_text(GTK_ENTRY(data));
+  const char *fc = "sin(x)";//gtk_entry_get_text(GTK_ENTRY(data));
   for (i = clip_x1; i < clip_x2; i += dx) {
     long double dot = f(i, fc);
     if ((isnan(dot)) || (isinf(dot))) {
@@ -138,7 +130,12 @@ GtkWidget *dra;
 void comeon(GtkWidget *window, gpointer user_data) {
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), user_data);
 }
-void closeFunc(GtkWidget *window, gpointer data) { gtk_widget_destroy(data); }
+void closeFunc(GtkWidget *window, gpointer data) {
+  codomains* check = (codomains*) data;
+  GtkWidget* destroy_window = check->window;
+  free(check);
+  gtk_widget_destroy(destroy_window); 
+}
 
 void draw_create_entry(GtkWidget *button, gpointer data) {
   GtkWidget *hbox, *hbox_entrys, *windw;
@@ -147,10 +144,9 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   *label_codomain4;
   GtkWidget *butn, *q_butn, *codomain1, *codomain2, *codomain3, *codomain4;
   codomains *forms = malloc(sizeof(codomains)*1);
-  // forms->data = (GtkWidget*) data;
-  //   GtkWidget **entry_arr = {0};
   dra = gtk_drawing_area_new();
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  forms->window = windw;
   hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
   hbox_entrys = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
   def1 = gtk_entry_buffer_new("2", 1);
@@ -161,6 +157,7 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   codomain2 = gtk_entry_new_with_buffer(def2);
   codomain3 = gtk_entry_new_with_buffer(def3);
   codomain4 = gtk_entry_new_with_buffer(def4);
+  forms->data = (GtkEntry*) data; 
   forms->codomain1 = codomain1; 
   forms->codomain2 = codomain2; 
   forms->codomain3 = codomain3; 
@@ -189,10 +186,10 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   gtk_box_pack_start(GTK_BOX(hbox), dra, TRUE, TRUE, 50);
   gtk_box_pack_start(GTK_BOX(hbox), hbox_entrys, TRUE, TRUE, 2);
   gtk_container_add(GTK_CONTAINER(windw), hbox);
-  // g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), GTK_ENTRY(forms.data));
-  // g_signal_connect(G_OBJECT(butn), "clicked", G_CALLBACK(comeon),
-  //                  forms);
+  g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), forms);
+  g_signal_connect(G_OBJECT(butn), "clicked", G_CALLBACK(comeon),
+                   forms);
   g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeFunc),
-                   GTK_WINDOW(windw));
+                   forms);
   gtk_widget_show_all(windw);
 }
