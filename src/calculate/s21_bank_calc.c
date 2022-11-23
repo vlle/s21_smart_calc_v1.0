@@ -39,8 +39,5 @@ finance_info credit_calculate(finance_info credit) {
     credit.total_payment = credit.remainder_credit;  // + credit.overpayment;
     credit.remainder_credit -= credit.diff_payment_part;
   }
-
-  printf("%Lf = total\n%Lf = monthly\n%Lf = overpay", credit.total_payment,
-         credit.monthly_payment, credit.overpayment);
   return credit;
 }

@@ -7,8 +7,7 @@ START_TEST(add_minus) {
   char funcstr[MAX_ENTRY_SIZE] = {"\0"};
   char b[100] = "2 + (11 - 1)";
   double res = 12;
-  char *prs = parse_oper(funcstr, b);
-  double my_res = cal_oper(prs);
+  double my_res = calculate(b);
   ck_assert_double_eq(res, my_res);
 }
 END_TEST

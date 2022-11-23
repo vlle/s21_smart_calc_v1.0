@@ -69,7 +69,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
 
   char legend[33];
   cairo_set_source_rgba(cr, 82.0, 56, 112.0, 0.3);
-  cairo_set_font_size(cr, 0.5);
+  cairo_set_font_size(cr, 0.3);
   for (i = -da.width; i < da.width; i += 1) {
     if (fabs(i - 1) > 1) {
       cairo_move_to(cr, i, -da.height / f2);
@@ -100,10 +100,11 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
       cairo_show_text(cr, legend);
     }
   }
-  cairo_stroke(cr);
-  sprintf(legend, "%c", 'x');
-  cairo_move_to(cr, +da.width/f1, 1);
-  cairo_show_text(cr, legend);
+  cairo_move_to(cr, 0.7, 0.3);
+  cairo_show_text(cr, "x");
+
+  cairo_move_to(cr, 0.3, -0.7);
+  cairo_show_text(cr, "y");
 
   cairo_stroke(cr);
 
