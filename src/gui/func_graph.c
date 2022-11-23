@@ -35,12 +35,12 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
   cairo_paint(cr);
 
-  codomains *user = (codomains*) user_data;
-  GtkEntry *codomain1 = (GtkEntry*) user->codomain1;
-  GtkEntry *codomain2 = (GtkEntry*) user->codomain2;
-  GtkEntry *codomain3 = (GtkEntry*) user->codomain3;
-  GtkEntry *codomain4 = (GtkEntry*) user->codomain4;
-  GtkEntry *data = (GtkEntry*) user->data;
+  codomains *user = (codomains *)user_data;
+  GtkEntry *codomain1 = (GtkEntry *)user->codomain1;
+  GtkEntry *codomain2 = (GtkEntry *)user->codomain2;
+  GtkEntry *codomain3 = (GtkEntry *)user->codomain3;
+  GtkEntry *codomain4 = (GtkEntry *)user->codomain4;
+  GtkEntry *data = (GtkEntry *)user->data;
   /* Change the transformation matrix */
   const char *x1_c = gtk_entry_get_text(GTK_ENTRY(codomain1));
   const char *x2_c = gtk_entry_get_text(GTK_ENTRY(codomain2));
@@ -67,10 +67,6 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   cairo_line_to(cr, 0.0, clip_y2);
   cairo_stroke(cr);
 
-  //  double iterator_x = (fabs(f1) + fabs(f2)) + 10;
-  //  double iterator_y = (fabs(f3) + fabs(f4)) + 10;
-  // cairo_set_source_rgb(cr, 2.0, 1.0, 0.0);
-  // cairo_set_source_rgba(cr, 255.0, 204, 0.0, 0.8);
   char legend[33];
   cairo_set_source_rgba(cr, 82.0, 56, 112.0, 0.3);
   cairo_set_font_size(cr, 0.5);
@@ -104,11 +100,15 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
       cairo_show_text(cr, legend);
     }
   }
+  cairo_stroke(cr);
+  sprintf(legend, "%c", 'x');
+  cairo_move_to(cr, +da.width/f1, 1);
+  cairo_show_text(cr, legend);
 
   cairo_stroke(cr);
 
   /* Link each data point */
-  const char *fc = "sin(x)";//gtk_entry_get_text(GTK_ENTRY(data));
+  const char *fc = gtk_entry_get_text(GTK_ENTRY(data));
   for (i = clip_x1; i < clip_x2; i += dx) {
     long double dot = f(i, fc);
     if ((isnan(dot)) || (isinf(dot))) {
@@ -131,19 +131,19 @@ void comeon(GtkWidget *window, gpointer user_data) {
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), user_data);
 }
 void closeFunc(GtkWidget *window, gpointer data) {
-  codomains* check = (codomains*) data;
-  GtkWidget* destroy_window = check->window;
+  codomains *check = (codomains *)data;
+  GtkWidget *destroy_window = check->window;
   free(check);
-  gtk_widget_destroy(destroy_window); 
+  gtk_widget_destroy(destroy_window);
 }
 
 void draw_create_entry(GtkWidget *button, gpointer data) {
   GtkWidget *hbox, *hbox_entrys, *windw;
   GtkEntryBuffer *def1, *def2, *def3, *def4;
   GtkWidget *label_codomain1, *label_codomain2, *label_codomain3,
-  *label_codomain4;
+      *label_codomain4;
   GtkWidget *butn, *q_butn, *codomain1, *codomain2, *codomain3, *codomain4;
-  codomains *forms = malloc(sizeof(codomains)*1);
+  codomains *forms = malloc(sizeof(codomains) * 1);
   dra = gtk_drawing_area_new();
   windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   forms->window = windw;
@@ -157,11 +157,11 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   codomain2 = gtk_entry_new_with_buffer(def2);
   codomain3 = gtk_entry_new_with_buffer(def3);
   codomain4 = gtk_entry_new_with_buffer(def4);
-  forms->data = (GtkEntry*) data; 
-  forms->codomain1 = codomain1; 
-  forms->codomain2 = codomain2; 
-  forms->codomain3 = codomain3; 
-  forms->codomain4 = codomain4; 
+  forms->data = (GtkEntry *)data;
+  forms->codomain1 = codomain1;
+  forms->codomain2 = codomain2;
+  forms->codomain3 = codomain3;
+  forms->codomain4 = codomain4;
   label_codomain1 = gtk_label_new("X");
   label_codomain2 = gtk_label_new("Y");
   label_codomain3 = gtk_label_new("X");
@@ -187,9 +187,7 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   gtk_box_pack_start(GTK_BOX(hbox), hbox_entrys, TRUE, TRUE, 2);
   gtk_container_add(GTK_CONTAINER(windw), hbox);
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), forms);
-  g_signal_connect(G_OBJECT(butn), "clicked", G_CALLBACK(comeon),
-                   forms);
-  g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeFunc),
-                   forms);
+  g_signal_connect(G_OBJECT(butn), "clicked", G_CALLBACK(comeon), forms);
+  g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeFunc), forms);
   gtk_widget_show_all(windw);
 }

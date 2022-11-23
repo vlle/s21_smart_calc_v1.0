@@ -15,10 +15,10 @@ GtkWidget *result;
 
 void closeApp() { gtk_main_quit(); }
 
-void calc(GtkWidget*button, gpointer user_data) {
-  (void) button; // need this to get rid of error;
+void calc(GtkWidget *button, gpointer user_data) {
+  (void)button;  // need this to get rid of error;
   char rs[128 * 4] = {0};
-  GtkWidget* infix_entry = (GtkWidget*) user_data;
+  GtkWidget *infix_entry = (GtkWidget *)user_data;
   const char *infix_string = gtk_entry_get_text(GTK_ENTRY(infix_entry));
   long double result_num = calculate(infix_string);
   sprintf(rs, "%Lf", result_num);

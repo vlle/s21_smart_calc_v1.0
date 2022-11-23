@@ -7,8 +7,8 @@ typedef struct {
   GtkWidget *codomain2;
   GtkWidget *codomain3;
   GtkWidget *codomain4;
-  GtkEntry* data;
-  GtkWidget* window;
+  GtkEntry *data;
+  GtkWidget *window;
 } codomains;
 
 typedef struct {
@@ -17,13 +17,13 @@ typedef struct {
   GtkWidget *interest_rate;
   GtkWidget *type_credit;
   GtkWidget *type_credit2;
-  GtkWidget* window;
+  GtkWidget *window;
 } finance_i;
 
 char *str_replace(char *orig, char *rep, char *with);
 void init_list(GtkWidget *list);
 void add_to_list(GtkWidget *list, const gchar *total, const gchar *month,
-    const gchar *over);
+                 const gchar *over);
 void debug(char *prs, double my_res);
 void on_changed(GtkWidget *widget, gpointer label);
 void cb_create_entry();

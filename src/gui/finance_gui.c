@@ -61,9 +61,8 @@ void on_changed(GtkWidget *widget, gpointer label) {
   }
 }
 
-
-void finances(GtkWidget* button, gpointer data) {
-  (void) button;
+void finances(GtkWidget *button, gpointer data) {
+  (void)button;
   if (!data) {
     exit(1);
   }
@@ -72,8 +71,7 @@ void finances(GtkWidget* button, gpointer data) {
   char over[256];
   char type;
 
-
-  finance_i *stuff = (finance_i*) data;
+  finance_i *stuff = (finance_i *)data;
   finance_info tmp = {0};
   GtkWidget *total_amount = stuff->total_amount;
   GtkWidget *term = stuff->term;
@@ -125,11 +123,11 @@ void finances(GtkWidget* button, gpointer data) {
 }
 
 void closeWin(GtkWidget *button, gpointer data) {
-  (void) button;
-  finance_i* check = (finance_i*) data;
-  GtkWidget* destroy_window = check->window;
+  (void)button;
+  finance_i *check = (finance_i *)data;
+  GtkWidget *destroy_window = check->window;
   free(check);
-  gtk_widget_destroy(destroy_window); 
+  gtk_widget_destroy(destroy_window);
 }
 
 void cb_create_entry() {
@@ -142,7 +140,7 @@ void cb_create_entry() {
   GtkWidget *total_amount, *term, *interest_rate;
 
   GtkTreeSelection *selecton;
-  finance_i *data = malloc(sizeof(finance_i)*1);
+  finance_i *data = malloc(sizeof(finance_i) * 1);
   scroll = gtk_scrolled_window_new(NULL, NULL);
   gtk_widget_set_hexpand(scroll, TRUE);
   gtk_widget_set_vexpand(scroll, TRUE);
@@ -178,7 +176,7 @@ void cb_create_entry() {
   total_amount_label = gtk_label_new("Total money amount");
   term_label = gtk_label_new("Term");
   interest_rate_label = gtk_label_new("Interest rate");
-  data->total_amount = total_amount; 
+  data->total_amount = total_amount;
   data->term = term;
   data->interest_rate = interest_rate;
   data->type_credit = gtk_radio_button_new_with_label(NULL, "Annuity type");
