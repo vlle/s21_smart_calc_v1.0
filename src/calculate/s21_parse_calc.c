@@ -50,7 +50,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
   char* inpstr = (char*)inpo;
   int len = strlen(inpo);
   int i = -1;
-  for (; ((*inpstr != '\0') & (len > i)); inpstr++) {
+  for (; ((*inpstr != '\0') & (len >= i)); inpstr++) {
     i++;
     if (*inpstr >= '0' && *inpstr <= '9') {
       char num_str[MAX_ENTRY_SIZE] = {0};
@@ -60,6 +60,14 @@ char* parse_oper(char* funcstr, const char* inpo) {
       inpstr = pEnd;
       strcat(num_str, " ");
       strcat(funcstr, num_str);
+      if (nodesCount >= 1) {
+        if (peekC(opr) == '-') {
+          strcat(funcstr, " ");
+          strcat(funcstr, "-");
+          strcat(funcstr, " ");
+          popC(&nodesCount, &opr); /* peek for preceding op */
+        }
+      }
     }
 
     if (*inpstr == '(') {
@@ -160,7 +168,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
         funcstr[funcstr_i++] =
-            popC(&nodesCount, &opr); /* peek for preceding op */
+          popC(&nodesCount, &opr); /* peek for preceding op */
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
@@ -177,6 +185,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
     funcstr[funcstr_i++] = ' ';
   }
   funcstr[funcstr_i] = '\0';
+  printf("%s\n", funcstr);
   return funcstr;
 }
 
@@ -209,7 +218,7 @@ long double cal_oper(char* funcstr) {
     if (*funcstr >= '0' && *funcstr <= '9') {
       char* pEnd;
       long double calc_num =
-          strtold(funcstr, &pEnd); /*strtold parses float num from str*/
+        strtold(funcstr, &pEnd); /*strtold parses float num from str*/
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
       result = calc_num;

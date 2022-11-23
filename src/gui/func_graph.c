@@ -10,7 +10,7 @@
 long double f(long double x, const char *parser) {
   char *newstr;
   char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
-  snprintf(rs, sizeof(rs), "%Lf", x);
+  snprintf(rs, sizeof(rs), "(%Lf)", x);
   newstr = str_replace((char *)parser, "x", rs);
   long double my_res = calculate(newstr);
   free(newstr);
@@ -113,9 +113,9 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   for (i = clip_x1; i < clip_x2; i += dx) {
     long double dot = f(i, fc);
     if ((isnan(dot)) || (isinf(dot))) {
-      cairo_new_sub_path(cr);
+      cairo_stroke(cr);
     } else {
-      cairo_line_to(cr, i, -dot);
+      cairo_line_to(cr, -i, dot);
     }
   }
 
