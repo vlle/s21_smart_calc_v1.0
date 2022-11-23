@@ -48,7 +48,10 @@ char* parse_oper(char* funcstr, const char* inpo) {
   int nodesCount = 0;
   int funcstr_i = 0;
   char* inpstr = (char*)inpo;
-  for (; *inpstr != '\0'; inpstr++) {
+  int len = strlen(inpo);
+  int i = -1;
+  for (; *inpstr != '\0' & len > i; inpstr++) {
+    i++;
     if (*inpstr >= '0' && *inpstr <= '9') {
       char num_str[MAX_ENTRY_SIZE] = {0};
       char* pEnd;
