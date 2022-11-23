@@ -157,7 +157,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
       funcstr_i = strlen(funcstr);
       while (peekC(opr) != '(') {
         funcstr[funcstr_i++] =
-          popC(&nodesCount, &opr); /* peek for preceding op */
+            popC(&nodesCount, &opr); /* peek for preceding op */
         funcstr[funcstr_i++] = ' ';
         if (nodesCount == 0) {
           perror("Wtf man");
@@ -206,7 +206,7 @@ long double cal_oper(char* funcstr) {
     if (*funcstr >= '0' && *funcstr <= '9') {
       char* pEnd;
       long double calc_num =
-        strtold(funcstr, &pEnd); /*strtold parses float num from str*/
+          strtold(funcstr, &pEnd); /*strtold parses float num from str*/
       push_backN(&nodesCount, &nums, calc_num);
       funcstr = pEnd;
       result = calc_num;

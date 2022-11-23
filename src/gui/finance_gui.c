@@ -6,12 +6,11 @@ GtkWidget *lst;
 GtkTreeSelection *selecton;
 GtkWidget *total_amount, *term, *interest_rate;
 GtkWidget *type_credit, *type_credit2;
-int type = -1;
 
-void debug(char *prs, double my_res) {
-  g_print("%f\n", my_res);
-  g_print("%s\n", prs);
-}
+// void debug(char *prs, double my_res) {
+//   g_print("%f\n", my_res);
+//   g_print("%s\n", prs);
+// }
 
 void init_list(GtkWidget *lst) {
   GtkCellRenderer *renderer;
@@ -69,15 +68,9 @@ void on_changed(GtkWidget *widget, gpointer label) {
   }
 }
 
-char typea() {
-  return 'a';
-  g_print("%c", 'a');
-}
+char typea() { return 'a'; }
 
-char typeb() {
-  return 'b';
-  g_print("%c", 'b');
-}
+char typeb() { return 'b'; }
 
 void finances() {
   char total[1024];
