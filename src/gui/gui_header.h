@@ -27,7 +27,7 @@ void add_to_list(GtkWidget *list, const gchar *total, const gchar *month,
 void debug(char *prs, double my_res);
 void on_changed(GtkWidget *widget, gpointer label);
 void cb_create_entry();
-gfloat f(gfloat x, const char *parser);  //, char* parse
+long double f(long double x, const char *parser);
 void draw_create_entry(GtkWidget *button, gpointer data);
 gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 

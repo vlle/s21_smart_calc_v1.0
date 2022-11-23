@@ -7,12 +7,12 @@
 #define ZOOM_X 100.0
 #define ZOOM_Y 100.0
 
-gfloat f(gfloat x, const char *parser) {
+long double f(long double x, const char *parser) {
   char *newstr;
   char rs[MAX_ENTRY_SIZE * 4] = {'\0'};
-  snprintf(rs, sizeof(rs), "%.2f", x);
+  snprintf(rs, sizeof(rs), "%Lf", x);
   newstr = str_replace((char *)parser, "x", rs);
-  double my_res = calculate(newstr);
+  long double my_res = calculate(newstr);
   free(newstr);
   return my_res;
 }
@@ -22,7 +22,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
     return FALSE;
   }
   GdkRectangle da;            /* GtkDrawingArea size */
-  gdouble dx = 5.0, dy = 5.0; /* Pixels between each point */
+  gdouble dx = 3.0, dy = 3.0; /* Pixels between each point */
   gdouble i, clip_x1 = 0.0, clip_y1 = 0.0, clip_x2 = 0.0, clip_y2 = 0.0;
   GdkWindow *window = gtk_widget_get_window(widget);
   cairo_select_font_face(cr, "monospace", CAIRO_FONT_SLANT_NORMAL,

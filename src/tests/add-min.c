@@ -4,7 +4,6 @@
 #include "../smartcalc.h"
 
 START_TEST(add_minus) {
-  char funcstr[MAX_ENTRY_SIZE] = {"\0"};
   char b[100] = "2 + (11 - 1)";
   double res = 12;
   double my_res = calculate(b);
