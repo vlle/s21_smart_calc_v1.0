@@ -5,9 +5,10 @@
 
 #include "../smartcalc.h"
 
-#define VERYHIGH "^"
+#define VERYHIGH "~^"
 #define HIGHPRIOR "^*/STCstc%Llv"  // ^
 #define LOWPRIOR "^*/+-stcSTC%Llv"
+#define ALL "()^*/+-stcSTC%Llv"
 
 /* These functions are for support.
 
@@ -44,14 +45,22 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount,
    Algo: Parse nums, parse OPs (and check priority), parse Trigonometry func */
 
 char* parse_oper(char* funcstr, const char* inpo) {
+  char *nospace= malloc(sizeof(inpo));
+  int f = 0;
+  for (unsigned int i = 0; i < strlen(inpo); i++) {
+    if (inpo[i] != ' ') {
+      nospace[f] = inpo[i];
+      f++;
+    }
+  }
+  printf("%s = spce\n",nospace);
   struct Node* opr = {0};
   int nodesCount = 0;
   int funcstr_i = 0;
-  char* inpstr = (char*)inpo;
+  char* inpstr = nospace;
   int len = strlen(inpo);
-  int i = -1;
+  int i = 0;
   for (; ((*inpstr != '\0') & (len >= i)); inpstr++) {
-    i++;
     if (*inpstr >= '0' && *inpstr <= '9') {
       char num_str[MAX_ENTRY_SIZE] = {0};
       char* pEnd;
@@ -60,6 +69,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
       inpstr = pEnd;
       strcat(num_str, " ");
       strcat(funcstr, num_str);
+      i += (pEnd-inpstr);
       if (nodesCount >= 1) {
         if (peekC(opr) == '-') {
           strcat(funcstr, " ");
@@ -78,10 +88,21 @@ char* parse_oper(char* funcstr, const char* inpo) {
       }
       push_backC(&nodesCount, &opr, '+');
     } else if (*inpstr == '-') {
-      if (nodesCount > 0) {
-        push_and_print(&funcstr, &opr, &nodesCount, LOWPRIOR);
+      char* tmp = inpstr-1;
+      if ((i == 0) || ((i>1) && (*tmp != ')') && (strchr(ALL, *tmp) != NULL))) {
+        if (nodesCount > 0) {
+          push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
+        }
+        if (i != 0) {
+          printf("I am fucker%d\n", i);
+        }
+        push_backC(&nodesCount, &opr, '~');
+      } else {
+        if (nodesCount > 0) {
+          push_and_print(&funcstr, &opr, &nodesCount, LOWPRIOR);
+        }
+        push_backC(&nodesCount, &opr, '-');
       }
-      push_backC(&nodesCount, &opr, '-');
     } else if (*inpstr == '/') {
       if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
         push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
@@ -177,6 +198,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
       }
       popC(&nodesCount, &opr); /* removing '(' after we popped everything out */
     }
+    i++;
   }
   funcstr_i = strlen(funcstr);
   /* poppint everything on output string after finishing parsing*/
@@ -230,13 +252,12 @@ long double cal_oper(char* funcstr) {
         result = +(popN(&nodesCount, &nums)); /* Check for Unary plus*/
       }
       push_backN(&nodesCount, &nums, result);
+    } else if (*funcstr == '~') {
+      result = 0-(popN(&nodesCount, &nums)); /* Check for Unary minus*/
+      push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '-') {
-      if (nodesCount > 1) {
-        var = popper(&nums, &nodesCount);
-        result = var.a2 - var.a1;
-      } else if (nodesCount == 1) {
-        result = -(popN(&nodesCount, &nums)); /* Check for Unary minus*/
-      }
+      var = popper(&nums, &nodesCount);
+      result = var.a2 - var.a1;
       push_backN(&nodesCount, &nums, result);
     } else if (*funcstr == '*') {
       var = popper(&nums, &nodesCount);
