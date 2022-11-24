@@ -33,28 +33,25 @@ llgtk    ?=$(shell pkg-config --libs gtk+-3.0)
 # all, install, uninstall, clean, dvi, dist, tests, gcov_report. 
 # Installation directory could be arbitrary, except the building one
 
-all: dist tests
+all: tests
 
-install:
-	brew install gtk+3
+install: $(LIB)
+	@echo "Building Graphical Calculator"
+	@mkdir -p s21_smart_calc
+	@gcc  $(lgtk)  -c gui/func_graph.c -o func_graph.o
+	@gcc $(CFLAGS) $(lgtk) -c gui/finance_gui.c -o nice_graph.o
+	@gcc $(CFLAGS) $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o s21_smart_calc/smartcalc  $(llgtk)
+	@echo "Build was successful. Start your smartcalc in s21_smart_calc with ./smartcalc"
 
 uninstall:
-	brew uninstall gtk+3
+	rm -rf s21_smart_calc
 
 dist: $(LIB)
 
-dvi: gui_back
+#dvi: gui_back
 
 tests: test.out
 	./test.out
-
-gui_back: $(LIB)
-	@echo "Building Graphical Calculator"
-	@gcc  $(lgtk)  -c gui/func_graph.c -o func_graph.o
-	@gcc $(CFLAGS) $(lgtk) -c gui/finance_gui.c -o nice_graph.o
-	@gcc $(CFLAGS) $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o smartcalc  $(llgtk)
-	@echo "Build was successful. Start your smartcalc with ./smartcalc"
-
 
 rebuild: clean all
 
