@@ -5,10 +5,11 @@
 
 #include "../smartcalc.h"
 
+#define SUPREME "~"
 #define VERYHIGH "~^"
-#define HIGHPRIOR "^*/STCstc%Llv"  // ^
-#define LOWPRIOR "^*/+-stcSTC%Llv"
-#define ALL "()^*/+-stcSTC%Llv"
+#define HIGHPRIOR "^*/STCstc%Llv~"  // ^
+#define LOWPRIOR "^*/+-stcSTC%Ll~v"
+#define ALL "()^*/+-stcSTC%Llv~"
 
 /* These functions are for support.
 
@@ -69,7 +70,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
       inpstr = pEnd;
       strcat(num_str, " ");
       strcat(funcstr, num_str);
-      i += (pEnd-inpstr);
+      i += (pEnd-inpstr+1);
       if (nodesCount >= 1) {
         if (peekC(opr) == '-') {
           strcat(funcstr, " ");
@@ -77,6 +78,9 @@ char* parse_oper(char* funcstr, const char* inpo) {
           strcat(funcstr, " ");
           popC(&nodesCount, &opr); /* peek for preceding op */
         }
+      }
+      if (nodesCount >= 1) {
+        push_and_print(&funcstr, &opr, &nodesCount, SUPREME);
       }
     }
 
@@ -88,14 +92,13 @@ char* parse_oper(char* funcstr, const char* inpo) {
       }
       push_backC(&nodesCount, &opr, '+');
     } else if (*inpstr == '-') {
-      char* tmp = inpstr-1;
-      if ((i == 0) || ((i>1) && (*tmp != ')') && (strchr(ALL, *tmp) != NULL))) {
+      char* tp = inpstr-1;
+      char tmp = *tp;
+      if ((i == 0) || ((i>1) && (tmp != ')') && (strchr(ALL, tmp) != NULL))) {
         if (nodesCount > 0) {
           push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
         }
-        if (i != 0) {
-          printf("I am fucker%d\n", i);
-        }
+        printf("I AM UNARY%c\n%i\n", tmp, i);
         push_backC(&nodesCount, &opr, '~');
       } else {
         if (nodesCount > 0) {
@@ -208,6 +211,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
   }
   funcstr[funcstr_i] = '\0';
   printf("%s\n", funcstr);
+  free(nospace);
   return funcstr;
 }
 
