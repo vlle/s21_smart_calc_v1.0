@@ -33,7 +33,15 @@ int push_backC(int *nodesCount, struct Node **top, char oper) {
 
 long double peekN(struct Node *a) { return a->storage; }
 
-char peekC(struct Node *a) { return a->res; }
+char peekC(struct Node *a) { 
+  char res;
+  if (!a) {
+    res = '?';
+  } else {
+    res = a->res;
+  }
+  return res; 
+}
 
 long double popN(int *nodesCount, struct Node **top) {
   long double x = 0;

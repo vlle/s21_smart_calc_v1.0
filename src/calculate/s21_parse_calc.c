@@ -46,19 +46,19 @@ void push_and_print(char** funcstr, struct Node** opr, int* nodesCount,
    Algo: Parse nums, parse OPs (and check priority), parse Trigonometry func */
 
 char* parse_oper(char* funcstr, const char* inpo) {
-  char *nospace= malloc(sizeof(inpo));
-  int f = 0;
-  for (unsigned int i = 0; i < strlen(inpo); i++) {
-    if (inpo[i] != ' ') {
-      nospace[f] = inpo[i];
-      f++;
-    }
-  }
-  printf("%s = spce\n",nospace);
+  // char *nospace= malloc(sizeof(inpo));
+  // int f = 0;
+  // for (unsigned int i = 0; i < strlen(inpo); i++) {
+  //   if (inpo[i] != ' ') {
+  //     nospace[f] = inpo[i];
+  //     f++;
+  //   }
+  // }
+  // printf("%s = spce\n",nospace);
   struct Node* opr = {0};
   int nodesCount = 0;
   int funcstr_i = 0;
-  char* inpstr = nospace;
+  char* inpstr = (char*) inpo;
   int len = strlen(inpo);
   int i = 0;
   for (; ((*inpstr != '\0') & (len >= i)); inpstr++) {
@@ -122,26 +122,26 @@ char* parse_oper(char* funcstr, const char* inpo) {
       }
       push_backC(&nodesCount, &opr, '^');
     } else if ((*inpstr == 's') & (strncmp(inpstr, "sin", 3) == 0)) {
-      if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-        push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+      if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+        push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
       }
       push_backC(&nodesCount, &opr, 's');
     } else if (*inpstr == 't') {
       if (strncmp(inpstr, "tan", 3) == 0) {
-        if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+        if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+          push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
         }
         push_backC(&nodesCount, &opr, 't');
       }
     } else if ((*inpstr == 's') && (strncmp(inpstr, "sqrt", 4) == 0)) {
-      if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-        push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+      if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+        push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
       }
       push_backC(&nodesCount, &opr, 'v');
     } else if (*inpstr == 'c') {
       if (strncmp(inpstr, "cos", 3) == 0) {
-        if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+        if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+          push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
         }
         push_backC(&nodesCount, &opr, 'c');
       }
@@ -149,35 +149,35 @@ char* parse_oper(char* funcstr, const char* inpo) {
       inpstr += 1;
       if (*inpstr == 's') {
         if (strncmp(inpstr, "sin", 3) == 0) {
-          if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-            push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+          if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+            push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
           }
           push_backC(&nodesCount, &opr, 'S');
         }
       } else if (*inpstr == 't') {
         if (strncmp(inpstr, "tan", 3) == 0) {
-          if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-            push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+          if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+            push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
           }
           push_backC(&nodesCount, &opr, 'T');
         }
       } else if (*inpstr == 'c') {
         if (strncmp(inpstr, "cos", 3) == 0) {
-          if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-            push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+          if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+            push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
           }
           push_backC(&nodesCount, &opr, 'C');
         }
       }
     } else if (*inpstr == 'l') {
       if (strncmp(inpstr, "ln", 2) == 0) {
-        if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+        if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+          push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
         }
         push_backC(&nodesCount, &opr, 'l');
       } else if (strncmp(inpstr, "log", 3) == 0) {
-        if (checkNodesPrior(nodesCount, opr, LOWPRIOR)) {
-          push_and_print(&funcstr, &opr, &nodesCount, HIGHPRIOR);
+        if (checkNodesPrior(nodesCount, opr, VERYHIGH)) {
+          push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
         }
         push_backC(&nodesCount, &opr, 'L');
       }
@@ -211,7 +211,7 @@ char* parse_oper(char* funcstr, const char* inpo) {
   }
   funcstr[funcstr_i] = '\0';
   printf("%s\n", funcstr);
-  free(nospace);
+  // free(nospace);
   return funcstr;
 }
 

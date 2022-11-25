@@ -4,7 +4,7 @@
 #include "../smartcalc.h"
 
 START_TEST(add_minus) {
-  char b[100] = "2 + (11 - 1)";
+  char b[100] = "2+(11-1)";
   double res = 12;
   double my_res = calculate(b);
   ck_assert_double_eq(res, my_res);
@@ -42,13 +42,10 @@ START_TEST(min) {
 END_TEST
 
 START_TEST(min_min) {
-  char funcstr[MAX_ENTRY_SIZE] = {0};
-  // char b[100] = "6-2-2";
-  char b[100] = "6 + 2 - 2";
-  double res = 6;
-  char *prs = parse_oper(funcstr, b);
-  double my_res = cal_oper(prs);
-  ck_assert_double_eq(res, my_res);
+  char b[100] = "2*sin(1)";
+  double res = 1.68294;
+  double my_res = calculate(b);
+  ck_assert_double_eq_tol(res, my_res, 0.00001);
 }
 END_TEST
 
