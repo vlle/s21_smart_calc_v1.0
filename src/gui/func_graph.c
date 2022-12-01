@@ -24,7 +24,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   GdkRectangle da;            /* GtkDrawingArea size */
   gdouble dx = 3.0, dy = 3.0; /* Pixels between each point */
   gdouble i, clip_x1 = 0.0, clip_y1 = 0.0, clip_x2 = 0.0, clip_y2 = 0.0;
-  GdkWindow *window = gtk_widget_get_window(widget);
+  GdkSurface *window = GDK_SURFACE(widget);
   cairo_select_font_face(cr, "monospace", CAIRO_FONT_SLANT_NORMAL,
                          CAIRO_FONT_WEIGHT_NORMAL);
 
@@ -42,10 +42,10 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   GtkEntry *codomain4 = (GtkEntry *)user->codomain4;
   GtkEntry *data = (GtkEntry *)user->data;
   /* Change the transformation matrix */
-  const char *x1_c = gtk_entry_get_text(GTK_ENTRY(codomain1));
-  const char *x2_c = gtk_entry_get_text(GTK_ENTRY(codomain2));
-  const char *y1_c = gtk_entry_get_text(GTK_ENTRY(codomain3));
-  const char *y2_c = gtk_entry_get_text(GTK_ENTRY(codomain4));
+  const char *x1_c = gtk_editable_get_text (GTK_EDITABLE (codomain1));
+  const char *x2_c = gtk_editable_get_text (GTK_EDITABLE (codomain2));
+  const char *y1_c = gtk_editable_get_text (GTK_EDITABLE (codomain3));
+  const char *y2_c = gtk_editable_get_text (GTK_EDITABLE (codomain4));
   long double f1, f2, f3, f4;
   f1 = fabs(calculate(x1_c));
   f2 = fabs(calculate(x2_c));
@@ -190,5 +190,4 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), forms);
   g_signal_connect(G_OBJECT(butn), "clicked", G_CALLBACK(comeon), forms);
   g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeFunc), forms);
-  gtk_widget_show_all(windw);
 }

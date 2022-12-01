@@ -1,7 +1,8 @@
 CC = gcc
 
 WARNING    = -Wall -Werror -Wextra
-CFLAGS     = -std=c11 -pedantic $(WARNING)#  -fsanitize=address
+DEP        = -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED
+CFLAGS     = -std=c11 -pedantic $(DEP) $(WARNING)#  -fsanitize=address
 LFLAGS    ?= $(shell pkg-config --cflags --libs check)
 INC_CHECK ?= $(shell pkg-config --cflags check)
 
@@ -25,8 +26,8 @@ GCOV_OBJS := $(SRC:%.c=$(GCOV_OBJ_DIR)/%.o)
 
 DEC_TEST := calculate_t.c
 LIB      := s21_calc.a
-lgtk     ?=$(shell pkg-config --cflags gtk+-3.0)
-llgtk    ?=$(shell pkg-config --libs gtk+-3.0)
+lgtk     ?=$(shell pkg-config --cflags gtk4)
+llgtk    ?=$(shell pkg-config --libs gtk4)
 
 #all: algo #example
 # The program must be built with Makefile which contains standard set of targets for GNU-programs: 
