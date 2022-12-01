@@ -4,22 +4,12 @@
 #include <check.h>
 
 Suite *add_min(void);
-Suite *mult(void);
-Suite *trigo(void);
-Suite *add(void);
-Suite *minusminus_suite(void);
-Suite *sinus_suite(void);
-Suite *triglog_suite(void);
-Suite *logmult_suite(void);
-Suite *trigfinal_suite(void);
-// Suite* eq_suite(void);
-// Suite* multnum_suite(void);
-// Suite* transpose_suite(void);
-// Suite* determinant_suite(void);
-// Suite* create_suite(void);
-// Suite* sumsub_suite(void);
-// Suite* complement_suite(void);
-// Suite* inverse_suite(void);
-// Suite* multmat_suite(void);
+Suite *mult_div(void);
+Suite *trig_mult(void);
+Suite *trig_div(void);
+Suite *ln_mult(void);
+Suite *ln_div(void);
+Suite *trig_ln(void);
+Suite *tiig_ln_mult_add(void);
 
 #endif  // SRC_TESTS_CALC_TEST_H_

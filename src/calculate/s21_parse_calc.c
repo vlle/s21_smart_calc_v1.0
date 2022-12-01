@@ -98,7 +98,6 @@ char* parse_oper(char* funcstr, const char* inpo) {
         if (nodesCount > 0) {
           push_and_print(&funcstr, &opr, &nodesCount, VERYHIGH);
         }
-        printf("I AM UNARY%c\n%i\n", tmp, i);
         push_backC(&nodesCount, &opr, '~');
       } else {
         if (nodesCount > 0) {

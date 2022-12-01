@@ -30,6 +30,13 @@ struct Node {
   struct Node *next;  // pointer to the next node
 };
 
+struct list_t {
+  long double value;  // integer data
+  char operator;
+  long double x;
+  struct Node *next;  // pointer to the next node
+} list_t;
+
 struct Vars {
   long double a1;
   long double a2;
