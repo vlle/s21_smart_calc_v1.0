@@ -122,6 +122,15 @@ int push_backList(list_t **root, const long double *value, const char* operator,
   }
   return err_code;
 }
+int list_count(list_t *root) {
+  int cnt = 1;
+  list_t *v = root;
+  while (v != NULL) {
+    v = v->next;
+    cnt++;
+  }
+  return cnt;
+}
 
 int push_backValue(list_t **root, const long double *value) {
   return push_backList(root, value, NULL, NULL);

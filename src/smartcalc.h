@@ -73,11 +73,12 @@ int push_backOperator(list_t **root, const char*op);
 int push_backX(list_t **root, const long double *x);
 
 int create_list(list_t **root);
+int list_count(list_t *root);
 
 // Calculate function
 
-long double cal_oper(char *funcstr);
-char *parse_oper(char *funcstr, const char *inpo);
+long double cal_oper(list_t *funcstr);
+int parse_oper(list_t **funcstr, const char *inpo);
 long double calculate(const char *b);
 finance_info put_data(long double total_credit_amount, long double term,
                       long double interest_rate, char type,
