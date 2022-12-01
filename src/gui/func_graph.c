@@ -109,7 +109,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   cairo_stroke(cr);
 
   /* Link each data point */
-  const char *fc = gtk_entry_get_text(GTK_ENTRY(data));
+  const char *fc = gtk_editable_get_text (GTK_EDITABLE(data));
   for (i = clip_x1; i < clip_x2; i += dx) {
     long double dot = f(i, fc);
     if ((isnan(dot)) || (isinf(dot))) {
@@ -135,7 +135,7 @@ void closeFunc(GtkWidget *window, gpointer data) {
   codomains *check = (codomains *)data;
   GtkWidget *destroy_window = check->window;
   free(check);
-  gtk_widget_destroy(destroy_window);
+  gtk_window_destroy(GTK_WINDOW(destroy_window));
 }
 
 void draw_create_entry(GtkWidget *button, gpointer data) {
@@ -146,7 +146,7 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   GtkWidget *butn, *q_butn, *codomain1, *codomain2, *codomain3, *codomain4;
   codomains *forms = malloc(sizeof(codomains) * 1);
   dra = gtk_drawing_area_new();
-  windw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  windw = gtk_window_new();
   forms->window = windw;
   hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
   hbox_entrys = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
@@ -170,23 +170,21 @@ void draw_create_entry(GtkWidget *button, gpointer data) {
   butn = gtk_button_new_with_label("Redraw");
   q_butn = gtk_button_new_with_label("Quit");
   gtk_window_set_title(GTK_WINDOW(windw), "Function graphic");
-  gtk_window_set_position(GTK_WINDOW(windw), GTK_WIN_POS_CENTER);
-  gtk_container_set_border_width(GTK_CONTAINER(windw), 10);
   gtk_window_set_default_size(GTK_WINDOW(windw), 870, 350);
 
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), forms->codomain1, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain1, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), forms->codomain2, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain2, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), forms->codomain3, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain3, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), forms->codomain4, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), label_codomain4, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), butn, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox_entrys), q_butn, FALSE, FALSE, 3);
-  gtk_box_pack_start(GTK_BOX(hbox), dra, TRUE, TRUE, 50);
-  gtk_box_pack_start(GTK_BOX(hbox), hbox_entrys, TRUE, TRUE, 2);
-  gtk_container_add(GTK_CONTAINER(windw), hbox);
+  gtk_box_append(GTK_BOX(hbox_entrys), forms->codomain1);
+  gtk_box_append(GTK_BOX(hbox_entrys), label_codomain1);
+  gtk_box_append(GTK_BOX(hbox_entrys), forms->codomain2);
+  gtk_box_append(GTK_BOX(hbox_entrys), label_codomain2);
+  gtk_box_append(GTK_BOX(hbox_entrys), forms->codomain3);
+  gtk_box_append(GTK_BOX(hbox_entrys), label_codomain3);
+  gtk_box_append(GTK_BOX(hbox_entrys), forms->codomain4);
+  gtk_box_append(GTK_BOX(hbox_entrys), label_codomain4);
+  gtk_box_append(GTK_BOX(hbox_entrys), butn);
+  gtk_box_append(GTK_BOX(hbox_entrys), q_butn);
+  gtk_box_append(GTK_BOX(hbox), dra);
+  gtk_box_append(GTK_BOX(hbox), hbox_entrys);
+  gtk_box_append(GTK_BOX(windw), hbox);
   g_signal_connect(G_OBJECT(dra), "draw", G_CALLBACK(on_draw), forms);
   g_signal_connect(G_OBJECT(butn), "clicked", G_CALLBACK(comeon), forms);
   g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeFunc), forms);
