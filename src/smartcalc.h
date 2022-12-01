@@ -34,6 +34,9 @@ typedef struct lst {
   long double value;  // integer data
   char operator;
   long double x;
+  int value_presence;
+  int operator_presence;
+  int x_presence;
   struct lst *next;  // pointer to the next node
 } list_t;
 
@@ -65,6 +68,11 @@ int push_backN(int *nodesCount, struct Node **top, long double oper);
 long double peekN(struct Node *a);
 char peekC(struct Node *a);
 int IsEmpty(const struct Node *top);
+int push_backValue(list_t **root, const long double *value);
+int push_backOperator(list_t **root, const char*op);
+int push_backX(list_t **root, const long double *x);
+
+int create_list(list_t **root);
 
 // Calculate function
 

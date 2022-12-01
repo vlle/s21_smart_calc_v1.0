@@ -83,6 +83,9 @@ int create_list(list_t **root) {
   int err_code = 0;
   if (newNode) {
     newNode->next = NULL;
+    newNode->value_presence = 0;
+    newNode->operator_presence = 0;
+    newNode->x_presence = 0;
     *root = newNode;
   } else {
     err_code = 1;
@@ -90,15 +93,26 @@ int create_list(list_t **root) {
   return err_code;
 }
 
-int push_backValue(list_t **root, long double value) {
+int push_backList(list_t **root, const long double *value, const char* operator, const long double *x) {
   int err_code = 0;
   list_t *newNode = NULL;
   newNode = (list_t*) malloc(sizeof(list_t));
+
   if (newNode) {
-    newNode->value = value;
-    newNode->operator = 0;
-    newNode->x = 0;
+    if (value) {
+      newNode->value = *value;
+      newNode->value_presence = 1;
+    }
+    if (operator) {
+      newNode->operator = *operator;;
+      newNode->operator_presence = 1;;
+    }
+    if (x) {
+      newNode->x = *x;
+      newNode->x_presence = 1;
+    }
     newNode->next = NULL;
+
     while ((*root)->next != NULL) {
       *root = (*root)->next;
     }
@@ -107,6 +121,18 @@ int push_backValue(list_t **root, long double value) {
     err_code = 1;
   }
   return err_code;
+}
+
+int push_backValue(list_t **root, const long double *value) {
+  return push_backList(root, value, NULL, NULL);
+}
+
+int push_backOperator(list_t **root, const char*op) {
+  return push_backList(root, NULL, op, NULL);
+}
+
+int push_backX(list_t **root, const long double *x) {
+  return push_backList(root, NULL, NULL, x);
 }
 
 
