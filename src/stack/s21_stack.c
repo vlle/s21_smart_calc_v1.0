@@ -77,18 +77,36 @@ int IsEmpty(const struct Node *top) { return top == NULL; }
 
 /* List functions below */
 
-int push_backC(list_t **top, long double value) {
-  if (top == NULL) {
-    fprintf(stderr, "null err\n");
-    return 1;
-  }
-  list_t Node *newNode = NULL;
+int create_list(list_t **root) {
+  list_t *newNode = NULL;
   newNode = (list_t*) malloc(sizeof(list_t));
-  newNode->value = value;
-  newNode->next = NULL;
-  *top = newNode;
-  *nodesCount += 1;
-  return 0;
+  int err_code = 0;
+  if (newNode) {
+    newNode->next = NULL;
+    *root = newNode;
+  } else {
+    err_code = 1;
+  }
+  return err_code;
+}
+
+int push_backValue(list_t **root, long double value) {
+  int err_code = 0;
+  list_t *newNode = NULL;
+  newNode = (list_t*) malloc(sizeof(list_t));
+  if (newNode) {
+    newNode->value = value;
+    newNode->operator = 0;
+    newNode->x = 0;
+    newNode->next = NULL;
+    while ((*root)->next != NULL) {
+      *root = (*root)->next;
+    }
+    (*root)->next = newNode;
+  } else{
+    err_code = 1;
+  }
+  return err_code;
 }
 
 
