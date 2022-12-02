@@ -20,8 +20,8 @@ int main() {
   long double f;
   calculate("2", &f);
   printf("%Lf = val\n", f);
-  calculate("3*sin(1)", &f);
-  printf("%Lf = val\n", f);
+  calculate("0.194983*sin(0.156306)/cos(0.368010)+0.409533", &f);
+  printf("%Lf = sval\n", f);
   calculate("2/1", &f);
   printf("%Lf 2= val\n", f);
   calculate("2/0", &f);

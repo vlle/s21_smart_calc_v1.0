@@ -25,7 +25,7 @@ def generate(n, name, m_t=''):
     print(inc4)
     code = a.parse(m_t, mode='eval')
     t1 = f"START_TEST({name}"#) {"
-    f2_tmpl = "    double my_res = 0.0;"
+    f2_tmpl = "    long double my_res = 0.0;"
     f2_2tmpl= "    int ret = calculate(b, &my_res);"
     f3_tmpl = "    ck_assert_double_eq_tol(res, my_res, 0.0001);"
 
