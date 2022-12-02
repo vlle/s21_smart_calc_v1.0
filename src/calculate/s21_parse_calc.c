@@ -303,7 +303,9 @@ int calculate(const char* b, long double* val) {
   printf("\n");
   printf("\n");
   print_list(root);
+
   parse_oper(root, b);
   *val = cal_oper(root);
+  remove_all(root);
   return 0;
 }

@@ -75,6 +75,7 @@ int push_backX(list_t *root, const long double *x);
 int create_list(list_t **root);
 int list_count(list_t *root);
 int print_list(list_t *root);
+int remove_all(list_t *root);
 
 // Calculate function
 

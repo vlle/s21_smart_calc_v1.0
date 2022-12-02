@@ -134,6 +134,29 @@ int list_count(list_t *root) {
   return cnt;
 }
 
+int remove_last(list_t *root) {
+  int retval = 0;
+  if (root->next == NULL) {
+    free(root);
+  } else {
+    list_t * current = root;
+    while (current->next->next != NULL) {
+      current = current->next;
+    }
+    free(current->next);
+    current->next = NULL;
+  }
+  return retval;
+}
+
+int remove_all(list_t *root) {
+  while (root->next != NULL) {
+    remove_last(root);
+  }
+  free(root);
+  return 0;
+}
+
 int push_backValue(list_t *root, const long double *value) {
   return push_backList(root, value, NULL, NULL);
 }
