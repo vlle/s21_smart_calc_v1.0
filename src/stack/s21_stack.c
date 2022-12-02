@@ -78,8 +78,7 @@ int IsEmpty(const struct Node *top) { return top == NULL; }
 /* List functions below */
 
 int create_list(list_t **root) {
-  list_t *newNode = NULL;
-  newNode = (list_t*) malloc(sizeof(list_t));
+  list_t *newNode = (list_t*) malloc(sizeof(list_t));
   int err_code = 0;
   if (newNode) {
     newNode->next = NULL;
@@ -93,23 +92,23 @@ int create_list(list_t **root) {
   return err_code;
 }
 
-int push_backList(list_t *roo, const long double *value, const char* operator, const long double *x) {
+int push_backList(list_t *roo, long double const value, int f, char const  operator, int f1, long double const x, int f2) {
   int err_code = 0;
   list_t *newNode = NULL;
   newNode = (list_t*) malloc(sizeof(list_t));
 
   list_t *root = roo;
   if (newNode) {
-    if (value) {
-      newNode->value = *value;
+    if (f) {
+      newNode->value = value;
       newNode->value_presence = 1;
     }
-    if (operator) {
-      newNode->operator = *operator;;
+    if (f1) {
+      newNode->operator = operator;;
       newNode->operator_presence = 1;;
     }
-    if (x) {
-      newNode->x = *x;
+    if (f2) {
+      newNode->x = x;
       newNode->x_presence = 1;
     }
     newNode->next = NULL;
@@ -138,6 +137,7 @@ int remove_last(list_t *root) {
   int retval = 0;
   if (root->next == NULL) {
     free(root);
+    return retval;
   } else {
     list_t * current = root;
     while (current->next->next != NULL) {
@@ -151,22 +151,21 @@ int remove_last(list_t *root) {
 
 int remove_all(list_t *root) {
   while (root->next != NULL) {
-    remove_last(root);
+    if (root) remove_last(root);
   }
-  free(root);
   return 0;
 }
 
-int push_backValue(list_t *root, const long double *value) {
-  return push_backList(root, value, NULL, NULL);
+int push_backValue(list_t *root, long double const value) {
+  return push_backList(root, value, 1, 0, 0, 0, 0);
 }
 
-int push_backOperator(list_t *root, const char*op) {
-  return push_backList(root, NULL, op, NULL);
+int push_backOperator(list_t *root, char const op) {
+  return push_backList(root, 0,0, op, 1, 0,0);
 }
 
-int push_backX(list_t *root, const long double *x) {
-  return push_backList(root, NULL, NULL, x);
+int push_backX(list_t *root, long double const x) {
+  return push_backList(root, 0,0, 0,0, x, 1);
 }
 
 int print_list(list_t *roo) {

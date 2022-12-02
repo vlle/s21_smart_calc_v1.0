@@ -35,7 +35,7 @@ void push_and_print(list_t* funcstr, struct Node** opr, int* nodesCount,
     if (symb == '(' || symb == ')') {
       continue;
     }
-    push_backOperator(funcstr, &symb);
+    push_backOperator(funcstr, symb);
     if (*nodesCount == 0) break;
   }
 }
@@ -54,12 +54,12 @@ int parse_oper(list_t *funcstr, const char* inpo) {
       char* pEnd;
       long double calc_num = strtold(inpstr, &pEnd);
       inpstr = pEnd;
-      push_backValue(funcstr, &calc_num);
+      push_backValue(funcstr, calc_num);
       printf("%Lf\n", calc_num);
       if (nodesCount >= 1) {
         if (peekC(opr) == '-') {
           char u = '-';
-          push_backOperator(funcstr, &u);
+          push_backOperator(funcstr, u);
           popC(&nodesCount, &opr); /* peek for preceding op */
         }
       }
@@ -174,7 +174,7 @@ int parse_oper(list_t *funcstr, const char* inpo) {
     } else if (*inpstr == ')') {
       while (peekC(opr) != '(') {
         char symb = popC(&nodesCount, &opr);
-        push_backOperator(funcstr, &symb); /* peek for preceding op */
+        push_backOperator(funcstr, symb); /* peek for preceding op */
         if (nodesCount == 0) {
           perror("Wtf man");
           return 1;
@@ -187,7 +187,7 @@ int parse_oper(list_t *funcstr, const char* inpo) {
   /* poppint everything on output string after finishing parsing*/
   while (nodesCount > 0) {
     char f = popC(&nodesCount, &opr);
-    push_backOperator(funcstr, &f);
+    push_backOperator(funcstr, f);
   }
   // free(nospace);
   return 0;
@@ -210,79 +210,78 @@ struct Vars popper(struct Node** nums, int* nodesCount) {
 
 /* This function parses RPN string and calculate it */
 
-long double cal_oper(list_t* root) {
-  long double result = 0.0;
-  struct Node* nums;
+int cal_oper(list_t* root, long double *result) {
+  struct Node* nums = {0};
   int nodesCount = 0;
-  struct Vars var;
+  struct Vars var = {0};
   if (!root) {
-    return NAN;
+    *result = NAN;
+    return 1;
   }
-  printf("%d is cu\n", list_count(root));
   while(root != NULL)  {
     if (root->value_presence) {
       push_backN(&nodesCount, &nums, root->value);
-      result = root->value;
+      *result = root->value;
     } 
     if (root->operator_presence) {
       if (root->operator == '+') {
         if (nodesCount > 1) {
           var = popper(&nums, &nodesCount);
-          result = var.a2 + var.a1;
+          *result = var.a2 + var.a1;
         } else if (nodesCount == 1) {
-          result = +(popN(&nodesCount, &nums)); /* Check for Unary plus*/
+          *result = +(popN(&nodesCount, &nums)); /* Check for Unary plus*/
         }
-        push_backN(&nodesCount, &nums, result);
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == '~') {
-        result = 0-(popN(&nodesCount, &nums)); /* Check for Unary minus*/
-        push_backN(&nodesCount, &nums, result);
+        *result = 0-(popN(&nodesCount, &nums)); /* Check for Unary minus*/
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == '-') {
         var = popper(&nums, &nodesCount);
-        result = var.a2 - var.a1;
-        push_backN(&nodesCount, &nums, result);
+        *result = var.a2 - var.a1;
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == '*') {
         var = popper(&nums, &nodesCount);
-        result = var.a2 * var.a1;
-        push_backN(&nodesCount, &nums, result);
+        *result = var.a2 * var.a1;
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == '/') {
         var = popper(&nums, &nodesCount);
-        result = var.a2 / var.a1;
-        push_backN(&nodesCount, &nums, result);
+        *result = var.a2 / var.a1;
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == '^') {
         var = popper(&nums, &nodesCount);
-        result = powl(var.a2, var.a1);
-        push_backN(&nodesCount, &nums, result);
+        *result = powl(var.a2, var.a1);
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 'v') {
-        result = sqrt(popN(&nodesCount, &nums));
-        push_backN(&nodesCount, &nums, result);
+        *result = sqrt(popN(&nodesCount, &nums));
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 's') {
-        result = sin(popN(&nodesCount, &nums));
-        push_backN(&nodesCount, &nums, result);
+        *result = sin(popN(&nodesCount, &nums));
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 't') {
-        result = tan(popN(&nodesCount, &nums));
-        push_backN(&nodesCount, &nums, result);
+        *result = tan(popN(&nodesCount, &nums));
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 'c') {
-        result = cos(popN(&nodesCount, &nums));
-        push_backN(&nodesCount, &nums, result);
+        *result = cos(popN(&nodesCount, &nums));
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 'S') {
-        result = asin(popN(&nodesCount, &nums));
-        push_backN(&nodesCount, &nums, result);
+        *result = asin(popN(&nodesCount, &nums));
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 'T') {
-        result = atan(popN(&nodesCount, &nums));
-        push_backN(&nodesCount, &nums, result);
+        *result = atan(popN(&nodesCount, &nums));
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 'C') {
-        result = acos(popN(&nodesCount, &nums));
-        push_backN(&nodesCount, &nums, result);
+        *result = acos(popN(&nodesCount, &nums));
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 'l') {
-        result = log(popN(&nodesCount, &nums));
-        push_backN(&nodesCount, &nums, result);
+        *result = log(popN(&nodesCount, &nums));
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 'L') {
-        result = log10(popN(&nodesCount, &nums));
-        push_backN(&nodesCount, &nums, result);
+        *result = log10(popN(&nodesCount, &nums));
+        push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == '%') {
         var = popper(&nums, &nodesCount);
-        result = fmod(var.a2, var.a1);
-        push_backN(&nodesCount, &nums, result);
+        *result = fmod(var.a2, var.a1);
+        push_backN(&nodesCount, &nums, *result);
       }
     }
     root = root->next;
@@ -291,21 +290,14 @@ long double cal_oper(list_t* root) {
     popN(&nodesCount,
         &nums); /* Removing our stack after we finished calculations*/
   }
-  return result;
+  return 0;
 }
 
 int calculate(const char* b, long double* val) {
   list_t *root = {0};
   create_list(&root);
-  printf("list count = %d", list_count(root));
-  printf("\n");
-  // print_list(root);
-  printf("\n");
-  printf("\n");
-  print_list(root);
-
   parse_oper(root, b);
-  *val = cal_oper(root);
+  cal_oper(root, val);
   remove_all(root);
   return 0;
 }

@@ -20,7 +20,7 @@ int main() {
   long double f;
   calculate("2", &f);
   printf("%Lf = val\n", f);
-  calculate("0.194983*sin(0.156306)/cos(0.368010)+0.409533", &f);
+  calculate("0.270949*sin(0.718059)-cos(0.027278)+acos(0.675124)+asin(0.399085)", &f);
   printf("%Lf = sval\n", f);
   calculate("2/1", &f);
   printf("%Lf 2= val\n", f);
