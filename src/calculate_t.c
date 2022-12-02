@@ -7,7 +7,12 @@
 // add more float test check
 // add minus sign
 int main() {
-  int no_failed = 0;
+  Suite *triglog = triglog_suite();
+  SRunner *runner = srunner_create(triglog);
+  srunner_set_fork_status(runner, CK_NOFORK);
+  srunner_run_all(runner, CK_NORMAL);
+  int no_failed = srunner_ntests_failed(runner);
+  srunner_free(runner);
 //  Suite *add_m = add_min();
 //  Suite *mul = mult();
 //  Suite *trig = trigo();

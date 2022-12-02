@@ -25,9 +25,8 @@ def generate(n, name, m_t=''):
     print(inc4)
     code = a.parse(m_t, mode='eval')
     t1 = f"START_TEST({name}"#) {"
-    templ = "    char funcstr[MAX_ENTRY_SIZE] = {\"\\0\"};"
-    f1_tmpl = "    char *prs = parse_oper(funcstr, b);"
-    f2_tmpl = "    double my_res = cal_oper(prs);"
+    f2_tmpl = "    double my_res = 0.0;"
+    f2_2tmpl= "    int ret = calculate(b, &my_res);"
     f3_tmpl = "    ck_assert_double_eq_tol(res, my_res, 0.0001);"
 
     f4_tmpl = f"Suite *{name}_suite(void) " +"{"
@@ -71,11 +70,10 @@ def generate(n, name, m_t=''):
         rs_s = "{:f}".format(res)
         res_template = "    double res = " + rs_s + ";"
         print(t1+str(i)+") {")
-        print(templ)
         print(char_template)
         print(res_template)
-        print(f1_tmpl)
         print(f2_tmpl)
+        print(f2_2tmpl)
         print(f3_tmpl)
         print("}")
         print("END_TEST")

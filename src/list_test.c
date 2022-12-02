@@ -23,7 +23,7 @@ int main() {
   calculate("3*sin(1)", &f);
   printf("%Lf = val\n", f);
   calculate("2/1", &f);
-  printf("%Lf = val\n", f);
+  printf("%Lf 2= val\n", f);
   calculate("2/0", &f);
-  printf("%Lf = val\n", f);
+  printf("%Lf ?= val\n", f);
 }
