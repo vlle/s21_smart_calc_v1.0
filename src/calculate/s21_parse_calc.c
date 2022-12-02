@@ -28,7 +28,7 @@ int checkNodesPrior(int nodesCount, struct Node* opr, char* prior_str) {
   return 0;
 }
 
-void push_and_print(list_t** funcstr, struct Node** opr, int* nodesCount,
+void push_and_print(list_t* funcstr, struct Node** opr, int* nodesCount,
                     char* prior_str) {
   while ((strchr(prior_str, peekC(*opr)) != NULL) & (*(nodesCount) > 0)) {
     char symb = popC(nodesCount, opr);
@@ -43,14 +43,13 @@ void push_and_print(list_t** funcstr, struct Node** opr, int* nodesCount,
 /* This function parses INFIX string and create RPN string
    Algo: Parse nums, parse OPs (and check priority), parse Trigonometry func */
 
-int parse_oper(list_t **funcstr, const char* inpo) {
+int parse_oper(list_t *funcstr, const char* inpo) {
   struct Node* opr = {0};
   int nodesCount = 0;
   char* inpstr = (char*) inpo;
   int len = strlen(inpo);
   int i = 0;
   for (; ((*inpstr != '\0') & (len >= i)); inpstr++) {
-    printf("%d is curr\n", list_count(*funcstr));
     if (*inpstr >= '0' && *inpstr <= '9') {
       char* pEnd;
       long double calc_num = strtold(inpstr, &pEnd);
@@ -219,11 +218,13 @@ long double cal_oper(list_t* root) {
   if (!root) {
     return NAN;
   }
+  printf("%d is cu\n", list_count(root));
   while(root != NULL)  {
     if (root->value_presence) {
       push_backN(&nodesCount, &nums, root->value);
       result = root->value;
-    } else if (root->operator_presence) {
+    } 
+    if (root->operator_presence) {
       if (root->operator == '+') {
         if (nodesCount > 1) {
           var = popper(&nums, &nodesCount);
@@ -293,11 +294,16 @@ long double cal_oper(list_t* root) {
   return result;
 }
 
-long double calculate(const char* b) {
+int calculate(const char* b, long double* val) {
   list_t *root = {0};
   create_list(&root);
   printf("list count = %d", list_count(root));
-  parse_oper(&root, b);
-  double my_res = cal_oper(root);
-  return my_res;
+  printf("\n");
+  // print_list(root);
+  printf("\n");
+  printf("\n");
+  print_list(root);
+  parse_oper(root, b);
+  *val = cal_oper(root);
+  return 0;
 }

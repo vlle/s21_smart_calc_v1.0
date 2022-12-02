@@ -1,7 +1,6 @@
 #include "smartcalc.h"
 #include <stdio.h>
 
-
 int main() {
   // list_t *root = {0};
   // long double a = 2.0;
@@ -18,5 +17,13 @@ int main() {
   // push_backOperator(&root, &f);
   // root = root->next;
   // printf("%c", root->operator);
-  printf("%Lf = val\n", calculate("2-2"));
+  long double f;
+  calculate("2", &f);
+  printf("%Lf = val\n", f);
+  calculate("3*sin(1)", &f);
+  printf("%Lf = val\n", f);
+  calculate("2/1", &f);
+  printf("%Lf = val\n", f);
+  calculate("2/0", &f);
+  printf("%Lf = val\n", f);
 }
