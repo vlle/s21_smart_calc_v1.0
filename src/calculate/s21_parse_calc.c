@@ -28,7 +28,7 @@ int checkNodesPrior(int nodesCount, struct Node* opr, char* prior_str) {
   return 0;
 }
 
-void push_and_print(list_t* funcstr, struct Node** opr, int* nodesCount,
+void push_and_print(list_t** funcstr, struct Node** opr, int* nodesCount,
                     char* prior_str) {
   while ((strchr(prior_str, peekC(*opr)) != NULL) & (*(nodesCount) > 0)) {
     char symb = popC(nodesCount, opr);
@@ -43,7 +43,7 @@ void push_and_print(list_t* funcstr, struct Node** opr, int* nodesCount,
 /* This function parses INFIX string and create RPN string
    Algo: Parse nums, parse OPs (and check priority), parse Trigonometry func */
 
-int parse_oper(list_t *funcstr, const char* inpo) {
+int parse_oper(list_t **funcstr, const char* inpo) {
   struct Node* opr = {0};
   int nodesCount = 0;
   char* inpstr = (char*) inpo;
@@ -56,7 +56,6 @@ int parse_oper(list_t *funcstr, const char* inpo) {
       inpstr = pEnd;
       push_backValue(funcstr, calc_num);
       printf("%Lf\n", calc_num);
-      printf("%Lf = root val\n", funcstr->value);
       if (nodesCount >= 1) {
         if (peekC(opr) == '-') {
           char u = '-';
@@ -190,7 +189,6 @@ int parse_oper(list_t *funcstr, const char* inpo) {
     char f = popC(&nodesCount, &opr);
     push_backOperator(funcstr, f);
   }
-  // free(nospace);
   return 0;
 }
 
@@ -211,18 +209,22 @@ struct Vars popper(struct Node** nums, int* nodesCount) {
 
 /* This function parses RPN string and calculate it */
 
-int cal_oper(list_t* root, long double *result) {
+int cal_oper(list_t* roo, long double *result) {
   struct Node* nums = {0};
   int nodesCount = 0;
   struct Vars var = {0};
-  if (!root) {
+  if (!roo) {
     *result = NAN;
     return 1;
   }
+  list_t*root=roo;
+  print_list(root);
   while(root != NULL)  {
     if (root->value_presence) {
-      push_backN(&nodesCount, &nums, root->value);
-      *result = root->value;
+      long double num = (root)->value;
+      push_backN(&nodesCount, &nums, num);
+      *result = (root)->value;
+      printf("%Lf = res\n", *result);
     } 
     if (root->operator_presence) {
       if (root->operator == '+') {
@@ -298,10 +300,9 @@ int cal_oper(list_t* root, long double *result) {
 }
 
 int calculate(const char* b, long double* val) {
-  list_t *root = create_list();
-  parse_oper(root, b);
+  list_t *root = create_list(0, 0, 0, 0);
+  parse_oper(&root, b);
   cal_oper(root, val);
-  print_list(root);
-  remove_all(root);
+  remove_all(&root);
   return 0;
 }

@@ -77,38 +77,40 @@ int IsEmpty(const struct Node *top) { return top == NULL; }
 
 /* List functions below */
 
-list_t* create_list() {
-  list_t *newNode = (list_t*) malloc(sizeof(list_t));
+list_t* create_list(long double const value, char const operator, long double const x, int t) {
+  list_t *newNode = malloc(sizeof(*newNode));
   if (newNode) {
+    if (t == 1) {
+      newNode->value = value;
+      newNode->value_presence = 1;
+    }
+    if (t == 2) {
+      newNode->operator = operator;;
+      newNode->operator_presence = 1;;
+    }
+    if (t == 3) {
+      newNode->x = x;
+      newNode->x_presence = 1;
+    }
     newNode->next = NULL;
-    newNode->value_presence = 0;
-    newNode->operator_presence = 0;
-    newNode->x_presence = 0;
   }
   return newNode;
 }
 
-int push_backList(list_t *roo, long double const value, int f, char const  operator, int f1, long double const x, int f2) {
-  int err_code = 0;
-  list_t *root = roo;
+void append(list_t **headRef, list_t *newNode) {
+    list_t **tracer = headRef;
+    while (*tracer) {
+        tracer = &(*tracer)->next;
+    }
+    newNode->next = *tracer;
+    *tracer = newNode;
+}
 
-  while (root->next != NULL) {
-    root = root->next;
-  }
-  root->next = (list_t*) malloc(sizeof(list_t));
-  if (f) {
-    root->next->value = value;
-    root->next->value_presence = 1;
-  }
-  if (f1) {
-    root->next->operator = operator;;
-    root->next->operator_presence = 1;;
-  }
-  if (f2) {
-    root->next->x = x;
-    root->next->x_presence = 1;
-  }
-  root->next->next = NULL;
+int push_backList(list_t **roo, long double const value, char const  operator, long double const x, int t) {
+  int err_code = 0;
+
+  list_t* newNode = create_list(value, operator, x, t);
+  append(roo, newNode);
   return err_code;
 }
 
@@ -138,25 +140,25 @@ int remove_last(list_t *root) {
   return retval;
 }
 
-int remove_all(list_t *root) {
-  list_t *q;
-  for (list_t *p = root; p != NULL; p = q) {
-    q = p->next;
-    free(p);
+int remove_all(list_t **root) {
+  list_t * tmp;
+  while ((tmp = *root)) {
+    *root = tmp->next;
+    free(tmp);
   }
   return 0;
 }
 
-int push_backValue(list_t *root, long double const value) {
-  return push_backList(root, value, 1, 0, 0, 0, 0);
+int push_backValue(list_t **root, long double const value) {
+  return push_backList(root, value, 0, 0, 1);
 }
 
-int push_backOperator(list_t *root, char const op) {
-  return push_backList(root, 0,0, op, 1, 0,0);
+int push_backOperator(list_t **root, char const op) {
+  return push_backList(root, 0, op, 0, 2);
 }
 
-int push_backX(list_t *root, long double const x) {
-  return push_backList(root, 0,0, 0,0, x, 1);
+int push_backX(list_t **root, long double const x) {
+  return push_backList(root, 0, 0, x, 3);
 }
 
 int print_list(list_t *roo) {

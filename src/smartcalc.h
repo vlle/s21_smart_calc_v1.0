@@ -68,20 +68,21 @@ int push_backN(int *nodesCount, struct Node **top, long double oper);
 long double peekN(struct Node *a);
 char peekC(struct Node *a);
 int IsEmpty(const struct Node *top);
-int push_backList(list_t *roo, long double const value, int f, char const  operator, int f1, long double const x, int f2);
-int push_backValue(list_t *root, long double  const value);
-int push_backOperator(list_t *root, char const op);
-int push_backX(list_t *root, long double const x);
+int push_backList(list_t **roo, long double const value, char const  operator, long double const x, int t);
+int push_backValue(list_t **root, long double  const value);
+int push_backOperator(list_t **root, char const op);
+int push_backX(list_t **root, long double const x);
 
-list_t* create_list();
+list_t* create_list(long double const value, char const operator, long double const x, int t);
 int list_count(list_t *root);
 int print_list(list_t *root);
-int remove_all(list_t *root);
+int remove_all(list_t **root);
 
 // Calculate function
 
-int cal_oper(list_t *funcstr, long double *result);
-int parse_oper(list_t *funcstr, const char *inpo);
+int cal_oper(list_t* root, long double *result);
+
+int parse_oper(list_t **funcstr, const char *inpo);
 int calculate(const char* b, long double* val);
 finance_info put_data(long double total_credit_amount, long double term,
                       long double interest_rate, char type,
