@@ -3,32 +3,30 @@
 
 #include "../smartcalc.h"
 
-int push_backN(int *nodesCount, struct Node **top, long double oper) {
+int push_backStack(int *nodesCount, struct Node **top, long double storage, char oper, int type) {
   if (top == NULL) {
     fprintf(stderr, "null err\n");
     return 1;
   }
   struct Node *newNode = NULL;
   newNode = (struct Node *)malloc(sizeof(struct Node));
-  newNode->storage = oper;
+  if (type == 1) {
+    newNode->storage = storage;
+  } else {
+    newNode->res = oper;
+
+  }
   newNode->next = *top;
   *top = newNode;
   *nodesCount += 1;
   return 0;
 }
+int push_backN(int *nodesCount, struct Node **top, long double oper) {
+  return push_backStack(nodesCount, top, oper, 0, 1);
+}
 
 int push_backC(int *nodesCount, struct Node **top, char oper) {
-  if (top == NULL) {
-    fprintf(stderr, "null err\n");
-    return 1;
-  }
-  struct Node *newNode = NULL;
-  newNode = (struct Node *)malloc(sizeof(struct Node));
-  newNode->res = oper;
-  newNode->next = *top;
-  *top = newNode;
-  *nodesCount += 1;
-  return 0;
+  return push_backStack(nodesCount, top, 0, oper, 2);
 }
 
 long double peekN(struct Node *a) { return a->storage; }
@@ -98,12 +96,12 @@ list_t* create_list(long double const value, char const operator, long double co
 }
 
 void append(list_t **headRef, list_t *newNode) {
-    list_t **tracer = headRef;
-    while (*tracer) {
-        tracer = &(*tracer)->next;
-    }
-    newNode->next = *tracer;
-    *tracer = newNode;
+  list_t **tracer = headRef;
+  while (*tracer) {
+    tracer = &(*tracer)->next;
+  }
+  newNode->next = *tracer;
+  *tracer = newNode;
 }
 
 int push_backList(list_t **roo, long double const value, char const  operator, long double const x, int t) {
