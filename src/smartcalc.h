@@ -73,7 +73,7 @@ int push_backValue(list_t *root, long double  const value);
 int push_backOperator(list_t *root, char const op);
 int push_backX(list_t *root, long double const x);
 
-int create_list(list_t **root);
+list_t* create_list();
 int list_count(list_t *root);
 int print_list(list_t *root);
 int remove_all(list_t *root);

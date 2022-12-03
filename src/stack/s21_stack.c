@@ -77,49 +77,38 @@ int IsEmpty(const struct Node *top) { return top == NULL; }
 
 /* List functions below */
 
-int create_list(list_t **root) {
+list_t* create_list() {
   list_t *newNode = (list_t*) malloc(sizeof(list_t));
-  int err_code = 0;
   if (newNode) {
     newNode->next = NULL;
     newNode->value_presence = 0;
     newNode->operator_presence = 0;
     newNode->x_presence = 0;
-    *root = newNode;
-  } else {
-    err_code = 1;
   }
-  return err_code;
+  return newNode;
 }
 
 int push_backList(list_t *roo, long double const value, int f, char const  operator, int f1, long double const x, int f2) {
   int err_code = 0;
-  list_t *newNode = NULL;
-  newNode = (list_t*) malloc(sizeof(list_t));
-
   list_t *root = roo;
-  if (newNode) {
-    if (f) {
-      newNode->value = value;
-      newNode->value_presence = 1;
-    }
-    if (f1) {
-      newNode->operator = operator;;
-      newNode->operator_presence = 1;;
-    }
-    if (f2) {
-      newNode->x = x;
-      newNode->x_presence = 1;
-    }
-    newNode->next = NULL;
 
-    while (root->next != NULL) {
-      root = root->next;
-    }
-    root->next = newNode;
-  } else{
-    err_code = 1;
+  while (root->next != NULL) {
+    root = root->next;
   }
+  root->next = (list_t*) malloc(sizeof(list_t));
+  if (f) {
+    root->next->value = value;
+    root->next->value_presence = 1;
+  }
+  if (f1) {
+    root->next->operator = operator;;
+    root->next->operator_presence = 1;;
+  }
+  if (f2) {
+    root->next->x = x;
+    root->next->x_presence = 1;
+  }
+  root->next->next = NULL;
   return err_code;
 }
 
@@ -150,8 +139,10 @@ int remove_last(list_t *root) {
 }
 
 int remove_all(list_t *root) {
-  while (root->next != NULL) {
-    if (root) remove_last(root);
+  list_t *q;
+  for (list_t *p = root; p != NULL; p = q) {
+    q = p->next;
+    free(p);
   }
   return 0;
 }

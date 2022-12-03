@@ -56,6 +56,7 @@ int parse_oper(list_t *funcstr, const char* inpo) {
       inpstr = pEnd;
       push_backValue(funcstr, calc_num);
       printf("%Lf\n", calc_num);
+      printf("%Lf = root val\n", funcstr->value);
       if (nodesCount >= 1) {
         if (peekC(opr) == '-') {
           char u = '-';
@@ -255,7 +256,10 @@ int cal_oper(list_t* root, long double *result) {
         *result = sqrt(popN(&nodesCount, &nums));
         push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 's') {
-        *result = sin(popN(&nodesCount, &nums));
+        long double v = (popN(&nodesCount, &nums));
+        printf("%Lf = v\n", v);
+        *result = sin(v);
+        printf("%Lf = result\n", *result);
         push_backN(&nodesCount, &nums, *result);
       } else if (root->operator == 't') {
         *result = tan(popN(&nodesCount, &nums));
@@ -294,10 +298,10 @@ int cal_oper(list_t* root, long double *result) {
 }
 
 int calculate(const char* b, long double* val) {
-  list_t *root = {0};
-  create_list(&root);
+  list_t *root = create_list();
   parse_oper(root, b);
   cal_oper(root, val);
+  print_list(root);
   remove_all(root);
   return 0;
 }
