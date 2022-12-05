@@ -17,11 +17,24 @@ list_t * createStack(long double value, long double x, char oper, int type) {
   }
 }
 
+int pushValueStack(list_t ** root, long double value, int*nodesCount) {
+  return pushStack(root, value, 0, 0, kValue, nodesCount);
+}
+
+int pushXStack(list_t ** root, long double x, int*nodesCount) {
+  return pushStack(root, 0, x, 0, kX, nodesCount);
+}
+
+int pushOperStack(list_t ** root, char oper, int*nodesCount) {
+  return pushStack(root, 0, 0, oper, kOper, nodesCount);
+}
+
 int pushStack(list_t** root, long double value, long double x, char oper, int type, int *nodesCount) {
   list_t *newNode = createStack(value, x, oper, type);
   if (root && newNode) {
     newNode->next = *root;
     *root = newNode;
+    *nodesCount+=1;
   } else {
     return -1;
   }
