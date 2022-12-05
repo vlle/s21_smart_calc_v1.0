@@ -65,7 +65,7 @@ char peekOperStack(list_t *root) {
   return peekStack(root, kOper);
 }
 
-long double popStack(list_t** root, int type) {
+long double popStack(list_t** root, int type, int*nodesCount) {
   long double retval = 0;
   if (root) {
     if (type == kValue) {
@@ -82,14 +82,14 @@ long double popStack(list_t** root, int type) {
   return retval;
 }
 
-long double popValueStack(list_t **root) {
-  return popStack(root, kValue);
+long double popValueStack(list_t **root, int*nodesCount) {
+  return popStack(root, kValue, nodesCount);
 }
 
-long double popXStack(list_t **root) {
-  return popStack(root, kX);
+long double popXStack(list_t **root, int*nodesCount) {
+  return popStack(root, kX, nodesCount);
 }
 
-char popOperStack(list_t **root) {
-  return (char) popStack(root, kOper);
+char popOperStack(list_t **root, int*nodesCount) {
+  return (char) popStack(root, kOper, nodesCount);
 }
