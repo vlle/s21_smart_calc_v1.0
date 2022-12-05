@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// #include "tests/calc_test.h"
+#include "tests/calc_test.h"
 
 int main() {
   // SRunner *runner = srunner_create(triglog);

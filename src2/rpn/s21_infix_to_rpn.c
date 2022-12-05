@@ -1,4 +1,4 @@
-#include "../calc.h" 
+#include "../smartcalc.h" 
 #include <math.h>
 #include <tgmath.h>
 #include <ctype.h>
@@ -24,16 +24,6 @@ long double calculate(const char* input) {
 
 // +-/* sct SCT v lN LOG mod
 //
-int pushAndPrint(list_t** stack, list_t** root, int*nodes_count, char* priority) {
-  while (*nodes_count > 0 && strchr(priority, peekOperStack(*stack))) {
-    if (peekOperStack(*stack) == '(') {
-      popOperStack(stack, nodes_count);
-    } else {
-      pushOper(root, popOperStack(stack, nodes_count));
-    }
-  }
-  return 0;
-}
 
 int infToRpn(const char* input, list_t** root) {
   list_t* stack = createStack(0, 0, 0, 0);
@@ -84,17 +74,6 @@ int infToRpn(const char* input, list_t** root) {
   }
   printList(*root);
   return 0;
-}
-
-elem_t pop2Value(list_t ** stack, int*nodes_count) {
-  elem_t ans = {0};
-  if (*nodes_count > 1) {
-    ans.a = popValueStack(stack, nodes_count);
-    ans.b = popValueStack(stack, nodes_count);
-  } else {
-    fprintf(stderr, "Pop error: not enough nodes");
-  }
-  return ans;
 }
 
 long double calculateRpn(list_t* root) {
@@ -154,4 +133,26 @@ long double calculateRpn(list_t* root) {
     popValueStack(&stack, &nodes_count);
   }
   return ans;
+}
+
+elem_t pop2Value(list_t ** stack, int*nodes_count) {
+  elem_t ans = {0};
+  if (*nodes_count > 1) {
+    ans.a = popValueStack(stack, nodes_count);
+    ans.b = popValueStack(stack, nodes_count);
+  } else {
+    fprintf(stderr, "Pop error: not enough nodes");
+  }
+  return ans;
+}
+
+int pushAndPrint(list_t** stack, list_t** root, int*nodes_count, char* priority) {
+  while (*nodes_count > 0 && strchr(priority, peekOperStack(*stack))) {
+    if (peekOperStack(*stack) == '(') {
+      popOperStack(stack, nodes_count);
+    } else {
+      pushOper(root, popOperStack(stack, nodes_count));
+    }
+  }
+  return 0;
 }

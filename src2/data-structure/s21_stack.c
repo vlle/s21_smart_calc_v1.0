@@ -1,4 +1,4 @@
-#include "../calc.h"
+#include "../smartcalc.h"
 #include <stdlib.h>
 #include <stdio.h>
 

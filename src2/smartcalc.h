@@ -50,8 +50,10 @@ int pushValueStack(list_t ** root, long double value, int*nodesCount);
 
 /* calculation */
 
-long double calculate(const char* input);
+int calculate(const char* input, long double* val);
 int infToRpn(const char* input, list_t** root);
+int pushAndPrint(list_t** stack, list_t** root, int*nodes_count, char* priority) ;
+elem_t pop2Value(list_t ** stack, int*nodes_count);
 long double calculateRpn(list_t* root);
 
 #endif // SRC_CALC_H_
