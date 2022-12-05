@@ -7,6 +7,7 @@
 int main() {
   Suite* triglog = triglog_suite();
   SRunner *runner = srunner_create(triglog);
+  srunner_set_fork_status(runner, CK_NOFORK);
   srunner_run_all(runner, CK_NORMAL);
   int no_failed = srunner_ntests_failed(runner);
   srunner_free(runner);

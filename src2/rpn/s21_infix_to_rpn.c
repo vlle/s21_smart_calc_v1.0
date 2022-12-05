@@ -6,11 +6,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define P3 "~^()"
-#define P2 "~/*^()sctSCTlLV"
-#define P1 "~+-/*^()sctSCTlLV"
+#define P3 "~^"
+#define P2 "~/*^sctSCTlLV"
+#define P1 "~+-/*^sctSCTlLV"
 
-#define ALL_L_OP "+-/*^()"
+#define ALL_L_OP "+-/*^"
 #define ALL_TRIG "sincostan"
 #define ALL_T "SCTsct"
 
@@ -19,6 +19,9 @@ int calculate(const char* input, long double* val) {
   infToRpn(input, &root);
   long double ans = calculateRpn(root);
   *val = ans;
+  printf("\n");
+  printList(root);
+  printf("\n");
   freeList(&root);
   return ans;
 }
@@ -29,7 +32,7 @@ int calculate(const char* input, long double* val) {
 int infToRpn(const char* input, list_t** root) {
   list_t* stack = createStack(0, 0, 0, 0);
   // const char* trig_word[3] = {"sin", "cos", "tan"};
-  const char* priority_string[3] = {"~+-/*^(sctSCTlLV", "~/*^(sctSCTlLV", "~^("};
+  const char* priority_string[3] = {"~+-/*^sctSCTlLV", "~/*^sctSCTlLV", "~^"};
 
   char oper = 0;
   int nodes_count = 1;
@@ -47,9 +50,15 @@ int infToRpn(const char* input, list_t** root) {
           if (strncmp(input, "tan", 3) == 0) pushOperStack(&stack, 'T', &nodes_count);
         }
       }
+    } else if (*input == '(') {
+      pushOperStack(&stack, '(', &nodes_count);
+    } else if (*input == ')') {
+      while (nodes_count > 0 && peekOperStack(stack) != '(') pushOper(root, popOperStack(&stack, &nodes_count));
+      if (peekOperStack(stack)=='(') popOperStack(&stack, &nodes_count);
     } else if (isdigit(*input)) {
       num = strtold(input, &pEnd);
       input = pEnd-1;
+      printf(" %Lf ", num);
       pushValue(root, num);
     } else if (strchr(ALL_L_OP, *input)) {
       if (strchr(P3, *input)) {
@@ -98,7 +107,7 @@ long double calculateRpn(list_t* root) {
       } else if (o == '-') {
         if (nodes_count > 1) {
           val = pop2Value(&stack, &nodes_count);
-          ans = val.a + val.b;
+          ans = val.b - val.a;
         } else {
           ans = -popValueStack(&stack, &nodes_count);
         }
