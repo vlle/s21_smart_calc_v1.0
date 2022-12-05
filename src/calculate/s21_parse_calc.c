@@ -294,7 +294,7 @@ int cal_oper(list_t* roo, long double *result) {
   }
   while (nodesCount > 0) {
     popN(&nodesCount,
-        &nums); /* Removing our stack after we finished calculations*/
+         &nums); /* Removing our stack after we finished calculations*/
   }
   return 0;
 }

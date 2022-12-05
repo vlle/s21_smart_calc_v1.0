@@ -22,7 +22,7 @@ START_TEST(triglog1) {
 END_TEST
  
 START_TEST(triglog2) {
-    char b[100] = "0.176636*sin(0.175896)/acos(0.038209)+asin(0.319670)*0.039391";
+    char *b = "0.176636*sin(0.175896)/acos(0.038209)+asin(0.319670)*0.039391";
     double res = 0.032985;
     long double my_res = 0.0;
     int ret = calculate(b, &my_res);
