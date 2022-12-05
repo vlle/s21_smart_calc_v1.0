@@ -3,7 +3,7 @@
 
 #include <check.h>
 
-Suite *add_min(void);
+Suite *triglog_suite(void);
 // Suite *mult_div(void);
 // Suite *trig_mult(void);
 // Suite *trig_div(void);

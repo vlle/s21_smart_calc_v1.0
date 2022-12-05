@@ -14,10 +14,11 @@
 #define ALL_TRIG "sincostan"
 #define ALL_T "SCTsct"
 
-long double calculate(const char* input) {
+int calculate(const char* input, long double* val) {
   list_t* root = createList(0, 0, 0, 0);
   infToRpn(input, &root);
   long double ans = calculateRpn(root);
+  *val = ans;
   freeList(&root);
   return ans;
 }
