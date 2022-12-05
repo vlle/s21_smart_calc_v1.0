@@ -27,6 +27,17 @@ int pushList(list_t**root, long double value, long double x, char oper, int type
   return 0;
 }
 
+int printList(list_t*root) {
+  list_t *dummy = root;
+  while (dummy) {
+    if (dummy->type == kValue) printf(" %Lf ", dummy->value);
+    if (dummy->type == kX) printf(" %Lf ", dummy->x);
+    if (dummy->type == kOper) printf(" %c ", dummy->oper);
+    dummy = dummy->next;
+  }
+  return 0;
+}
+
 int freeList(list_t**root) {
   list_t *t = *root;
   list_t *n = t;

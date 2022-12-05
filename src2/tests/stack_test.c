@@ -4,11 +4,10 @@
 // int main() {
 //   list_t * base = createStack(0,0,0,kValue);
 //   int a = 1;
-//   pushValueStack(&base, 0.4, &a);
-//   printf("%Lf\n", peekValueStack(base));
-//   pushValueStack(&base, 0.8, &a);
-//   printf("%Lf\n", peekValueStack(base));
-//   popValueStack(&base, &a);
-//   printf("%Lf\n", peekValueStack(base));
-//   printf("%d", a);
+//   pushOperStack(&base, '+', &a);
+//   pushOperStack(&base, '-', &a);
+//   pushOperStack(&base, '/', &a);
+//   printf("%c\n", popOperStack(&base, &a));
+//   printf("%c\n", popOperStack(&base, &a));
+//   printf("%c\n", popOperStack(&base, &a));
 // }

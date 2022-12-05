@@ -9,6 +9,11 @@ typedef struct list_t {
   int type;
 } list_t;
 
+typedef struct elem {
+  long double a;
+  long double b;
+} elem_t;
+
 typedef enum {
   kValue=1,
   kX,
@@ -24,6 +29,7 @@ int pushValue(list_t** root, long double value);
 int pushX(list_t** root, long double x);
 int pushOper(list_t** root, char oper);
 int freeList(list_t**root);
+int printList(list_t*root);
 
 /* list_t stack implementation */
 
@@ -45,7 +51,7 @@ int pushValueStack(list_t ** root, long double value, int*nodesCount);
 /* calculation */
 
 long double calculate(const char* input);
-int inf_to_rpn(const char* input, list_t** root);
-int calculate_rpn(list_t* root);
+int infToRpn(const char* input, list_t** root);
+long double calculateRpn(list_t* root);
 
 #endif // SRC_CALC_H_
