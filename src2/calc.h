@@ -34,9 +34,18 @@ long double peekStack(list_t* root, int type);
 long double peekXStack(list_t *root);
 long double peekValueStack(list_t *root);
 char peekOperStack(list_t *root);
-long double popStack(list_t** root, int type);
-long double popValueStack(list_t **root);
-long double popXStack(list_t **root);
-char popOperStack(list_t **root);
+long double popStack(list_t** root, int type, int*nodesCount);
+long double popValueStack(list_t **root, int*nodesCount);
+long double popXStack(list_t **root, int*nodesCount);
+char popOperStack(list_t **root, int*nodesCount);
+int pushOperStack(list_t ** root, char oper, int*nodesCount);
+int pushXStack(list_t ** root, long double x, int*nodesCount);
+int pushValueStack(list_t ** root, long double value, int*nodesCount);
+
+/* calculation */
+
+long double calculate(const char* input);
+int inf_to_rpn(const char* input, list_t** root);
+int calculate_rpn(list_t* root);
 
 #endif // SRC_CALC_H_

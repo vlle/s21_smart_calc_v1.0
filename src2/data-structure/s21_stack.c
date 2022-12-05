@@ -78,6 +78,7 @@ long double popStack(list_t** root, int type, int*nodesCount) {
     list_t *to_free = *root;
     *root = (*root)->next;
     free(to_free);
+    *nodesCount -= 1;
   }
   return retval;
 }
