@@ -18,7 +18,7 @@ typedef enum {
   kValue=1,
   kX,
   kOper
-} kType ;
+} kType;
 
 
 /* list_t logic */
