@@ -4,6 +4,7 @@
 #include <check.h>
 
 Suite *triglog_suite(void);
+Suite *trigclass_suite(void);
 // Suite *mult_div(void);
 // Suite *trig_mult(void);
 // Suite *trig_div(void);

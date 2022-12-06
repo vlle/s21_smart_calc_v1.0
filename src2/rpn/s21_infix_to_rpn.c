@@ -91,6 +91,9 @@ long double calculateRpn(list_t* root) {
   list_t * stack = createStack(0, 0, 0, kValue);
   int nodes_count = 0;
   elem_t val = {0};
+  if (!root) {
+    return NAN;
+  }
   while (root) {
     if (root->type == kValue) {
       ans = root->value;
