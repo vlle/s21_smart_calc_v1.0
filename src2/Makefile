@@ -44,6 +44,7 @@ install: $(LIB)
 	# @gcc $(CFLAGS) $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o s21_smart_calc/smartcalc  $(llgtk)
 	@gcc $(CFLAGS) $(lgtk) gui/gtk_ent.c -o s21_smart_calc/smartcalc $(llgtk)
 	@echo "Build was successful. Start your smartcalc in s21_smart_calc with ./smartcalc"
+	@./s21_smart_calc/smartcalc
 
 uninstall:
 	rm -rf s21_smart_calc
