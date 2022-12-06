@@ -42,7 +42,7 @@ install: $(LIB)
 	# @gcc  $(lgtk)  -c gui/func_graph.c -o func_graph.o
 	# @gcc $(CFLAGS) $(lgtk) -c gui/finance_gui.c -o nice_graph.o
 	# @gcc $(CFLAGS) $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o s21_smart_calc/smartcalc  $(llgtk)
-	@gcc $(CFLAGS) $(lgtk) gui/gtk_ent.c -o s21_smart_calc/smartcalc $(llgtk)
+	@gcc $(CFLAGS) $(lgtk) gui/gtk_ent.c s21_calc.a -o s21_smart_calc/smartcalc $(llgtk)
 	@echo "Build was successful. Start your smartcalc in s21_smart_calc with ./smartcalc"
 	@./s21_smart_calc/smartcalc
 

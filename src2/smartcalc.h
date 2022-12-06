@@ -21,6 +21,7 @@ typedef enum {
 } kType;
 
 
+
 /* list_t logic */
 
 list_t * createList(long double value, long double x, char oper, int type);
