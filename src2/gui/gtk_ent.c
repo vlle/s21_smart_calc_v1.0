@@ -31,10 +31,10 @@ activate (GtkApplication* app,
   calc_data->entry_text = gtk_entry_new();
   label_text = gtk_label_new("Enter your infix string: ");
   calc_data->label_empty = gtk_label_new("");
-  text_box_V = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-  text_box_H = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-  text_box_Hor2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-  text_box_Hor = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+  text_box_V = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
+  text_box_H = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
+  text_box_Hor2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
+  text_box_Hor = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   grid = gtk_grid_new ();
   button_calc = gtk_button_new_with_label ("=");
   button_q = gtk_button_new_with_label ("Quit");
@@ -45,11 +45,13 @@ activate (GtkApplication* app,
   gtk_box_set_homogeneous(GTK_BOX(text_box_H), FALSE);
   gtk_widget_set_halign(label_text, GTK_ALIGN_CENTER);
   // gtk_widget_set_valign(text_box_V, GTK_ALIGN_CENTER);
+  //
   // gtk_widget_set_valign(text_box_H, GTK_ALIGN_CENTER);
   // gtk_widget_set_valign(text_box_Hor, GTK_ALIGN_CENTER);
   gtk_widget_set_halign(text_box_V, GTK_ALIGN_END);
   gtk_widget_set_halign(text_box_H, GTK_ALIGN_CENTER);
   gtk_widget_set_halign(text_box_Hor, GTK_ALIGN_CENTER);
+  gtk_widget_set_hexpand(label_text, TRUE);
   gtk_box_prepend(GTK_BOX(text_box_V), GTK_WIDGET(calc_data->label_empty));
   gtk_box_prepend(GTK_BOX(text_box_V), GTK_WIDGET(label_text));
   gtk_box_prepend(GTK_BOX(text_box_H), GTK_WIDGET(calc_data->entry_text));
