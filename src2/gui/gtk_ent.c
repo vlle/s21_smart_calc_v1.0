@@ -22,24 +22,26 @@ activate (GtkApplication* app,
   (void)user_data;
   GtkWidget *window;
   GtkWidget *label_text;
-  GtkWidget *text_box_H, *text_box_V, *text_box_Hor, *text_box_Hor2, *text_box_Vert;
+  GtkWidget *text_box_H, *text_box_V, *text_box_Hor, *text_box_Hor2, *text_box_Vert, *text_box_Grid;
   calc *calc_data = malloc(sizeof(*calc_data));
-  GtkWidget *grid, *grid_numb;
+  GtkWidget *grid_numb;
   GtkWidget *button_calc, *button_q;
   GtkWidget *n1_button, *n2_button, *n3_button, *n4_button;
   GtkWidget *n5_button, *n6_button, *n7_button, *n8_button;
-  GtkWidget *n9_button, *n0_button;
+  GtkWidget *n9_button, *n0_button, *fl_button;
+  GtkWidget *plus_button, *minus_button, *mult_button, *div_button;
+  GtkWidget *sin_button, *cos_button, *tan_button;
 
   window = gtk_application_window_new (app);
   calc_data->entry_text = gtk_entry_new();
   label_text = gtk_label_new("Enter your infix string: ");
-  calc_data->label_empty = gtk_label_new("");
+  calc_data->label_empty = gtk_label_new("0.000000");
   text_box_V = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
-  text_box_H = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
+  text_box_H = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   text_box_Hor2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   text_box_Hor = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   text_box_Vert = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
-  grid = gtk_grid_new ();
+  text_box_Grid = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   grid_numb = gtk_grid_new ();
   button_calc = gtk_button_new_with_label ("=");
   n1_button = gtk_button_new_with_label ("1");
@@ -52,26 +54,50 @@ activate (GtkApplication* app,
   n8_button = gtk_button_new_with_label ("8");
   n9_button = gtk_button_new_with_label ("9");
   n0_button = gtk_button_new_with_label ("0");
+  fl_button = gtk_button_new_with_label (",");
+  sin_button = gtk_button_new_with_label ("sin");
+  cos_button = gtk_button_new_with_label ("cos");
+  tan_button = gtk_button_new_with_label ("tan");
+  div_button = gtk_button_new_with_label ("÷");
+  plus_button = gtk_button_new_with_label ("+");
+  minus_button = gtk_button_new_with_label ("-");
+  mult_button = gtk_button_new_with_label ("X");
   button_q = gtk_button_new_with_label ("Quit");
   g_signal_connect (button_calc, "clicked", G_CALLBACK(calculat), calc_data); 
   g_signal_connect_swapped (button_q, "clicked", G_CALLBACK(gtk_window_destroy), GTK_WINDOW(window)); 
-  gtk_grid_attach (GTK_GRID (grid), button_calc, 1, 1, 1, 1);
-  gtk_grid_attach (GTK_GRID (grid), button_q, 2, 1, 1, 1);
+  // gtk_grid_attach (GTK_GRID (grid_numb), button_calc, 1, 1, 1, 1);
+  // gtk_grid_attach (GTK_GRID (grid_numb), button_q, 1, 2, 1, 1);
 
   gtk_grid_attach (GTK_GRID (grid_numb), n1_button, 1, 3, 1, 1);
   gtk_grid_attach (GTK_GRID (grid_numb), n2_button, 2, 3, 1, 1);
   gtk_grid_attach (GTK_GRID (grid_numb), n3_button, 3, 3, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_numb), plus_button, 4, 3, 1, 1);
 
   gtk_grid_attach (GTK_GRID (grid_numb), n4_button, 1, 2, 1, 1);
   gtk_grid_attach (GTK_GRID (grid_numb), n5_button, 2, 2, 1, 1);
   gtk_grid_attach (GTK_GRID (grid_numb), n6_button, 3, 2, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_numb), minus_button, 4, 2, 1, 1);
 
   gtk_grid_attach (GTK_GRID (grid_numb), n7_button, 1, 1, 1, 1);
   gtk_grid_attach (GTK_GRID (grid_numb), n8_button, 2, 1, 1, 1);
   gtk_grid_attach (GTK_GRID (grid_numb), n9_button, 3, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_numb), mult_button, 4, 1, 1, 1);
+
+  gtk_grid_attach (GTK_GRID (grid_numb), sin_button, 1, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_numb), cos_button, 2, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_numb), tan_button, 3, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_numb), div_button, 4, 1, 1, 1);
 
   gtk_grid_attach (GTK_GRID (grid_numb), n0_button, 1, 4, 2, 1);
+  gtk_grid_attach (GTK_GRID (grid_numb), fl_button, 3, 4, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_numb), button_calc, 4, 4, 1, 1);
   gtk_box_set_homogeneous(GTK_BOX(text_box_H), FALSE);
+  gtk_widget_set_halign(calc_data->entry_text, GTK_ALIGN_CENTER);
+  gtk_widget_set_halign(calc_data->label_empty, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign(calc_data->entry_text, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign(calc_data->label_empty, GTK_ALIGN_CENTER);
+  gtk_widget_set_halign(grid_numb, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign(grid_numb, GTK_ALIGN_CENTER);
   gtk_widget_set_halign(label_text, GTK_ALIGN_CENTER);
   // gtk_widget_set_valign(text_box_V, GTK_ALIGN_CENTER);
   //
@@ -79,20 +105,22 @@ activate (GtkApplication* app,
   // gtk_widget_set_valign(text_box_Hor, GTK_ALIGN_CENTER);
   gtk_widget_set_halign(text_box_V, GTK_ALIGN_END);
   gtk_widget_set_halign(text_box_H, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign(text_box_H, GTK_ALIGN_CENTER);
   gtk_widget_set_halign(text_box_Hor, GTK_ALIGN_CENTER);
+  gtk_widget_set_vexpand(grid_numb, TRUE);
+  gtk_widget_set_hexpand(grid_numb, TRUE);
   gtk_widget_set_hexpand(label_text, TRUE);
-  gtk_box_prepend(GTK_BOX(text_box_V), GTK_WIDGET(calc_data->label_empty));
-  gtk_box_prepend(GTK_BOX(text_box_V), GTK_WIDGET(label_text));
+  gtk_box_prepend(GTK_BOX(text_box_H), GTK_WIDGET(calc_data->label_empty));
   gtk_box_prepend(GTK_BOX(text_box_H), GTK_WIDGET(calc_data->entry_text));
-  gtk_box_prepend(GTK_BOX(text_box_Hor2), GTK_WIDGET(grid));
   gtk_box_prepend(GTK_BOX(text_box_Hor), GTK_WIDGET(text_box_Hor2));
   gtk_box_prepend(GTK_BOX(text_box_Hor), GTK_WIDGET(text_box_H));
   gtk_box_prepend(GTK_BOX(text_box_Hor), GTK_WIDGET(text_box_V));
-  gtk_box_prepend(GTK_BOX(text_box_Vert), GTK_WIDGET(grid_numb));
+  gtk_box_prepend(GTK_BOX(text_box_Grid), GTK_WIDGET(grid_numb));
+  gtk_box_prepend(GTK_BOX(text_box_Vert), GTK_WIDGET(text_box_Grid));
   gtk_box_prepend(GTK_BOX(text_box_Vert), GTK_WIDGET(text_box_Hor));
   gtk_window_set_child(GTK_WINDOW (window), text_box_Vert);
   gtk_window_set_title (GTK_WINDOW (window), "Smartcalc Artemii");
-  gtk_window_set_default_size (GTK_WINDOW (window), 400, 400);
+  gtk_window_set_default_size (GTK_WINDOW (window), 250, 250);
   gtk_widget_show (window);
 }
 
