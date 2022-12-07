@@ -14,8 +14,7 @@ calculat (GtkWidget* widget, gpointer data)
   char *res = calloc(sizeof(*res),64);
   long double v = 0;
   calculate(val, &v);
-  snprintf(res, 128, "%Lf", v);
-  // gtk_label_set_label(GTK_LABEL(input->label_empty), res);
+  snprintf(res, 64, "%Lf", v);
   return res;
 }
 
@@ -30,7 +29,9 @@ insert_text(GtkWidget*widget, gpointer data) {
   const char *status = gtk_entry_buffer_get_text(GTK_ENTRY_BUFFER(input->buff));
   int len = 1;
   int pos = f + 1;
-  char* enter = (char*) text;
+  char*enter = calloc(sizeof(*enter), 255);
+  strcpy(enter, text);
+  // char* enter = (char*) text;
   if (strcmp(text, "AC") == 0) {
     gtk_entry_buffer_delete_text(GTK_ENTRY_BUFFER(input->buff), 0, -1);
     return;
@@ -41,12 +42,13 @@ insert_text(GtkWidget*widget, gpointer data) {
     free(res);
     return;
   }
-  if (strstr(text, "sincostan")) {
+  if ((strcmp(enter, "cos")== 0) || (strcmp(enter, "sin")== 0) || (strcmp(enter, "tan")== 0)) {
     g_print("ss");
     len = 5;
     strcat(enter, "()");
-  } else if (strstr(status, "()")) {
-    pos = f;
+  }
+  if (strstr(status, "()")) {
+    pos = f-1;
   }
   gtk_entry_buffer_insert_text(GTK_ENTRY_BUFFER(input->buff), pos, enter, len);
 }
