@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include "../smartcalc.h"
+#include <stdlib.h>
 #include "gui.h"
 
 GtkEntryBuffer *entry_buff;
@@ -10,10 +11,10 @@ calculat (GtkWidget* widget, gpointer data)
   (void) widget;
   calc* input = (calc*) data;
   const char *val = gtk_editable_get_text(GTK_EDITABLE(input->entry_text));
-  char *res = malloc(sizeof(*res));
+  char *res = calloc(sizeof(*res),64);
   long double v = 0;
   calculate(val, &v);
-  sprintf(res, "%Lf", v);
+  snprintf(res, 128, "%Lf", v);
   // gtk_label_set_label(GTK_LABEL(input->label_empty), res);
   return res;
 }
@@ -37,6 +38,7 @@ insert_text(GtkWidget*widget, gpointer data) {
     char* res = calculat(widget, data);
     gtk_entry_buffer_delete_text(GTK_ENTRY_BUFFER(input->buff), 0, -1);
     gtk_entry_buffer_insert_text(GTK_ENTRY_BUFFER(input->buff), pos, res, strlen(res));
+    free(res);
     return;
   }
   if (strstr(text, "sincostan")) {

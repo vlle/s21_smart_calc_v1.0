@@ -17,17 +17,6 @@ list_t * createStack(long double value, long double x, char oper, int type) {
   }
 }
 
-int pushValueStack(list_t ** root, long double value, int*nodesCount) {
-  return pushStack(root, value, 0, 0, kValue, nodesCount);
-}
-
-int pushXStack(list_t ** root, long double x, int*nodesCount) {
-  return pushStack(root, 0, x, 0, kX, nodesCount);
-}
-
-int pushOperStack(list_t ** root, char oper, int*nodesCount) {
-  return pushStack(root, 0, 0, oper, kOper, nodesCount);
-}
 
 int pushStack(list_t** root, long double value, long double x, char oper, int type, int *nodesCount) {
   list_t *newNode = createStack(value, x, oper, type);
@@ -55,15 +44,6 @@ long double peekStack(list_t* root, int type) {
   return retval;
 }
 
-long double peekXStack(list_t *root) {
-  return peekStack(root, kX);
-}
-long double peekValueStack(list_t *root) {
-  return peekStack(root, kValue);
-}
-char peekOperStack(list_t *root) {
-  return peekStack(root, kOper);
-}
 
 long double popStack(list_t** root, int type, int*nodesCount) {
   long double retval = 0;
@@ -83,6 +63,8 @@ long double popStack(list_t** root, int type, int*nodesCount) {
   return retval;
 }
 
+/* pop */ 
+
 long double popValueStack(list_t **root, int*nodesCount) {
   return popStack(root, kValue, nodesCount);
 }
@@ -93,4 +75,28 @@ long double popXStack(list_t **root, int*nodesCount) {
 
 char popOperStack(list_t **root, int*nodesCount) {
   return (char) popStack(root, kOper, nodesCount);
+}
+
+/* peek */ 
+long double peekXStack(list_t *root) {
+  return peekStack(root, kX);
+}
+long double peekValueStack(list_t *root) {
+  return peekStack(root, kValue);
+}
+char peekOperStack(list_t *root) {
+  return peekStack(root, kOper);
+}
+
+/* push */ 
+int pushValueStack(list_t ** root, long double value, int*nodesCount) {
+  return pushStack(root, value, 0, 0, kValue, nodesCount);
+}
+
+int pushXStack(list_t ** root, long double x, int*nodesCount) {
+  return pushStack(root, 0, x, 0, kX, nodesCount);
+}
+
+int pushOperStack(list_t ** root, char oper, int*nodesCount) {
+  return pushStack(root, 0, 0, oper, kOper, nodesCount);
 }
