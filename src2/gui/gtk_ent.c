@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include "../smartcalc.h"
+#include <math.h>
 #include <stdlib.h>
 #include "gui.h"
 
@@ -14,7 +15,11 @@ calculat (GtkWidget* widget, gpointer data)
   char *res = calloc(sizeof(*res),64);
   long double v = 0;
   calculate(val, &v);
-  snprintf(res, 64, "%Lf", v);
+  if (v == (int)v) {
+    snprintf(res, 64, "%0.Lf", v);
+  } else {
+    snprintf(res, 64, "%Lf", v);
+  }
   return res;
 }
 
@@ -74,7 +79,7 @@ activate (GtkApplication* app,
   window = gtk_application_window_new (app);
   calc_data->entry_text = gtk_entry_new();
   // calc_data->label_empty = gtk_label_new("0.000000");
-  label_align = gtk_label_new("\nEnter your infix string:");
+  label_align = gtk_label_new("\n\nEnter your infix string:");
   text_box_V = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
   text_box_H = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   text_box_Hor2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
