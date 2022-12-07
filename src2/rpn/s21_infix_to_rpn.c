@@ -1,10 +1,11 @@
-#include "../smartcalc.h" 
-#include <math.h>
-#include <tgmath.h>
 #include <ctype.h>
-#include <string.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <tgmath.h>
+
+#include "../smartcalc.h"
 
 #define P3 "~^"
 #define P2 "~/*^sctSCTlLV"
@@ -42,22 +43,26 @@ int infToRpn(const char* input, list_t** root) {
   for (char* pEnd = NULL; *input != '\0'; input++) {
     printf("%c", *input);
     if (*input == 'a') {
-      input++; 
+      input++;
       if (input) {
         if (strchr(ALL_TRIG, *input)) {
-          if (strncmp(input, "sin", 3) == 0) pushOperStack(&stack, 'S', &nodes_count);
-          if (strncmp(input, "cos", 3) == 0) pushOperStack(&stack, 'C', &nodes_count);
-          if (strncmp(input, "tan", 3) == 0) pushOperStack(&stack, 'T', &nodes_count);
+          if (strncmp(input, "sin", 3) == 0)
+            pushOperStack(&stack, 'S', &nodes_count);
+          if (strncmp(input, "cos", 3) == 0)
+            pushOperStack(&stack, 'C', &nodes_count);
+          if (strncmp(input, "tan", 3) == 0)
+            pushOperStack(&stack, 'T', &nodes_count);
         }
       }
     } else if (*input == '(') {
       pushOperStack(&stack, '(', &nodes_count);
     } else if (*input == ')') {
-      while (nodes_count > 0 && peekOperStack(stack) != '(') pushOper(root, popOperStack(&stack, &nodes_count));
-      if (peekOperStack(stack)=='(') popOperStack(&stack, &nodes_count);
+      while (nodes_count > 0 && peekOperStack(stack) != '(')
+        pushOper(root, popOperStack(&stack, &nodes_count));
+      if (peekOperStack(stack) == '(') popOperStack(&stack, &nodes_count);
     } else if (isdigit(*input)) {
       num = strtold(input, &pEnd);
-      input = pEnd-1;
+      input = pEnd - 1;
       printf(" %Lf ", num);
       pushValue(root, num);
     } else if (strchr(ALL_L_OP, *input)) {
@@ -68,14 +73,20 @@ int infToRpn(const char* input, list_t** root) {
       } else if (strchr(P1, *input)) {
         priority_pointer = 1;
       }
-      pushAndPrint(&stack, root, &nodes_count, (char*) priority_string[priority_pointer-1]);
+      pushAndPrint(&stack, root, &nodes_count,
+                   (char*)priority_string[priority_pointer - 1]);
       oper = *input;
       if (oper != ')') pushOperStack(&stack, oper, &nodes_count);
     } else if (strchr(ALL_TRIG, *input)) {
-      if ((strncmp(input, "cos", 3)== 0) || (strncmp(input, "sin", 3)== 0) || (strncmp(input, "tan", 3)== 0)) pushAndPrint(&stack, root, &nodes_count, P3);
-      if (strncmp(input, "sin", 3)== 0) pushOperStack(&stack, 's', &nodes_count);
-      if (strncmp(input, "cos", 3)== 0) pushOperStack(&stack, 'c', &nodes_count);
-      if (strncmp(input, "tan", 3)== 0) pushOperStack(&stack, 't', &nodes_count);
+      if ((strncmp(input, "cos", 3) == 0) || (strncmp(input, "sin", 3) == 0) ||
+          (strncmp(input, "tan", 3) == 0))
+        pushAndPrint(&stack, root, &nodes_count, P3);
+      if (strncmp(input, "sin", 3) == 0)
+        pushOperStack(&stack, 's', &nodes_count);
+      if (strncmp(input, "cos", 3) == 0)
+        pushOperStack(&stack, 'c', &nodes_count);
+      if (strncmp(input, "tan", 3) == 0)
+        pushOperStack(&stack, 't', &nodes_count);
     }
   }
   printf("= input val\n");
@@ -88,7 +99,7 @@ int infToRpn(const char* input, list_t** root) {
 
 long double calculateRpn(list_t* root) {
   long double ans = 0.0;
-  list_t * stack = createStack(0, 0, 0, kValue);
+  list_t* stack = createStack(0, 0, 0, kValue);
   int nodes_count = 0;
   elem_t val = {0};
   if (!root) {
@@ -122,12 +133,18 @@ long double calculateRpn(list_t* root) {
         ans = val.b * val.a;
       } else if (strchr(ALL_T, o)) {
         long double trig_val = popValueStack(&stack, &nodes_count);
-        if (o == 's') ans = sinl(trig_val);  
-        else if (o == 'c') ans = cosl(trig_val); 
-        else if (o == 't') ans = tanl(trig_val); 
-        else if (o == 'S') ans = asinl(trig_val); 
-        else if (o == 'C') ans = acosl(trig_val); 
-        else if (o == 'T') ans = atanl(trig_val); 
+        if (o == 's')
+          ans = sinl(trig_val);
+        else if (o == 'c')
+          ans = cosl(trig_val);
+        else if (o == 't')
+          ans = tanl(trig_val);
+        else if (o == 'S')
+          ans = asinl(trig_val);
+        else if (o == 'C')
+          ans = acosl(trig_val);
+        else if (o == 'T')
+          ans = atanl(trig_val);
       } else if (o == 'v') {
         ans = sqrt(popValueStack(&stack, &nodes_count));
       } else if (o == 'l') {
@@ -136,24 +153,22 @@ long double calculateRpn(list_t* root) {
         ans = log10(popValueStack(&stack, &nodes_count));
       } else if (o == '%') {
         val = pop2Value(&stack, &nodes_count);
-        ans = fmodl(val.b,val.a);
+        ans = fmodl(val.b, val.a);
       }
       pushValueStack(&stack, ans, &nodes_count);
     }
     root = root->next;
   }
-  if (nodes_count == 1) {
-    popValueStack(&stack, &nodes_count); 
-  } else if (nodes_count > 1) {
-    while (nodes_count >= 0) {
-      popValueStack(&stack, &nodes_count); 
-    }
+  if (nodes_count > 1) {
     ans = NAN;
+  }
+  while (nodes_count >= 0) {
+    popValueStack(&stack, &nodes_count);
   }
   return ans;
 }
 
-elem_t pop2Value(list_t ** stack, int*nodes_count) {
+elem_t pop2Value(list_t** stack, int* nodes_count) {
   elem_t ans = {0};
   if (*nodes_count > 1) {
     ans.a = popValueStack(stack, nodes_count);
@@ -166,7 +181,8 @@ elem_t pop2Value(list_t ** stack, int*nodes_count) {
   return ans;
 }
 
-int pushAndPrint(list_t** stack, list_t** root, int*nodes_count, char* priority) {
+int pushAndPrint(list_t** stack, list_t** root, int* nodes_count,
+                 char* priority) {
   while (*nodes_count > 0 && strchr(priority, peekOperStack(*stack))) {
     if (peekOperStack(*stack) == '(') {
       popOperStack(stack, nodes_count);
