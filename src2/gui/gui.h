@@ -24,6 +24,9 @@ typedef struct calc {
   GtkWidget *minus_button;
   GtkWidget *mult_button;
   GtkWidget *clear_button;
+  GtkWidget *sqrt_button;
+  GtkWidget *log_button;
+  GtkWidget *ln_button;
 
   GtkWidget *buttSq;
   GtkWidget *buttL;

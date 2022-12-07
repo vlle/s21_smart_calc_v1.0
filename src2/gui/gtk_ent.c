@@ -56,9 +56,11 @@ static void insert_text(GtkWidget *widget, gpointer data) {
     enter[0] = '/';
   }
   if ((strcmp(enter, "cos") == 0) || (strcmp(enter, "sin") == 0) ||
-      (strcmp(enter, "tan") == 0)) {
-    g_print("ss");
-    len = 5;
+      (strcmp(enter, "tan") == 0) || (strcmp(enter, "log") == 0) ||
+      (strcmp(enter, "sqrt") == 0) || (strcmp(enter, "ln") == 0)) {
+    if (strcmp(enter, "sqrt") == 0) len = 6;
+    if (strcmp(enter, "ln") == 0) len = 4;
+    else len = 5;
     strcat(enter, "()");
   }
   if (strstr(status, "()")) {
@@ -111,6 +113,10 @@ static void activate(GtkApplication *app, gpointer user_data) {
   calc_data->minus_button = gtk_button_new_with_label("-");
   calc_data->mult_button = gtk_button_new_with_label("X");
   calc_data->clear_button = gtk_button_new_with_label("AC");
+  calc_data->sqrt_button = gtk_button_new_with_label("sqrt");
+  calc_data->log_button = gtk_button_new_with_label("log");
+  calc_data->ln_button = gtk_button_new_with_label("ln");
+  calc_data->clear_button = gtk_button_new_with_label("AC");
   button_q = gtk_button_new_with_label("Quit");
   gtk_entry_set_buffer(GTK_ENTRY(calc_data->entry_text),
                        GTK_ENTRY_BUFFER(entry_buff));
@@ -137,9 +143,13 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->mult_button, 4, 2, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->div_button, 4, 1, 1, 1);
 
-  gtk_grid_attach(GTK_GRID(grid_numb), calc_data->sin_button, 0, 2, 1, 1);
-  gtk_grid_attach(GTK_GRID(grid_numb), calc_data->cos_button, 0, 3, 1, 1);
-  gtk_grid_attach(GTK_GRID(grid_numb), calc_data->tan_button, 0, 4, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid_numb), calc_data->sqrt_button, 0, 2, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid_numb), calc_data->ln_button, 0, 3, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid_numb), calc_data->log_button, 0, 4, 1, 1);
+  gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->sin_button, calc_data->sqrt_button, GTK_POS_LEFT, 1, 1);
+  gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->cos_button, calc_data->ln_button, GTK_POS_LEFT, 1, 1);
+  gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->tan_button, calc_data->log_button, GTK_POS_LEFT, 1, 1);
+
   g_signal_connect(calc_data->n1_button, "clicked", G_CALLBACK(insert_text),
                    calc_data);
   g_signal_connect(calc_data->n2_button, "clicked", G_CALLBACK(insert_text),
@@ -177,6 +187,12 @@ static void activate(GtkApplication *app, gpointer user_data) {
                    calc_data);
   g_signal_connect(calc_data->clear_button, "clicked", G_CALLBACK(insert_text),
                    calc_data);
+  g_signal_connect(calc_data->sqrt_button, "clicked", G_CALLBACK(insert_text),
+                   calc_data);
+  g_signal_connect(calc_data->ln_button, "clicked", G_CALLBACK(insert_text),
+                   calc_data);
+  g_signal_connect(calc_data->log_button, "clicked", G_CALLBACK(insert_text),
+                   calc_data);
   // g_signal_connect (calc_data->sin_button, "clicked",
   // G_CALLBACK(insert_text), calc_data); g_signal_connect
   // (calc_data->n0_button, "clicked", G_CALLBACK(insert_text), calc_data);
@@ -211,7 +227,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_box_prepend(GTK_BOX(text_box_Vert), GTK_WIDGET(text_box_Hor2));
   gtk_window_set_child(GTK_WINDOW(window), text_box_Vert);
   gtk_window_set_title(GTK_WINDOW(window), "Smartcalc Artemii");
-  gtk_window_set_default_size(GTK_WINDOW(window), 250, 300);
+  gtk_window_set_default_size(GTK_WINDOW(window), 340, 300);
   gtk_widget_show(window);
 }
 
