@@ -1,8 +1,9 @@
-#include "../smartcalc.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-list_t * createList(long double value, long double x, char oper, int type) {
+#include "../smartcalc.h"
+
+list_t *createList(long double value, long double x, char oper, int type) {
   list_t *root = malloc(sizeof(*root));
   if (root) {
     root->value = value;
@@ -17,17 +18,18 @@ list_t * createList(long double value, long double x, char oper, int type) {
   }
 }
 
-int pushList(list_t**root, long double value, long double x, char oper, int type) {
+int pushList(list_t **root, long double value, long double x, char oper,
+             int type) {
   list_t *newNode = createList(value, x, oper, type);
   list_t *traversal = *root;
   while (traversal->next) {
     traversal = traversal->next;
   }
-  traversal->next=newNode;
+  traversal->next = newNode;
   return 0;
 }
 
-int printList(list_t*root) {
+int printList(list_t *root) {
   list_t *dummy = root;
   while (dummy) {
     if (dummy->type == kValue) printf(" %Lf ", dummy->value);
@@ -38,7 +40,7 @@ int printList(list_t*root) {
   return 0;
 }
 
-int freeList(list_t**root) {
+int freeList(list_t **root) {
   list_t *t = *root;
   list_t *n = t;
   while (n->next) {
@@ -50,12 +52,10 @@ int freeList(list_t**root) {
   return 0;
 }
 
-int pushValue(list_t** root, long double value) {
+int pushValue(list_t **root, long double value) {
   return pushList(root, value, 0, 0, kValue);
 }
-int pushX(list_t** root, long double x) {
-  return pushList(root, 0, x, 0, kX);
-}
-int pushOper(list_t** root, char oper) {
+int pushX(list_t **root, long double x) { return pushList(root, 0, x, 0, kX); }
+int pushOper(list_t **root, char oper) {
   return pushList(root, 0, 0, oper, kOper);
 }

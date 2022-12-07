@@ -31,4 +31,4 @@ typedef struct calc {
   GtkEntryBuffer *buff;
 } calc;
 
-#endif // SRC_GUI_GUI_H_
+#endif  // SRC_GUI_GUI_H_

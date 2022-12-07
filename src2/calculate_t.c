@@ -7,7 +7,7 @@
 int main() {
   Suite* triglog = triglog_suite();
   Suite* trigclass = trigclass_suite();
-  SRunner *runner = srunner_create(triglog);
+  SRunner* runner = srunner_create(triglog);
   srunner_add_suite(runner, trigclass);
   srunner_set_fork_status(runner, CK_NOFORK);
   srunner_run_all(runner, CK_NORMAL);
