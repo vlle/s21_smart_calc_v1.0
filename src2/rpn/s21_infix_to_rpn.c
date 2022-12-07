@@ -8,11 +8,12 @@
 #include "../smartcalc.h"
 
 #define P3 "~^"
-#define P2 "~/*^sctSCTlLV"
-#define P1 "~+-/*^sctSCTlLV"
+#define P2 "~/*^sctSCTlLv"
+#define P1 "~+-/*^sctSCTlLv"
 
 #define ALL_L_OP "+-/*^"
 #define ALL_TRIG "sincostan"
+#define ALL_OTHER "logsqrtln"
 #define ALL_T "SCTsct"
 
 int calculate(const char* input, long double* val) {
@@ -87,6 +88,16 @@ int infToRpn(const char* input, list_t** root) {
         pushOperStack(&stack, 'c', &nodes_count);
       if (strncmp(input, "tan", 3) == 0)
         pushOperStack(&stack, 't', &nodes_count);
+    } else if (strchr(ALL_OTHER, *input)) {
+      if ((strncmp(input, "log", 3) == 0) || (strncmp(input, "sqrt", 4) == 0) ||
+          (strncmp(input, "ln", 2) == 0))
+        pushAndPrint(&stack, root, &nodes_count, P3);
+      if (strncmp(input, "log", 3) == 0)
+        pushOperStack(&stack, 'L', &nodes_count);
+      if (strncmp(input, "ln", 2) == 0)
+        pushOperStack(&stack, 'l', &nodes_count);
+      if (strncmp(input, "sqrt", 4) == 0)
+        pushOperStack(&stack, 'v', &nodes_count);
     }
   }
   printf("= input val\n");
