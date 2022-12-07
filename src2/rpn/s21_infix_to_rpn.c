@@ -142,8 +142,13 @@ long double calculateRpn(list_t* root) {
     }
     root = root->next;
   }
-  while (nodes_count >= 0) {
-    popValueStack(&stack, &nodes_count);
+  if (nodes_count == 1) {
+    popValueStack(&stack, &nodes_count); 
+  } else if (nodes_count > 1) {
+    while (nodes_count >= 0) {
+      popValueStack(&stack, &nodes_count); 
+    }
+    ans = NAN;
   }
   return ans;
 }
@@ -155,6 +160,8 @@ elem_t pop2Value(list_t ** stack, int*nodes_count) {
     ans.b = popValueStack(stack, nodes_count);
   } else {
     fprintf(stderr, "Pop error: not enough nodes");
+    ans.a = NAN;
+    ans.b = NAN;
   }
   return ans;
 }

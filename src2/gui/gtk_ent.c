@@ -32,15 +32,21 @@ insert_text(GtkWidget*widget, gpointer data) {
   char*enter = calloc(sizeof(*enter), 255);
   strcpy(enter, text);
   // char* enter = (char*) text;
-  if (strcmp(text, "AC") == 0) {
+  if (strcmp(enter, "AC") == 0) {
     gtk_entry_buffer_delete_text(GTK_ENTRY_BUFFER(input->buff), 0, -1);
     return;
-  } else if (strcmp(text, "=") == 0) {
+  } else if (strcmp(enter, "=") == 0) {
     char* res = calculat(widget, data);
     gtk_entry_buffer_delete_text(GTK_ENTRY_BUFFER(input->buff), 0, -1);
     gtk_entry_buffer_insert_text(GTK_ENTRY_BUFFER(input->buff), pos, res, strlen(res));
     free(res);
     return;
+  }
+  if (strcmp(enter, "X") == 0) {
+    enter[0] = '*';
+  }
+  if (strcmp(enter, "÷") == 0) {
+    enter[0] = '/';
   }
   if ((strcmp(enter, "cos")== 0) || (strcmp(enter, "sin")== 0) || (strcmp(enter, "tan")== 0)) {
     g_print("ss");
