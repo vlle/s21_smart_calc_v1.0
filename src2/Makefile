@@ -50,7 +50,7 @@ uninstall:
 	rm -rf s21_smart_calc
 
 dist: install
-	tar czf s21_smart_calc.tar.gz --directory=s21_smart_calc
+	tar -czf s21_smart_calc.tar.gz --directory=s21_smart_calc/ .
 
 #dvi: gui_back
 
