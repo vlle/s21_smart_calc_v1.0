@@ -54,7 +54,8 @@ uninstall:
 dist: install
 	tar -czf s21_smart_calc.tar.gz --directory=s21_smart_calc/ .
 
-#dvi: gui_back
+dvi:
+	open README.md
 
 tests: test.out
 	./test.out
