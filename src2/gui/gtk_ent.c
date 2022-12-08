@@ -14,7 +14,7 @@ char *calculat(GtkWidget *widget, gpointer data) {
   char *res = calloc(sizeof(*res), 64);
   long double v = 0;
   calculate(val, &v);
-  if (v == (int)v) {
+  if (v == (int) v) {
     snprintf(res, 64, "%0.Lf", v);
   } else {
     snprintf(res, 64, "%Lf", v);
@@ -69,17 +69,24 @@ static void insert_text(GtkWidget *widget, gpointer data) {
   gtk_entry_buffer_insert_text(GTK_ENTRY_BUFFER(input->buff), pos, enter, len);
 }
 
+void delete(GtkWidget *widget, gpointer data) {
+  (void)widget;
+  calc* to_del = (calc*) data;
+  GtkWidget * win = to_del->window;
+  gtk_window_destroy(GTK_WINDOW(win));
+  free(to_del);
+}
+
 static void activate(GtkApplication *app, gpointer user_data) {
   (void)user_data;
-  GtkWidget *window;
   GtkWidget *label_align;
   GtkWidget *text_box_H, *text_box_V, *text_box_Hor, *text_box_Hor2,
       *text_box_Vert, *text_box_Grid;
   calc *calc_data = malloc(sizeof(*calc_data));
   GtkWidget *grid_numb;
-  GtkWidget *button_calc, *button_q;
+  GtkWidget *button_calc;
 
-  window = gtk_application_window_new(app);
+  calc_data->window = gtk_application_window_new(app);
   calc_data->entry_text = gtk_entry_new();
   label_align = gtk_label_new("\n\nEnter your infix string:");
   text_box_V = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
@@ -115,12 +122,12 @@ static void activate(GtkApplication *app, gpointer user_data) {
   calc_data->log_button = gtk_button_new_with_label("log");
   calc_data->ln_button = gtk_button_new_with_label("ln");
   calc_data->clear_button = gtk_button_new_with_label("AC");
-  button_q = gtk_button_new_with_label("Quit");
+  calc_data->button_q = gtk_button_new_with_label("Quit");
   gtk_entry_set_buffer(GTK_ENTRY(calc_data->entry_text),
                        GTK_ENTRY_BUFFER(entry_buff));
   g_signal_connect(button_calc, "clicked", G_CALLBACK(insert_text), calc_data);
-  g_signal_connect_swapped(button_q, "clicked", G_CALLBACK(gtk_window_destroy),
-                           GTK_WINDOW(window));
+  g_signal_connect(calc_data->button_q, "clicked", G_CALLBACK(delete),
+                           calc_data);
 
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n1_button, 1, 4, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n2_button, 2, 4, 1, 1);
@@ -192,6 +199,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   g_signal_connect(calc_data->fl_button, "clicked", G_CALLBACK(insert_text),
                    calc_data);
 
+  gtk_grid_attach(GTK_GRID(grid_numb), calc_data->button_q, 0, 5, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n0_button, 1, 5, 2, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->fl_button, 3, 5, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), button_calc, 4, 5, 1, 1);
@@ -220,10 +228,10 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_box_prepend(GTK_BOX(text_box_Grid), GTK_WIDGET(grid_numb));
   gtk_box_prepend(GTK_BOX(text_box_Vert), GTK_WIDGET(text_box_Grid));
   gtk_box_prepend(GTK_BOX(text_box_Vert), GTK_WIDGET(text_box_Hor2));
-  gtk_window_set_child(GTK_WINDOW(window), text_box_Vert);
-  gtk_window_set_title(GTK_WINDOW(window), "Smartcalc Artemii");
-  gtk_window_set_default_size(GTK_WINDOW(window), 340, 300);
-  gtk_widget_show(window);
+  gtk_window_set_child(GTK_WINDOW(calc_data->window), text_box_Vert);
+  gtk_window_set_title(GTK_WINDOW(calc_data->window), "Smartcalc Artemii");
+  gtk_window_set_default_size(GTK_WINDOW(calc_data->window), 340, 300);
+  gtk_widget_show(calc_data->window);
 }
 
 int main(int argc, char **argv) {
