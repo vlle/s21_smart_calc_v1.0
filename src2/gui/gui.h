@@ -5,6 +5,7 @@ typedef struct calc {
   GtkWidget *label_empty;
   GtkWidget *entry_text;
   int i;
+  GtkWidget *window;
   GtkWidget *n1_button;
   GtkWidget *n2_button;
   GtkWidget *n3_button;
@@ -27,6 +28,7 @@ typedef struct calc {
   GtkWidget *sqrt_button;
   GtkWidget *log_button;
   GtkWidget *ln_button;
+  GtkWidget *button_q;
 
   GtkWidget *buttSq;
   GtkWidget *buttL;
