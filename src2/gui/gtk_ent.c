@@ -34,7 +34,6 @@ static void insert_text(GtkWidget *widget, gpointer data) {
   int pos = f + 1;
   char *enter = calloc(sizeof(*enter), 255);
   strcpy(enter, text);
-  // char* enter = (char*) text;
   if (strcmp(enter, "AC") == 0) {
     gtk_entry_buffer_delete_text(GTK_ENTRY_BUFFER(input->buff), 0, -1);
     free(enter);
@@ -82,7 +81,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
   window = gtk_application_window_new(app);
   calc_data->entry_text = gtk_entry_new();
-  // calc_data->label_empty = gtk_label_new("0.000000");
   label_align = gtk_label_new("\n\nEnter your infix string:");
   text_box_V = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
   text_box_H = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
@@ -123,8 +121,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
   g_signal_connect(button_calc, "clicked", G_CALLBACK(insert_text), calc_data);
   g_signal_connect_swapped(button_q, "clicked", G_CALLBACK(gtk_window_destroy),
                            GTK_WINDOW(window));
-  // gtk_grid_attach (GTK_GRID (grid_numb), button_calc, 1, 1, 1, 1);
-  // gtk_grid_attach (GTK_GRID (grid_numb), button_q, 1, 2, 1, 1);
 
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n1_button, 1, 4, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n2_button, 2, 4, 1, 1);
@@ -193,9 +189,8 @@ static void activate(GtkApplication *app, gpointer user_data) {
                    calc_data);
   g_signal_connect(calc_data->log_button, "clicked", G_CALLBACK(insert_text),
                    calc_data);
-  // g_signal_connect (calc_data->sin_button, "clicked",
-  // G_CALLBACK(insert_text), calc_data); g_signal_connect
-  // (calc_data->n0_button, "clicked", G_CALLBACK(insert_text), calc_data);
+  g_signal_connect(calc_data->fl_button, "clicked", G_CALLBACK(insert_text),
+                   calc_data);
 
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n0_button, 1, 5, 2, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->fl_button, 3, 5, 1, 1);
@@ -235,7 +230,7 @@ int main(int argc, char **argv) {
   GtkApplication *app;
   int status;
 
-  app = gtk_application_new("org.gtk.example", G_APPLICATION_DEFAULT_FLAGS);
+  app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
   g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
   status = g_application_run(G_APPLICATION(app), argc, argv);
   g_object_unref(app);
