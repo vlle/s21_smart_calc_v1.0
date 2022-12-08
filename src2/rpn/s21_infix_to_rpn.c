@@ -66,7 +66,7 @@ int infToRpn(const char* input, list_t** root) {
       input = pEnd - 1;
       printf(" %Lf ", num);
       pushValue(root, num);
-    } else if (strstr(ALL_L_OP, input)) {
+    } else if (strchr(ALL_L_OP, *input)) {
       if (strchr(P3, *input)) {
         priority_pointer = 3;
       } else if (strchr(P2, *input)) {
@@ -88,9 +88,7 @@ int infToRpn(const char* input, list_t** root) {
         pushOperStack(&stack, 'c', &nodes_count);
       if (strncmp(input, "tan", 3) == 0)
         pushOperStack(&stack, 't', &nodes_count);
-    } 
-    // unary minus ////////////////
-    if ((strncmp(input, "log", 3) == 0) || (strncmp(input, "sqrt", 4) == 0) ||
+    } else if ((strncmp(input, "log", 3) == 0) || (strncmp(input, "sqrt", 4) == 0) ||
       (strncmp(input, "ln", 2) == 0))
       pushAndPrint(&stack, root, &nodes_count, P3);
     if (strncmp(input, "log", 3) == 0)
@@ -144,18 +142,19 @@ long double calculateRpn(list_t* root) {
         ans = val.b * val.a;
       } else if (strchr(ALL_T, o)) {
         long double trig_val = popValueStack(&stack, &nodes_count);
-        if (o == 's')
+        if (o == 's') {
           ans = sinl(trig_val);
-        else if (o == 'c')
-            ans = cosl(trig_val);
-          else if (o == 't')
-              ans = tanl(trig_val);
-            else if (o == 'S')
-                ans = asinl(trig_val);
-              else if (o == 'C')
-                  ans = acosl(trig_val);
-                else if (o == 'T')
-                    ans = atanl(trig_val);
+        } else if (o == 'c') {
+          ans = cosl(trig_val);
+        } else if (o == 't') {
+          ans = tanl(trig_val);
+        } else if (o == 'S') {
+          ans = asinl(trig_val);
+        } else if (o == 'C') {
+          ans = acosl(trig_val);
+        } else if (o == 'T') {
+          ans = atanl(trig_val); 
+        }
       } else if (o == 'v') {
         ans = sqrt(popValueStack(&stack, &nodes_count));
       } else if (o == 'l') {
