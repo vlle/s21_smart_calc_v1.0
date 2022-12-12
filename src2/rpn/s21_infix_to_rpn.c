@@ -40,7 +40,7 @@ int infToRpn(const char* input, list_t** root) {
   int nodes_count = 1;
   long double num = 0.0;
   int priority_pointer = 0;
-
+  int i = 0;
   for (char* pEnd = NULL; *input != '\0'; input++) {
     printf("%c", *input);
     if (*input == 'a') {
@@ -67,20 +67,30 @@ int infToRpn(const char* input, list_t** root) {
       printf(" %Lf ", num);
       pushValue(root, num);
     } else if (strchr(ALL_L_OP, *input)) {
-      if (strchr(P3, *input)) {
-        priority_pointer = 3;
-      } else if (strchr(P2, *input)) {
-        priority_pointer = 2;
-      } else if (strchr(P1, *input)) {
-        priority_pointer = 1;
+      int flag = 0;
+      if (*input == '-') {
+        char *cmpr = (char*) input-1;
+        if (*cmpr == '(' || (i == 0)) {
+          priority_pointer = 3;
+          flag = 1;
+        }
+      } else {
+        if (strchr(P3, *input)) {
+          priority_pointer = 3;
+        } else if (strchr(P2, *input)) {
+          priority_pointer = 2;
+        } else if (strchr(P1, *input)) {
+          priority_pointer = 1;
+        }
       }
       pushAndPrint(&stack, root, &nodes_count,
                    (char*)priority_string[priority_pointer - 1]);
       oper = *input;
+      if (flag) oper = '~';
       if (oper != ')') pushOperStack(&stack, oper, &nodes_count);
     } else if (strchr(ALL_TRIG, *input)) {
       if ((strncmp(input, "cos", 3) == 0) || (strncmp(input, "sin", 3) == 0) ||
-          (strncmp(input, "tan", 3) == 0))
+        (strncmp(input, "tan", 3) == 0))
         pushAndPrint(&stack, root, &nodes_count, P3);
       if (strncmp(input, "sin", 3) == 0)
         pushOperStack(&stack, 's', &nodes_count);
@@ -97,6 +107,7 @@ int infToRpn(const char* input, list_t** root) {
       pushOperStack(&stack, 'l', &nodes_count);
     if (strncmp(input, "sqrt", 4) == 0)
       pushOperStack(&stack, 'v', &nodes_count);
+    i++;
   }
   printf("= input val\n");
   while (nodes_count > 0) {
@@ -107,7 +118,7 @@ int infToRpn(const char* input, list_t** root) {
 }
 
 long double calculateRpn(list_t* root) {
-  long double ans = 0.0;
+  long double ans = NAN;
   list_t* stack = createStack(0, 0, 0, kValue);
   int nodes_count = 0;
   elem_t val = {0};
@@ -127,6 +138,8 @@ long double calculateRpn(list_t* root) {
         } else {
           ans = popValueStack(&stack, &nodes_count);
         }
+      } else if (o == '~') {
+          ans = -1 * popValueStack(&stack, &nodes_count);
       } else if (o == '-') {
         if (nodes_count > 1) {
           val = pop2Value(&stack, &nodes_count);
