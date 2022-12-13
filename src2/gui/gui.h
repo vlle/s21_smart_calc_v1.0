@@ -44,6 +44,7 @@ typedef struct {
   GtkWidget *type_credit;
   GtkWidget *type_credit2;
   GtkWidget *window;
+  GtkWidget *s_window;
 } finance_i;
 
 void cb_create();
