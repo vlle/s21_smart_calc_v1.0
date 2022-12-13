@@ -36,4 +36,10 @@ typedef struct calc {
   GtkEntryBuffer *buff;
 } calc;
 
+void cb_create();
+static void activate(GtkApplication *app, gpointer user_data);
+void delete(GtkWidget *widget, gpointer data);
+static void insert_text(GtkWidget *widget, gpointer data);
+char *calculat(GtkWidget *widget, gpointer data);
+
 #endif  // SRC_GUI_GUI_H_

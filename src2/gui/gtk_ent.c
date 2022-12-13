@@ -5,7 +5,6 @@
 #include "../smartcalc.h"
 #include "gui.h"
 
-GtkEntryBuffer *entry_buff;
 
 char *calculat(GtkWidget *widget, gpointer data) {
   (void)widget;
@@ -48,9 +47,6 @@ static void insert_text(GtkWidget *widget, gpointer data) {
     return;
   }
 
-  if (strcmp(enter, "X") == 0) {
-    enter[0] = '*';
-  }
   if (strcmp(enter, "÷") == 0) {
     enter[0] = '/';
   }
@@ -67,6 +63,7 @@ static void insert_text(GtkWidget *widget, gpointer data) {
   }
 
   gtk_entry_buffer_insert_text(GTK_ENTRY_BUFFER(input->buff), pos, enter, len);
+  free(enter);
 }
 
 void delete(GtkWidget *widget, gpointer data) {
@@ -79,13 +76,14 @@ void delete(GtkWidget *widget, gpointer data) {
 
 static void activate(GtkApplication *app, gpointer user_data) {
   (void)user_data;
+  GtkWidget *finance_button;
   GtkWidget *label_align;
   GtkWidget *text_box_H, *text_box_V, *text_box_Hor, *text_box_Hor2,
       *text_box_Vert, *text_box_Grid;
-  calc *calc_data = malloc(sizeof(*calc_data));
   GtkWidget *grid_numb;
   GtkWidget *button_calc;
 
+  calc *calc_data = malloc(sizeof(*calc_data));
   calc_data->window = gtk_application_window_new(app);
   calc_data->entry_text = gtk_entry_new();
   label_align = gtk_label_new("\n\nEnter your infix string:");
@@ -96,9 +94,9 @@ static void activate(GtkApplication *app, gpointer user_data) {
   text_box_Vert = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
   text_box_Grid = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   grid_numb = gtk_grid_new();
-  entry_buff = gtk_entry_buffer_new(NULL, -1);
-  calc_data->buff = entry_buff;
+  calc_data->buff = gtk_entry_buffer_new(NULL, -1);
   button_calc = gtk_button_new_with_label("=");
+  finance_button = gtk_button_new_with_label("FIN");
   calc_data->n1_button = gtk_button_new_with_label("1");
   calc_data->n2_button = gtk_button_new_with_label("2");
   calc_data->n3_button = gtk_button_new_with_label("3");
@@ -116,7 +114,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   calc_data->div_button = gtk_button_new_with_label("÷");
   calc_data->plus_button = gtk_button_new_with_label("+");
   calc_data->minus_button = gtk_button_new_with_label("-");
-  calc_data->mult_button = gtk_button_new_with_label("X");
+  calc_data->mult_button = gtk_button_new_with_label("*");
   calc_data->clear_button = gtk_button_new_with_label("AC");
   calc_data->sqrt_button = gtk_button_new_with_label("sqrt");
   calc_data->log_button = gtk_button_new_with_label("log");
@@ -124,7 +122,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   calc_data->clear_button = gtk_button_new_with_label("AC");
   calc_data->button_q = gtk_button_new_with_label("Quit");
   gtk_entry_set_buffer(GTK_ENTRY(calc_data->entry_text),
-                       GTK_ENTRY_BUFFER(entry_buff));
+                       GTK_ENTRY_BUFFER(calc_data->buff));
   g_signal_connect(button_calc, "clicked", G_CALLBACK(insert_text), calc_data);
   g_signal_connect(calc_data->button_q, "clicked", G_CALLBACK(delete),
                            calc_data);
@@ -149,6 +147,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->sqrt_button, 0, 2, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->ln_button, 0, 3, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->log_button, 0, 4, 1, 1);
+  gtk_grid_attach_next_to(GTK_GRID(grid_numb),finance_button, calc_data->clear_button,  GTK_POS_LEFT, 1, 1);
   gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->sin_button, calc_data->sqrt_button, GTK_POS_LEFT, 1, 1);
   gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->cos_button, calc_data->ln_button, GTK_POS_LEFT, 1, 1);
   gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->tan_button, calc_data->log_button, GTK_POS_LEFT, 1, 1);
@@ -198,6 +197,8 @@ static void activate(GtkApplication *app, gpointer user_data) {
                    calc_data);
   g_signal_connect(calc_data->fl_button, "clicked", G_CALLBACK(insert_text),
                    calc_data);
+   g_signal_connect(finance_button, "clicked", G_CALLBACK(cb_create),
+                    NULL);
 
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->button_q, 0, 5, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n0_button, 1, 5, 2, 1);
@@ -205,22 +206,15 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_grid_attach(GTK_GRID(grid_numb), button_calc, 4, 5, 1, 1);
   gtk_box_set_homogeneous(GTK_BOX(text_box_H), FALSE);
   gtk_widget_set_halign(calc_data->entry_text, GTK_ALIGN_CENTER);
-  // §gtk_widget_set_halign(calc_data->label_empty, GTK_ALIGN_CENTER);
   gtk_widget_set_valign(calc_data->entry_text, GTK_ALIGN_CENTER);
-  // gtk_widget_set_valign(calc_data->label_empty, GTK_ALIGN_CENTER);
   gtk_widget_set_halign(grid_numb, GTK_ALIGN_CENTER);
   gtk_widget_set_valign(grid_numb, GTK_ALIGN_CENTER);
-  // gtk_widget_set_valign(text_box_V, GTK_ALIGN_CENTER);
-  //
-  // gtk_widget_set_valign(text_box_H, GTK_ALIGN_CENTER);
-  // gtk_widget_set_valign(text_box_Hor, GTK_ALIGN_CENTER);
   gtk_widget_set_halign(text_box_V, GTK_ALIGN_END);
   gtk_widget_set_halign(text_box_H, GTK_ALIGN_CENTER);
   gtk_widget_set_valign(text_box_H, GTK_ALIGN_CENTER);
   gtk_widget_set_halign(text_box_Hor, GTK_ALIGN_CENTER);
   gtk_widget_set_vexpand(grid_numb, TRUE);
   gtk_widget_set_hexpand(grid_numb, TRUE);
-  // gtk_box_prepend(GTK_BOX(text_box_H), GTK_WIDGET(calc_data->label_empty));
   gtk_box_prepend(GTK_BOX(text_box_H), GTK_WIDGET(calc_data->entry_text));
   gtk_box_prepend(GTK_BOX(text_box_Hor2), GTK_WIDGET(text_box_H));
   gtk_box_prepend(GTK_BOX(text_box_Hor2), GTK_WIDGET(label_align));
@@ -238,7 +232,7 @@ int main(int argc, char **argv) {
   GtkApplication *app;
   int status;
 
-  app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  app = gtk_application_new("org.gtk.example", G_APPLICATION_DEFAULT_FLAGS);
   g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
   status = g_application_run(G_APPLICATION(app), argc, argv);
   g_object_unref(app);

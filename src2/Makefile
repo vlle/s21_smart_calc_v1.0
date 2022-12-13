@@ -45,7 +45,8 @@ launch: install
 install: $(LIB)
 	@echo "Building Graphical Calculator"
 	@mkdir -p s21_smart_calc
-	@gcc $(CFLAGS) $(lgtk) gui/gtk_ent.c s21_calc.a -o s21_smart_calc/smartcalc $(llgtk)
+	@gcc $(CFLAGS) -c $(lgtk) gui/finance_gui.c -o gtk_fin.o
+	@gcc $(CFLAGS) $(lgtk) gui/gtk_ent.c gtk_fin.o s21_calc.a -o s21_smart_calc/smartcalc $(llgtk)
 	@echo "Build was successful. Start your smartcalc in s21_smart_calc with ./smartcalc"
 
 uninstall:
