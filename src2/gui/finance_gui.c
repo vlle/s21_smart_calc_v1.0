@@ -5,43 +5,6 @@
 #include "../smartcalc.h"
 #include "gui.h"
 
-static void
-setup_cb (GtkListItemFactory *factory, GtkListItem *listitem, gpointer user_data) {
-  (void) factory;
-  (void) user_data;
-  GtkWidget *lb = gtk_label_new (NULL);
-  gtk_list_item_set_child (listitem, lb);
-}
-
-static void
-bind_cb (GtkSignalListItemFactory *self, GtkListItem *listitem, gpointer user_data) {
-  (void) self;
-  (void) user_data;
-  GtkWidget *lb = gtk_list_item_get_child (listitem);
-  GtkStringObject *strobj = gtk_list_item_get_item (listitem);
-  const char *text = gtk_string_object_get_string (strobj);
-
-  gtk_label_set_text (GTK_LABEL (lb), text);
-}
-
-static void
-unbind_cb (GtkSignalListItemFactory *self, GtkListItem *listitem, gpointer user_data) {
-  (void) self;
-  (void) listitem;
-  (void) user_data;
-  /* There's nothing to do here. */
-  /* If you does something like setting a signal in bind_cb, */
-  /* then disconnecting the signal is necessary in unbind_cb. */
-}
-
-static void
-teardown_cb (GtkListItemFactory *factory, GtkListItem *listitem, gpointer user_data) {
-  (void) factory;
-  (void) user_data;
-  gtk_list_item_set_child (listitem, NULL);
-/*  When the child of listitem is set to NULL, the reference to GtkLabel will be released and lb will be destroyed. */
-/* Therefore, g_object_unref () for the GtkLabel object doesn't need in the user code. */
-}
 
 void closeWin(GtkWidget *button, gpointer data) {
   (void)button;
@@ -52,7 +15,6 @@ void closeWin(GtkWidget *button, gpointer data) {
 }
 
 void cb_create() {
-
   GtkWidget *hbox_l;
   GtkWidget *hbox_l2;
   GtkWidget *hbox_l3;
@@ -61,21 +23,12 @@ void cb_create() {
   GtkWidget *fineq;
   GtkWidget *q_butn;
 
-  char *array[] = {
-    "one", "two", "three", "four",
-    "one", "two", "three", "four",
-    "one", "two", "three", "four",
-    "one", "two", "three", "four", NULL
-  };
-  GtkStringList *sl = gtk_string_list_new ((const char * const *) array);
-  GtkSingleSelection *ns = gtk_single_selection_new (G_LIST_MODEL (sl));
-
   GtkWidget *total_amount_label, *term_label, *interest_rate_label;
 
   finance_i* calc_data = malloc(sizeof(*calc_data));
   calc_data->s_window = gtk_scrolled_window_new();
+
   calc_data->window = gtk_window_new();
-  gtk_window_set_default_size (GTK_WINDOW (calc_data->window), 600, 400);
   calc_data->total_amount = gtk_entry_new();
   calc_data->term = gtk_entry_new();
   calc_data->interest_rate = gtk_entry_new();
@@ -125,14 +78,6 @@ void cb_create() {
   gtk_box_prepend(GTK_BOX(box_l), hbox_l);
 
   // g_signal_connect(fineq, "clicked", G_CALLBACK(finances), calc_data);
-  GtkListItemFactory *factory = gtk_signal_list_item_factory_new ();
-  g_signal_connect (factory, "setup", G_CALLBACK (setup_cb), NULL);
-  g_signal_connect (factory, "bind", G_CALLBACK (bind_cb), NULL);
-  g_signal_connect (factory, "unbind", G_CALLBACK (unbind_cb), NULL);
-  g_signal_connect (factory, "teardown", G_CALLBACK (teardown_cb), NULL);
-
-  GtkWidget *lv = gtk_list_view_new (GTK_SELECTION_MODEL (ns), factory);
-  gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (calc_data->s_window), lv);
   g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeWin), calc_data);
 
   gtk_window_set_child(GTK_WINDOW(calc_data->window), box_l);
