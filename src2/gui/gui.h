@@ -36,10 +36,20 @@ typedef struct calc {
   GtkEntryBuffer *buff;
 } calc;
 
+
+typedef struct {
+  GtkWidget *total_amount;
+  GtkWidget *term;
+  GtkWidget *interest_rate;
+  GtkWidget *type_credit;
+  GtkWidget *type_credit2;
+  GtkWidget *window;
+} finance_i;
+
 void cb_create();
-static void activate(GtkApplication *app, gpointer user_data);
+void activate(GtkApplication *app, gpointer user_data);
 void delete(GtkWidget *widget, gpointer data);
-static void insert_text(GtkWidget *widget, gpointer data);
+void insert_text(GtkWidget *widget, gpointer data);
 char *calculat(GtkWidget *widget, gpointer data);
 
 #endif  // SRC_GUI_GUI_H_

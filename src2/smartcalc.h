@@ -14,6 +14,29 @@ typedef struct elem {
   long double b;
 } elem_t;
 
+typedef struct {
+  long double total_payment;
+  long double monthly_payment;
+  long double overpayment;
+  long double days_with_cred;
+  long double total_credit_amount;
+  long double term;
+  long double interest_rate;
+  long double diff_payment_part;
+  long double remainder_credit;
+  long double pay_percent;
+  char type_credit;
+} finance_t;
+
+enum {
+
+  TOTAL_CREDIT = 0,
+  MONTHLY_PAYMENT,
+  OVERPAYMENT,
+  N_COLUMNS
+};
+
+
 typedef enum { kValue = 1, kX, kOper } kType;
 
 /* list_t logic */
@@ -52,5 +75,9 @@ int pushAndPrint(list_t** stack, list_t** root, int* nodes_count,
                  char* priority);
 elem_t pop2Value(list_t** stack, int* nodes_count);
 long double calculateRpn(list_t* root);
+finance_t put_data(long double total_credit_amount, long double term,
+                      long double interest_rate, char type,
+                      long double days_with_cred);
+finance_t credit_calculate(finance_t credit);
 
 #endif  // SRC_CALC_H_

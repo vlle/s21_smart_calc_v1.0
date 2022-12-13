@@ -21,7 +21,7 @@ char *calculat(GtkWidget *widget, gpointer data) {
   return res;
 }
 
-static void insert_text(GtkWidget *widget, gpointer data) {
+void insert_text(GtkWidget *widget, gpointer data) {
   (void)widget;
   calc *input = (calc *)data;
   g_print("%s\n", gtk_button_get_label(GTK_BUTTON(widget)));
@@ -74,7 +74,7 @@ void delete(GtkWidget *widget, gpointer data) {
   free(to_del);
 }
 
-static void activate(GtkApplication *app, gpointer user_data) {
+void activate(GtkApplication *app, gpointer user_data) {
   (void)user_data;
   GtkWidget *finance_button;
   GtkWidget *label_align;
