@@ -70,7 +70,8 @@ int pushValueStack(list_t** root, long double value, int* nodesCount);
 /* calculation */
 
 int calculate(const char* input, long double* val);
-int infToRpn(const char* input, list_t** root);
+int calculate_x(const char* input, long double x, long double*val);
+int infToRpn(const char* input, list_t** root, long double*x);
 int pushAndPrint(list_t** stack, list_t** root, int* nodes_count,
                  char* priority);
 elem_t pop2Value(list_t** stack, int* nodes_count);

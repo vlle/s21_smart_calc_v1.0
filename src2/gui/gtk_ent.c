@@ -5,6 +5,9 @@
 #include "../smartcalc.h"
 #include "gui.h"
 
+#define ZOOM_X 100
+#define ZOOM_Y 100
+
 
 char *calculat(GtkWidget *widget, gpointer data) {
   (void)widget;
@@ -66,6 +69,11 @@ void insert_text(GtkWidget *widget, gpointer data) {
   free(enter);
 }
 
+void redraw(GtkWidget *widget, gpointer data) {
+  (void)widget;
+  gtk_widget_queue_draw(GTK_WIDGET(data));
+}
+
 void delete(GtkWidget *widget, gpointer data) {
   (void)widget;
   calc* to_del = (calc*) data;
@@ -86,33 +94,50 @@ draw_function (GtkDrawingArea *area,
 
   context = gtk_widget_get_style_context (GTK_WIDGET (area));
 
-  cairo_arc (cr,
-             width / 2.0, height / 2.0,
-             MIN (width, height) / 2.0,
-             0, 2 * G_PI);
+  cairo_set_line_width(cr, 1.0);
 
+  // zoom below
+  int f1 = 3;
+  int f2 = 3;
+  cairo_scale(cr, f1, f2);
   gtk_style_context_get_color (context,
                                &color);
   gdk_cairo_set_source_rgba (cr, &color);
+  int lx = -width/f1;
+  int rx = width/f1;
+  int dy = -height/f1;
+  int uy = height/f1;
+  for (double i = lx; i<rx; i+=1) {
+    cairo_line_to(cr, i, height/(f1*2));
+  }
+  cairo_stroke(cr);
+  for (double i = dy; i < uy; i+=1) {
+    cairo_line_to(cr, width/(f2*2), i);
+  }
+  cairo_stroke(cr);
+  long double val = 0;
+  cairo_scale(cr, f1/2, f2/2);
+  calc *input = (calc *)data;
+  const char *text = gtk_editable_get_text(GTK_EDITABLE(input->entry_text));
+  for (double i = lx; i < rx; i+= 0.1) {
+    calculate_x(text, i, &val);
+    cairo_line_to(cr, i, height/(f1*2)+val);
+  }
+  cairo_stroke(cr);
 
-  cairo_fill (cr);
+  cairo_stroke(cr);
+
 }
 
 void activate(GtkApplication *app, gpointer user_data) {
   GtkWidget *area = gtk_drawing_area_new ();
-  gtk_drawing_area_set_content_width (GTK_DRAWING_AREA (area), 100);
-  gtk_drawing_area_set_content_height (GTK_DRAWING_AREA (area), 100);
-  gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (area),
-                                  draw_function,
-                                  NULL, NULL);
   (void)user_data;
-  GtkWidget *finance_button;
+  GtkWidget *finance_button, *draw_button;
   GtkWidget *label_align;
   GtkWidget *text_box_H, *text_box_V, *text_box_Hor, *text_box_Hor2,
   *text_box_Vert, *text_box_Grid, *endgame;
   GtkWidget *grid_numb;
   GtkWidget *button_calc;
-
   calc *calc_data = malloc(sizeof(*calc_data));
   calc_data->window = gtk_application_window_new(app);
   calc_data->entry_text = gtk_entry_new();
@@ -128,6 +153,7 @@ void activate(GtkApplication *app, gpointer user_data) {
   calc_data->buff = gtk_entry_buffer_new(NULL, -1);
   button_calc = gtk_button_new_with_label("=");
   finance_button = gtk_button_new_with_label("FIN");
+  draw_button = gtk_button_new_with_label("DRAW");
   calc_data->n1_button = gtk_button_new_with_label("1");
   calc_data->n2_button = gtk_button_new_with_label("2");
   calc_data->n3_button = gtk_button_new_with_label("3");
@@ -155,8 +181,14 @@ void activate(GtkApplication *app, gpointer user_data) {
   gtk_entry_set_buffer(GTK_ENTRY(calc_data->entry_text),
                        GTK_ENTRY_BUFFER(calc_data->buff));
   g_signal_connect(button_calc, "clicked", G_CALLBACK(insert_text), calc_data);
+  g_signal_connect(draw_button, "clicked", G_CALLBACK(redraw), area);
   g_signal_connect(calc_data->button_q, "clicked", G_CALLBACK(delete),
                    calc_data);
+  gtk_drawing_area_set_content_width (GTK_DRAWING_AREA (area), 300);
+  gtk_drawing_area_set_content_height (GTK_DRAWING_AREA (area), 300);
+  gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (area),
+                                  draw_function,
+                                  calc_data, NULL);
 
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n1_button, 1, 4, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n2_button, 2, 4, 1, 1);
@@ -179,6 +211,7 @@ void activate(GtkApplication *app, gpointer user_data) {
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->ln_button, 0, 3, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->log_button, 0, 4, 1, 1);
   gtk_grid_attach_next_to(GTK_GRID(grid_numb),finance_button, calc_data->clear_button,  GTK_POS_LEFT, 1, 1);
+  gtk_grid_attach_next_to(GTK_GRID(grid_numb),draw_button, finance_button,  GTK_POS_LEFT, 1, 1);
   gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->sin_button, calc_data->sqrt_button, GTK_POS_LEFT, 1, 1);
   gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->cos_button, calc_data->ln_button, GTK_POS_LEFT, 1, 1);
   gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->tan_button, calc_data->log_button, GTK_POS_LEFT, 1, 1);

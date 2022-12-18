@@ -28,19 +28,15 @@ int calculate(const char* input, long double* val) {
   return ans;
 }
 
-long double* calculate_x(const char* input, long double l, long double r) {
-  long double *arr= malloc(sizeof(*arr * (r-l*12)));
-  int j = 0;
-  for (long double i = l; i < r; i+=0.1,j++) {
-    list_t* root = createList(0, 0, 0, 0);
-    arr[j] = infToRpn(input, &root, &i);
-    calculateRpn(root);
-    freeList(&root);
-    printf("\n");
-    printList(root);
-    printf("\n");
-  }
-  return arr;
+int calculate_x(const char* input, long double x, long double*val) {
+  list_t* root = createList(0, 0, 0, 0);
+  infToRpn(input, &root, &x);
+  *val = calculateRpn(root);
+  freeList(&root);
+  printf("\n");
+  printList(root);
+  printf("\n");
+  return 0;
 }
 
 // +-/* sct SCT v lN LOG mod
