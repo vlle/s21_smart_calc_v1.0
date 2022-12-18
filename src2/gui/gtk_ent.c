@@ -73,13 +73,43 @@ void delete(GtkWidget *widget, gpointer data) {
   gtk_window_destroy(GTK_WINDOW(win));
   free(to_del);
 }
+void
+draw_function (GtkDrawingArea *area,
+               cairo_t        *cr,
+               int             width,
+               int             height,
+               gpointer        data)
+{
+  (void) data;
+  GdkRGBA color;
+  GtkStyleContext *context;
+
+  context = gtk_widget_get_style_context (GTK_WIDGET (area));
+
+  cairo_arc (cr,
+             width / 2.0, height / 2.0,
+             MIN (width, height) / 2.0,
+             0, 2 * G_PI);
+
+  gtk_style_context_get_color (context,
+                               &color);
+  gdk_cairo_set_source_rgba (cr, &color);
+
+  cairo_fill (cr);
+}
 
 void activate(GtkApplication *app, gpointer user_data) {
+  GtkWidget *area = gtk_drawing_area_new ();
+  gtk_drawing_area_set_content_width (GTK_DRAWING_AREA (area), 100);
+  gtk_drawing_area_set_content_height (GTK_DRAWING_AREA (area), 100);
+  gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (area),
+                                  draw_function,
+                                  NULL, NULL);
   (void)user_data;
   GtkWidget *finance_button;
   GtkWidget *label_align;
   GtkWidget *text_box_H, *text_box_V, *text_box_Hor, *text_box_Hor2,
-      *text_box_Vert, *text_box_Grid;
+  *text_box_Vert, *text_box_Grid, *endgame;
   GtkWidget *grid_numb;
   GtkWidget *button_calc;
 
@@ -92,6 +122,7 @@ void activate(GtkApplication *app, gpointer user_data) {
   text_box_Hor2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
   text_box_Hor = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   text_box_Vert = gtk_box_new(GTK_ORIENTATION_VERTICAL, 30);
+  endgame = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   text_box_Grid = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 30);
   grid_numb = gtk_grid_new();
   calc_data->buff = gtk_entry_buffer_new(NULL, -1);
@@ -125,7 +156,7 @@ void activate(GtkApplication *app, gpointer user_data) {
                        GTK_ENTRY_BUFFER(calc_data->buff));
   g_signal_connect(button_calc, "clicked", G_CALLBACK(insert_text), calc_data);
   g_signal_connect(calc_data->button_q, "clicked", G_CALLBACK(delete),
-                           calc_data);
+                   calc_data);
 
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n1_button, 1, 4, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n2_button, 2, 4, 1, 1);
@@ -197,8 +228,8 @@ void activate(GtkApplication *app, gpointer user_data) {
                    calc_data);
   g_signal_connect(calc_data->fl_button, "clicked", G_CALLBACK(insert_text),
                    calc_data);
-   g_signal_connect(finance_button, "clicked", G_CALLBACK(cb_create),
-                    NULL);
+  g_signal_connect(finance_button, "clicked", G_CALLBACK(cb_create),
+                   NULL);
 
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->button_q, 0, 5, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n0_button, 1, 5, 2, 1);
@@ -220,7 +251,9 @@ void activate(GtkApplication *app, gpointer user_data) {
   gtk_box_prepend(GTK_BOX(text_box_Hor2), GTK_WIDGET(label_align));
   gtk_box_prepend(GTK_BOX(text_box_Hor), GTK_WIDGET(text_box_V));
   gtk_box_prepend(GTK_BOX(text_box_Grid), GTK_WIDGET(grid_numb));
-  gtk_box_prepend(GTK_BOX(text_box_Vert), GTK_WIDGET(text_box_Grid));
+  gtk_box_prepend(GTK_BOX(endgame), GTK_WIDGET(area));
+  gtk_box_prepend(GTK_BOX(endgame), GTK_WIDGET(text_box_Grid));
+  gtk_box_prepend(GTK_BOX(text_box_Vert), GTK_WIDGET(endgame));
   gtk_box_prepend(GTK_BOX(text_box_Vert), GTK_WIDGET(text_box_Hor2));
   gtk_window_set_child(GTK_WINDOW(calc_data->window), text_box_Vert);
   gtk_window_set_title(GTK_WINDOW(calc_data->window), "Smartcalc Artemii");
