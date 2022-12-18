@@ -86,46 +86,136 @@ draw_function (GtkDrawingArea *area,
                cairo_t        *cr,
                int             width,
                int             height,
-               gpointer        data)
-{
-  (void) data;
-  GdkRGBA color;
-  GtkStyleContext *context;
+               gpointer        data) {
+  
+  
+  calc *calc_data = (calc*) data;
+  (void) area;
+  gdouble dx = 3.0, dy = 3.0; /* Pixels between each point */
+  gdouble i, clip_x1 = 0.0, clip_y1 = 0.0, clip_x2 = 0.0, clip_y2 = 0.0;
+  cairo_select_font_face(cr, "monospace", CAIRO_FONT_SLANT_NORMAL,
+                         CAIRO_FONT_WEIGHT_NORMAL);
 
-  context = gtk_widget_get_style_context (GTK_WIDGET (area));
+  cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
+  cairo_paint(cr);
 
-  cairo_set_line_width(cr, 1.0);
+  long double f1, f2, f3, f4;
+  calculate("2", &f1);
+  calculate("2", &f2);
+  calculate("2", &f3);
+  calculate("2", &f4);
+  cairo_translate(cr, width / f1, height / f2);
+  cairo_scale(cr, ZOOM_X / f3, ZOOM_Y / f4);
 
-  // zoom below
-  int f1 = 3;
-  int f2 = 3;
-  cairo_scale(cr, f1, f2);
-  gtk_style_context_get_color (context,
-                               &color);
-  gdk_cairo_set_source_rgba (cr, &color);
-  int lx = -width/f1;
-  int rx = width/f1;
-  int dy = -height/f1;
-  int uy = height/f1;
-  for (double i = lx; i<rx; i+=1) {
-    cairo_line_to(cr, i, height/(f1*2));
+  /* Determine the data points to calculate (ie. those in the clipping zone */
+  cairo_device_to_user_distance(cr, &dx, &dy);
+  cairo_clip_extents(cr, &clip_x1, &clip_y1, &clip_x2, &clip_y2);
+  cairo_set_line_width(cr, dx);
+
+  /* Draws x and y axis */
+  cairo_set_source_rgb(cr, 0.0, 1.0, 0.0);
+  cairo_move_to(cr, clip_x1, 0.0);
+  cairo_line_to(cr, clip_x2, 0.0);
+  cairo_move_to(cr, 0.0, clip_y1);
+  cairo_line_to(cr, 0.0, clip_y2);
+  cairo_stroke(cr);
+
+  char legend[33];
+  cairo_set_source_rgba(cr, 82.0, 56, 112.0, 0.3);
+  cairo_set_font_size(cr, 0.3);
+  for (i = -width; i < width; i += 1) {
+    if (fabs(i - 1) > 1) {
+      cairo_move_to(cr, i, -height / f2);
+      cairo_line_to(cr, i, +height / f2);
+      cairo_move_to(cr, -i, -height / f2);
+      cairo_line_to(cr, -i, +height / f2);
+      cairo_move_to(cr, i, 0);
+      sprintf(legend, "%g", i);
+      cairo_show_text(cr, legend);
+      cairo_move_to(cr, -i, 0);
+      sprintf(legend, "%g", -i);
+      cairo_show_text(cr, legend);
+    }
   }
+  cairo_set_source_rgba(cr, 82.0, 56, 112.0, 0.3);
   cairo_stroke(cr);
-  for (double i = dy; i < uy; i+=1) {
-    cairo_line_to(cr, width/(f2*2), i);
+  for (i = -height; i < height; i += 1) {
+    if (fabs(i - 1) > 1) {
+      cairo_move_to(cr, -width / f1, i);
+      cairo_line_to(cr, +width / f1, i);
+      cairo_move_to(cr, -width / f1, -i);
+      cairo_line_to(cr, +width / f1, -i);
+      cairo_move_to(cr, 0, -i);
+      sprintf(legend, "%g", i);
+      cairo_show_text(cr, legend);
+      cairo_move_to(cr, 0, i);
+      sprintf(legend, "%g", -i);
+      cairo_show_text(cr, legend);
+    }
   }
-  cairo_stroke(cr);
-  long double val = 0;
-  cairo_scale(cr, f1/2, f2/2);
-  calc *input = (calc *)data;
-  const char *text = gtk_editable_get_text(GTK_EDITABLE(input->entry_text));
-  for (double i = lx; i < rx; i+= 0.1) {
-    calculate_x(text, i, &val);
-    cairo_line_to(cr, i, height/(f1*2)+val);
-  }
-  cairo_stroke(cr);
+  cairo_move_to(cr, 0.7, 0.3);
+  cairo_show_text(cr, "x");
+
+  cairo_move_to(cr, 0.3, -0.7);
+  cairo_show_text(cr, "y");
 
   cairo_stroke(cr);
+
+  /* Link each data point */
+  const char *fc = gtk_editable_get_text (GTK_EDITABLE(calc_data->entry_text));
+  for (i = clip_x1; i < clip_x2; i += dx) {
+    long double dot = 0;
+    calculate_x(fc, i, &dot);
+    if ((isnan(dot)) || (isinf(dot))) {
+      cairo_stroke(cr);
+    } else {
+      cairo_line_to(cr, -i, dot);
+    }
+  }
+
+  /* Draw the curve */
+  cairo_set_source_rgba(cr, 3, 0.2, 0.2, 0.6);
+  cairo_stroke(cr);
+
+
+  //  (void) data;
+  //  GdkRGBA color;
+  //  GtkStyleContext *context;
+  //
+  //  context = gtk_widget_get_style_context (GTK_WIDGET (area));
+  //
+  //  cairo_set_line_width(cr, 1.0);
+  //
+  //  // zoom below
+  //  int f1 = 3;
+  //  int f2 = 3;
+  //  cairo_scale(cr, f1, f2);
+  //  gtk_style_context_get_color (context,
+  //                               &color);
+  //  gdk_cairo_set_source_rgba (cr, &color);
+  //  int lx = -width/f1;
+  //  int rx = width/f1;
+  //  int dy = -height/f1;
+  //  int uy = height/f1;
+  //  for (double i = lx; i<rx; i+=1) {
+  //    cairo_line_to(cr, i, height/(f1*2));
+  //  }
+  //  cairo_stroke(cr);
+  //  for (double i = dy; i < uy; i+=1) {
+  //    cairo_line_to(cr, width/(f2*2), i);
+  //  }
+  //  cairo_stroke(cr);
+  //  long double val = 0;
+  //  cairo_scale(cr, f1/2, f2/2);
+  //  calc *input = (calc *)data;
+  //  const char *text = gtk_editable_get_text(GTK_EDITABLE(input->entry_text));
+  //  for (double i = lx; i < rx; i+= 0.1) {
+  //    calculate_x(text, i, &val);
+  //    cairo_line_to(cr, i, height/(f1*2)+val);
+  //  }
+  //  cairo_stroke(cr);
+  //
+  //  cairo_stroke(cr);
 
 }
 
