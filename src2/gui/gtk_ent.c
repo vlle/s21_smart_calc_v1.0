@@ -105,7 +105,7 @@ draw_function (GtkDrawingArea *area,
   calculate("2", &f3);
   calculate("2", &f4);
   cairo_translate(cr, width / f1, height / f2);
-  cairo_scale(cr, ZOOM_X / f3, ZOOM_Y / f4);
+  cairo_scale(cr, ZOOM_X / f1, -ZOOM_Y / f2);
 
   /* Determine the data points to calculate (ie. those in the clipping zone */
   cairo_device_to_user_distance(cr, &dx, &dy);
@@ -130,10 +130,10 @@ draw_function (GtkDrawingArea *area,
       cairo_move_to(cr, -i, -height / f2);
       cairo_line_to(cr, -i, +height / f2);
       cairo_move_to(cr, i, 0);
-      sprintf(legend, "%g", i);
+      snprintf(legend, 1,"%g", i);
       cairo_show_text(cr, legend);
       cairo_move_to(cr, -i, 0);
-      sprintf(legend, "%g", -i);
+      snprintf(legend, 1, "%g", -i);
       cairo_show_text(cr, legend);
     }
   }
@@ -146,18 +146,18 @@ draw_function (GtkDrawingArea *area,
       cairo_move_to(cr, -width / f1, -i);
       cairo_line_to(cr, +width / f1, -i);
       cairo_move_to(cr, 0, -i);
-      sprintf(legend, "%g", i);
+      snprintf(legend, 1, "%g", i);
       cairo_show_text(cr, legend);
       cairo_move_to(cr, 0, i);
-      sprintf(legend, "%g", -i);
+      snprintf(legend, 1, "%g", -i);
       cairo_show_text(cr, legend);
     }
   }
   cairo_move_to(cr, 0.7, 0.3);
-  cairo_show_text(cr, "x");
+  cairo_show_text(cr, "X");
 
-  cairo_move_to(cr, 0.3, -0.7);
-  cairo_show_text(cr, "y");
+  cairo_move_to(cr, 0.3, 0.7);
+  cairo_show_text(cr, "ʎ");
 
   cairo_stroke(cr);
 
@@ -168,8 +168,9 @@ draw_function (GtkDrawingArea *area,
     calculate_x(fc, i, &dot);
     if ((isnan(dot)) || (isinf(dot))) {
       cairo_stroke(cr);
+      continue;
     } else {
-      cairo_line_to(cr, -i, dot);
+      cairo_line_to(cr, i, dot);
     }
   }
 
@@ -222,7 +223,7 @@ draw_function (GtkDrawingArea *area,
 void activate(GtkApplication *app, gpointer user_data) {
   GtkWidget *area = gtk_drawing_area_new ();
   (void)user_data;
-  GtkWidget *finance_button, *draw_button;
+  GtkWidget *finance_button, *draw_button, *x_button;
   GtkWidget *label_align;
   GtkWidget *text_box_H, *text_box_V, *text_box_Hor, *text_box_Hor2,
   *text_box_Vert, *text_box_Grid, *endgame;
@@ -244,6 +245,7 @@ void activate(GtkApplication *app, gpointer user_data) {
   button_calc = gtk_button_new_with_label("=");
   finance_button = gtk_button_new_with_label("FIN");
   draw_button = gtk_button_new_with_label("DRAW");
+  x_button = gtk_button_new_with_label("x");
   calc_data->n1_button = gtk_button_new_with_label("1");
   calc_data->n2_button = gtk_button_new_with_label("2");
   calc_data->n3_button = gtk_button_new_with_label("3");
@@ -306,6 +308,8 @@ void activate(GtkApplication *app, gpointer user_data) {
   gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->cos_button, calc_data->ln_button, GTK_POS_LEFT, 1, 1);
   gtk_grid_attach_next_to(GTK_GRID(grid_numb), calc_data->tan_button, calc_data->log_button, GTK_POS_LEFT, 1, 1);
 
+  g_signal_connect(x_button, "clicked", G_CALLBACK(insert_text),
+                   calc_data);
   g_signal_connect(calc_data->n1_button, "clicked", G_CALLBACK(insert_text),
                    calc_data);
   g_signal_connect(calc_data->n2_button, "clicked", G_CALLBACK(insert_text),
@@ -355,6 +359,7 @@ void activate(GtkApplication *app, gpointer user_data) {
                    NULL);
 
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->button_q, 0, 5, 1, 1);
+  gtk_grid_attach_next_to(GTK_GRID(grid_numb),x_button, calc_data->button_q,  GTK_POS_LEFT, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->n0_button, 1, 5, 2, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), calc_data->fl_button, 3, 5, 1, 1);
   gtk_grid_attach(GTK_GRID(grid_numb), button_calc, 4, 5, 1, 1);
