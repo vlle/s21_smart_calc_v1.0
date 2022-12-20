@@ -36,7 +36,6 @@ enum {
   N_COLUMNS
 };
 
-
 typedef enum { kValue = 1, kX, kOper } kType;
 
 /* list_t logic */
@@ -70,18 +69,18 @@ int pushValueStack(list_t** root, long double value, int* nodesCount);
 /* calculation */
 
 int calculate(const char* input, long double* val);
-int calculate_x(const char* input, long double x, long double*val);
-int infToRpn(const char* input, list_t** root, long double*x);
+int calculate_x(const char* input, long double x, long double* val);
+int infToRpn(const char* input, list_t** root, long double* x);
 int pushAndPrint(list_t** stack, list_t** root, int* nodes_count,
                  char* priority);
 
-void debug(list_t *root);
+void debug(list_t* root);
 elem_t pop2Value(list_t** stack, int* nodes_count);
 
 long double calculateRpn(list_t* root);
 finance_t put_data(long double total_credit_amount, long double term,
-                      long double interest_rate, char type,
-                      long double days_with_cred);
+                   long double interest_rate, char type,
+                   long double days_with_cred);
 finance_t credit_calculate(finance_t credit);
 
 #endif  // SRC_CALC_H_

@@ -21,6 +21,15 @@ START_TEST(odd_m) {
 }
 END_TEST
 
+START_TEST(just_x) {
+  char b[100] = "2 + x";
+  double res = 3;
+  long double my_res = 0.0;
+  long double x = 1;
+  int ret = calculate_x(b, x, &my_res);
+  ck_assert_double_eq_tol(res, my_res, 0.0001);
+}
+END_TEST
 
 Suite *odd_suite(void) {
   Suite *s;
@@ -30,6 +39,7 @@ Suite *odd_suite(void) {
   tc_core = tcase_create("Core");
   tcase_add_test(tc_core, odd_sin);
   tcase_add_test(tc_core, odd_m);
-	suite_add_tcase(s, tc_core);
-	return s;
+  tcase_add_test(tc_core, just_x);
+  suite_add_tcase(s, tc_core);
+  return s;
 }

@@ -6,8 +6,8 @@
 #include "../smartcalc.h"
 
 finance_t put_data(long double total_credit_amount, long double term,
-                      long double interest_rate, char type,
-                      long double days_with_cred) {
+                   long double interest_rate, char type,
+                   long double days_with_cred) {
   finance_t credit = {0};
   credit.total_credit_amount = total_credit_amount;
   credit.term = term;

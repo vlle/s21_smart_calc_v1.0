@@ -35,17 +35,16 @@ typedef struct calc {
   GtkWidget *buttl;
   GtkEntryBuffer *buff;
 
-	GtkWidget * min_domain;
-	GtkWidget * max_domain;
-	GtkWidget * min_codomain;
-	GtkWidget * max_codomain;
+  GtkWidget *min_domain;
+  GtkWidget *max_domain;
+  GtkWidget *min_codomain;
+  GtkWidget *max_codomain;
   GtkEntryBuffer *mdom_buff;
   GtkEntryBuffer *dom_buff;
   GtkEntryBuffer *mcdom_buff;
   GtkEntryBuffer *cdom_buff;
 
 } calc;
-
 
 typedef struct {
   GtkWidget *total_amount;
@@ -59,7 +58,7 @@ typedef struct {
 
 void cb_create();
 void activate(GtkApplication *app, gpointer user_data);
-void delete(GtkWidget *widget, gpointer data);
+void delete (GtkWidget *widget, gpointer data);
 void insert_text(GtkWidget *widget, gpointer data);
 char *calculat(GtkWidget *widget, gpointer data);
 

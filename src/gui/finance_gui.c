@@ -5,7 +5,6 @@
 #include "../smartcalc.h"
 #include "gui.h"
 
-
 void closeWin(GtkWidget *button, gpointer data) {
   (void)button;
   finance_i *check = (finance_i *)data;
@@ -25,7 +24,7 @@ void cb_create() {
 
   GtkWidget *total_amount_label, *term_label, *interest_rate_label;
 
-  finance_i* calc_data = malloc(sizeof(*calc_data));
+  finance_i *calc_data = malloc(sizeof(*calc_data));
   calc_data->s_window = gtk_scrolled_window_new();
 
   calc_data->window = gtk_window_new();
@@ -33,8 +32,10 @@ void cb_create() {
   calc_data->term = gtk_entry_new();
   calc_data->interest_rate = gtk_entry_new();
   calc_data->type_credit = gtk_check_button_new_with_label("Annuity type");
-  calc_data->type_credit2 = gtk_check_button_new_with_label("Differentiated type");
-  gtk_check_button_set_group(GTK_CHECK_BUTTON(calc_data->type_credit), GTK_CHECK_BUTTON(calc_data->type_credit2));
+  calc_data->type_credit2 =
+      gtk_check_button_new_with_label("Differentiated type");
+  gtk_check_button_set_group(GTK_CHECK_BUTTON(calc_data->type_credit),
+                             GTK_CHECK_BUTTON(calc_data->type_credit2));
 
   fineq = gtk_button_new_with_label("Calculate");
   q_butn = gtk_button_new_with_label("Quit");
@@ -48,7 +49,6 @@ void cb_create() {
   hbox_l3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   hbox_l4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   box_l = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-
 
   gtk_box_prepend(GTK_BOX(hbox_l), GTK_WIDGET(total_amount_label));
   gtk_box_prepend(GTK_BOX(hbox_l), GTK_WIDGET(calc_data->total_amount));
@@ -77,31 +77,12 @@ void cb_create() {
   gtk_box_prepend(GTK_BOX(box_l), hbox_l2);
   gtk_box_prepend(GTK_BOX(box_l), hbox_l);
 
-
-
-//  GListStore* data = g_list_store_new();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  //  GListStore* data = g_list_store_new();
 
   // g_signal_connect(fineq, "clicked", G_CALLBACK(finances), calc_data);
-  g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeWin), calc_data);
+  g_signal_connect(G_OBJECT(q_butn), "clicked", G_CALLBACK(closeWin),
+                   calc_data);
 
   gtk_window_set_child(GTK_WINDOW(calc_data->window), box_l);
   gtk_widget_show(calc_data->window);
 }
-
-
