@@ -1,49 +1,18 @@
-#ifndef SRC_SMARTCALC_H_
-#define SRC_SMARTCALC_H_
-#define MAX_ENTRY_SIZE 256
+#ifndef SRC_CALC_H_
+#define SRC_CALC_H_
 
-#define ZOOM_X 100.0
-#define ZOOM_Y 100.0
-
-typedef enum {
-  minus,
-  plus,
-  multiply,
-  divide,
-  sinus,
-  cosinus,
-  tangengs,
-  etc
-} math_oper;
-
-enum {
-
-  TOTAL_CREDIT = 0,
-  MONTHLY_PAYMENT,
-  OVERPAYMENT,
-  N_COLUMNS
-};
-
-struct Node {
-  long double storage;  // integer data
-  char res;
-  struct Node *next;  // pointer to the next node
-};
-
-typedef struct lst {
-  long double value;  // integer data
-  char operator;
+typedef struct list_t {
+  long double value;
   long double x;
-  int value_presence;
-  int operator_presence;
-  int x_presence;
-  struct lst *next;  // pointer to the next node
+  char oper;
+  struct list_t* next;
+  int type;
 } list_t;
 
-struct Vars {
-  long double a1;
-  long double a2;
-};
+typedef struct elem {
+  long double a;
+  long double b;
+} elem_t;
 
 typedef struct {
   long double total_payment;
@@ -57,38 +26,62 @@ typedef struct {
   long double remainder_credit;
   long double pay_percent;
   char type_credit;
-} finance_info;
+} finance_t;
 
-// Stack functions
+enum {
 
-long double popN(int *nodesCount, struct Node **top);
-char popC(int *nodesCount, struct Node **top);
-int push_backC(int *nodesCount, struct Node **top, char oper);
-int push_backN(int *nodesCount, struct Node **top, long double oper);
-long double peekN(struct Node *a);
-char peekC(struct Node *a);
-int IsEmpty(const struct Node *top);
-int push_backList(list_t **roo, long double const value, char const  operator, long double const x, int t);
-int push_backValue(list_t **root, long double  const value);
-int push_backOperator(list_t **root, char const op);
-int push_backX(list_t **root, long double const x);
+  TOTAL_CREDIT = 0,
+  MONTHLY_PAYMENT,
+  OVERPAYMENT,
+  N_COLUMNS
+};
 
-list_t* create_list(long double const value, char const operator, long double const x, int t);
-int list_count(list_t *root);
-int print_list(list_t *root);
-int remove_all(list_t **root);
 
-// Calculate function
+typedef enum { kValue = 1, kX, kOper } kType;
 
-int cal_oper(list_t* root, long double *result);
+/* list_t logic */
 
-int parse_oper(list_t **funcstr, const char *inpo);
-int calculate(const char* b, long double* val);
-finance_info put_data(long double total_credit_amount, long double term,
+list_t* createList(long double value, long double x, char oper, int type);
+int pushList(list_t** root, long double value, long double x, char oper,
+             int type);
+int pushValue(list_t** root, long double value);
+int pushX(list_t** root, long double x);
+int pushOper(list_t** root, char oper);
+int freeList(list_t** root);
+int printList(list_t* root);
+
+/* list_t stack implementation */
+
+list_t* createStack(long double value, long double x, char oper, int type);
+int pushStack(list_t** root, long double value, long double x, char oper,
+              int type, int* nodesCount);
+long double peekStack(list_t* root, int type);
+long double peekXStack(list_t* root);
+long double peekValueStack(list_t* root);
+char peekOperStack(list_t* root);
+long double popStack(list_t** root, int type, int* nodesCount);
+long double popValueStack(list_t** root, int* nodesCount);
+long double popXStack(list_t** root, int* nodesCount);
+char popOperStack(list_t** root, int* nodesCount);
+int pushOperStack(list_t** root, char oper, int* nodesCount);
+int pushXStack(list_t** root, long double x, int* nodesCount);
+int pushValueStack(list_t** root, long double value, int* nodesCount);
+
+/* calculation */
+
+int calculate(const char* input, long double* val);
+int calculate_x(const char* input, long double x, long double*val);
+int infToRpn(const char* input, list_t** root, long double*x);
+int pushAndPrint(list_t** stack, list_t** root, int* nodes_count,
+                 char* priority);
+
+void debug(list_t *root);
+elem_t pop2Value(list_t** stack, int* nodes_count);
+
+long double calculateRpn(list_t* root);
+finance_t put_data(long double total_credit_amount, long double term,
                       long double interest_rate, char type,
                       long double days_with_cred);
-finance_info credit_calculate(finance_info credit);
-// int deposit_calculate(long double total_credit_amount, long double term,
-//                      long double interest_rate);
+finance_t credit_calculate(finance_t credit);
 
-#endif
+#endif  // SRC_CALC_H_

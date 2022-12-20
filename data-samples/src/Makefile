@@ -2,7 +2,7 @@ CC = gcc
 
 WARNING    =  -Wall -Werror -Wextra -Wuninitialized
 DEP        = -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED 
-CFLAGS     = -std=c11 -pedantic $(DEP) $(WARNING) #-fsanitize=address
+CFLAGS     = -std=c11 -pedantic $(DEP) $(WARNING) -fsanitize=address
 LFLAGS    ?= $(shell pkg-config --cflags --libs check)
 INC_CHECK ?= $(shell pkg-config --cflags check)
 
@@ -33,30 +33,23 @@ llgtk    ?=$(shell pkg-config --libs gtk4)
 # The program must be built with Makefile which contains standard set of targets for GNU-programs: 
 # all, install, uninstall, clean, dvi, dist, tests, gcov_report. 
 # Installation directory could be arbitrary, except the building one
-# @gcc  $(lgtk)  -c gui/func_graph.c -o func_graph.o
-# @gcc $(CFLAGS) $(lgtk) -c gui/finance_gui.c -o nice_graph.o
-# @gcc $(CFLAGS) $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o s21_smart_calc/smartcalc  $(llgtk)
 
 all: tests
-
-launch: install
-	@./s21_smart_calc/smartcalc
 
 install: $(LIB)
 	@echo "Building Graphical Calculator"
 	@mkdir -p s21_smart_calc
-	@gcc $(CFLAGS) -c $(lgtk) gui/finance_gui.c -o gtk_fin.o
-	@gcc $(CFLAGS) $(lgtk) gui/gtk_ent.c gtk_fin.o s21_calc.a -o s21_smart_calc/smartcalc $(llgtk)
+	@gcc  $(lgtk)  -c gui/func_graph.c -o func_graph.o
+	@gcc $(CFLAGS) $(lgtk) -c gui/finance_gui.c -o nice_graph.o
+	@gcc $(CFLAGS) $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o s21_smart_calc/smartcalc  $(llgtk)
 	@echo "Build was successful. Start your smartcalc in s21_smart_calc with ./smartcalc"
 
 uninstall:
 	rm -rf s21_smart_calc
 
-dist: install
-	tar -czf s21_smart_calc.tar.gz --directory=s21_smart_calc/ .
+dist: $(LIB)
 
-dvi:
-	open README.md
+#dvi: gui_back
 
 tests: test.out
 	./test.out

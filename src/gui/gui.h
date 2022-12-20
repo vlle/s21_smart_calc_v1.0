@@ -34,6 +34,16 @@ typedef struct calc {
   GtkWidget *buttL;
   GtkWidget *buttl;
   GtkEntryBuffer *buff;
+
+	GtkWidget * min_domain;
+	GtkWidget * max_domain;
+	GtkWidget * min_codomain;
+	GtkWidget * max_codomain;
+  GtkEntryBuffer *mdom_buff;
+  GtkEntryBuffer *dom_buff;
+  GtkEntryBuffer *mcdom_buff;
+  GtkEntryBuffer *cdom_buff;
+
 } calc;
 
 
