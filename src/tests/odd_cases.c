@@ -33,7 +33,7 @@ END_TEST
 
 START_TEST(pow_minus) {
   char b[100] = "-3^2^2";
-  double res = -729;
+  double res = -81;
   long double my_res = 0.0;
   long double x = 1;
   int ret = calculate_x(b, x, &my_res);

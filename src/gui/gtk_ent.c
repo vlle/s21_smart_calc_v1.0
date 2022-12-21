@@ -125,8 +125,8 @@ void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height,
   /* Determine the data points to calculate (ie. those in the clipping zone */
   cairo_device_to_user_distance(cr, &dx, &dy);
   cairo_clip_extents(cr, &clip_x1, &clip_y1, &clip_x2, &clip_y2);
-  g_print("%g\n", clip_x1);
-  g_print("%g\n", clip_x2);
+  // g_print("%g\n", clip_x1);
+  // g_print("%g\n", clip_x2);
   cairo_set_line_width(cr, dx);
 
   /* Draws x and y axis */

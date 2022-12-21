@@ -2,7 +2,7 @@ CC = gcc
 
 WARNING    =  -Wall -Werror -Wextra -Wuninitialized
 DEP        = -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED 
-CFLAGS     = -std=c11 -pedantic $(DEP) $(WARNING) #-fsanitize=address
+CFLAGS     = #-std=c11 -pedantic $(DEP) $(WARNING) -fsanitize=address
 LFLAGS    ?= $(shell pkg-config --cflags --libs check)
 INC_CHECK ?= $(shell pkg-config --cflags check)
 

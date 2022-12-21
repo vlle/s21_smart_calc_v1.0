@@ -44,7 +44,10 @@ typedef struct calc {
   GtkEntryBuffer *mcdom_buff;
   GtkEntryBuffer *cdom_buff;
 
+
 } calc;
+
+
 
 typedef struct {
   GtkWidget *total_amount;
@@ -54,6 +57,12 @@ typedef struct {
   GtkWidget *type_credit2;
   GtkWidget *window;
   GtkWidget *s_window;
+  GtkStringList *sl;
+  
+  GtkListItemFactory *sums; 
+  GtkListItemFactory *signf; 
+  GtkListItemFactory *paypercent; 
+  GtkListItemFactory *debt_remain; 
 } finance_i;
 
 void cb_create();
