@@ -63,7 +63,20 @@ typedef struct {
   GtkListItemFactory *signf; 
   GtkListItemFactory *paypercent; 
   GtkListItemFactory *debt_remain; 
+  int *types1;
+  int *types2;
+  int *types3;
+  int *types4;
+
 } finance_i;
+
+typedef struct {
+  int *types1;
+  int *types2;
+  int *types3;
+  int *types4;
+
+} temp_t;
 
 void cb_create();
 void activate(GtkApplication *app, gpointer user_data);
