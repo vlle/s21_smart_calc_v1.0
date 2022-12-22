@@ -28,9 +28,9 @@ void addNum(GtkWidget *button, gpointer data) {
   const char *intrst = gtk_editable_get_text(GTK_EDITABLE(calc_data->interest_rate));
   char type = '0';
   if (gtk_check_button_get_active(GTK_CHECK_BUTTON(calc_data->type_credit2))) {
-    type = 'a';
-  } else {
     type = 'b';
+  } else {
+    type = 'a';
   }
   long double a1 = 0;
   long double b1 = 0;
@@ -40,20 +40,19 @@ void addNum(GtkWidget *button, gpointer data) {
   calculate(intrst, &c1);
 
   tmp = put_data(a1, b1, c1, type, 1);
-  tmp = credit_calculate(tmp);
   while (gtk_string_list_get_string(calc_data->sl, 0)) {
     gtk_string_list_remove(calc_data->sl, 0);
   }
   if (type == 'a') {
-    while (tmp.total_payment > 0) {
+  tmp = credit_calculate(tmp);
+    while (tmp.remainder_credit > -100) {
       char total[STACK] = {0};
       char month[STACK] = {0};
       char over[STACK] = {0};
       char rem[STACK] = {0};
       char res[STACK*4] = {0};
-      tmp.total_payment -= tmp.monthly_payment;
-      snprintf(total, 20, "%.2Lf", tmp.total_payment);
-      snprintf(month, 20, "%.2Lf", tmp.monthly_payment);
+      snprintf(total, 20, "%.2Lf", tmp.monthly_payment);
+      snprintf(month, 20, "%.2Lf", tmp.monthly_payment-tmp.overpayment);
       snprintf(over,  20,"%.2Lf", tmp.overpayment);
       snprintf(rem,  20,"%.2Lf", tmp.remainder_credit);
       strcat(res, total);
@@ -63,35 +62,34 @@ void addNum(GtkWidget *button, gpointer data) {
       strcat(res, over);
       strcat(res, "|");
       strcat(res, rem);
-      if (tmp.total_payment == 0) break;
+      tmp = credit_calculate(tmp);
       gtk_string_list_append(calc_data->sl, res); 
     }
   } else if (type == 'b') {
-    while (tmp.total_credit_amount > 0) {
-      char total[STACK] = {0};
-      char month[STACK] = {0};
-      char over[STACK] = {0};
-      char rem[STACK] = {0};
-      char res[STACK*4] = {0};
-      tmp = credit_calculate(tmp);
-      snprintf(total,20, "%.2Lf", tmp.total_payment);
-      snprintf(month,20, "%.2Lf", tmp.monthly_payment);
-      snprintf(over,20, "%.2Lf", tmp.overpayment);
-      snprintf(rem,  20,"%.2Lf", tmp.remainder_credit);
-      strcat(res, total);
-      strcat(res, "_");
-      strcat(res, month);
-      strcat(res, ":");
-      strcat(res, over);
-      strcat(res, "|");
-      strcat(res, rem);
-      if (tmp.total_payment <= 0) break;
-      gtk_string_list_append(calc_data->sl, res); 
-    }
+  tmp = credit_calculate(tmp);
+    // while (tmp.total_credit_amount > 0) {
+    //   char total[STACK] = {0};
+    //   char month[STACK] = {0};
+    //   char over[STACK] = {0};
+    //   char rem[STACK] = {0};
+    //   char res[STACK*4] = {0};
+    //   tmp = credit_calculate(tmp);
+    //   snprintf(total,20, "%.2Lf", tmp.total_payment);
+    //   snprintf(month,20, "%.2Lf", tmp.monthly_payment);
+    //   snprintf(over,20, "%.2Lf", tmp.overpayment);
+    //   snprintf(rem,  20,"%.2Lf", tmp.remainder_credit);
+    //   strcat(res, total);
+    //   strcat(res, "_");
+    //   strcat(res, month);
+    //   strcat(res, ":");
+    //   strcat(res, over);
+    //   strcat(res, "|");
+    //   strcat(res, rem);
+    //   if (tmp.total_payment <= 0) break;
+    //   gtk_string_list_append(calc_data->sl, res); 
+    // }
 
   }
-  const char *val = gtk_editable_get_text(GTK_EDITABLE(calc_data->term));
-  gtk_string_list_append(calc_data->sl, val); 
 }
 
 static void
@@ -199,7 +197,7 @@ void cb_create() {
   GtkEntryBuffer* term_b = gtk_entry_buffer_new(NULL, -1);
   GtkEntryBuffer* interest_b = gtk_entry_buffer_new(NULL, -1);
 
-
+  gtk_check_button_set_active(GTK_CHECK_BUTTON(calc_data->type_credit2), true);
   gtk_entry_set_buffer(GTK_ENTRY(calc_data->total_amount),
                        GTK_ENTRY_BUFFER(total_b));
   gtk_entry_set_buffer(GTK_ENTRY(calc_data->term),
@@ -265,8 +263,8 @@ void cb_create() {
 
   gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(calc_data->s_window), GTK_WIDGET(lv));
   gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(calc_data->s_window), 250);
-  gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(calc_data->s_window), 150);
-
+  gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(calc_data->s_window), 240);
+  gtk_window_set_default_size(GTK_WINDOW(calc_data->window), 500, 300);
   gtk_box_prepend(GTK_BOX(box_l), calc_data->s_window);
   gtk_box_prepend(GTK_BOX(box_l), hbox_l4);
   gtk_box_prepend(GTK_BOX(box_l), hbox_l3);

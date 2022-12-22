@@ -19,6 +19,7 @@ typedef struct {
   long double monthly_payment;
   long double overpayment;
   long double days_with_cred;
+  long double annuity_coeff;
   long double total_credit_amount;
   long double term;
   long double interest_rate;

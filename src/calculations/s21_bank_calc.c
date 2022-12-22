@@ -16,8 +16,8 @@ finance_t put_data(long double total_credit_amount, long double term,
   credit.days_with_cred = days_with_cred + 1;
   if (type == 'b') {
     credit.diff_payment_part = credit.total_credit_amount / term;
-    credit.remainder_credit = credit.total_credit_amount;
   }
+  credit.remainder_credit = credit.total_credit_amount;
   return credit;
 }
 
@@ -25,12 +25,14 @@ finance_t credit_calculate(finance_t credit) {
   long double monthly_inter = credit.interest_rate / 12 / 100;
   char type = credit.type_credit;
   if (type == 'a') {
-    long double annuity_coeff =
+    if (credit.annuity_coeff==0) credit.annuity_coeff =
         ((monthly_inter * powl((1 + monthly_inter), credit.term)) /
          (powl((1 + monthly_inter), credit.term) - 1));
-    credit.monthly_payment = credit.total_credit_amount * annuity_coeff;
+    credit.monthly_payment = credit.total_credit_amount * credit.annuity_coeff;
+    credit.overpayment = credit.remainder_credit/100 * credit.interest_rate/credit.term;
+    credit.remainder_credit -= credit.monthly_payment-credit.overpayment;
     credit.total_payment = credit.monthly_payment * credit.term;
-    credit.overpayment = credit.total_payment - credit.total_credit_amount;
+    // 100000/100*5/12
   } else if (type == 'b') {
     long double percent_sum =
         (credit.remainder_credit) * (credit.interest_rate / 100 / 12);
