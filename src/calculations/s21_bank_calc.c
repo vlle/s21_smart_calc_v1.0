@@ -32,11 +32,10 @@ finance_t credit_calculate(finance_t credit) {
     credit.overpayment = credit.remainder_credit/100 * credit.interest_rate/credit.term;
     credit.remainder_credit -= credit.monthly_payment-credit.overpayment;
     credit.total_payment = credit.monthly_payment * credit.term;
-    // 100000/100*5/12
   } else if (type == 'b') {
-    long double percent_sum =
+    credit.percent_sum =
         (credit.remainder_credit) * (credit.interest_rate / 100 / 12);
-    credit.monthly_payment = (credit.diff_payment_part + percent_sum);
+    credit.monthly_payment = (credit.diff_payment_part + credit.percent_sum);
     credit.overpayment += credit.monthly_payment;
     credit.total_payment = credit.remainder_credit;  // + credit.overpayment;
     credit.remainder_credit -= credit.diff_payment_part;

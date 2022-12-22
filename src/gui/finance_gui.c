@@ -44,13 +44,13 @@ void addNum(GtkWidget *button, gpointer data) {
     gtk_string_list_remove(calc_data->sl, 0);
   }
   if (type == 'a') {
-  tmp = credit_calculate(tmp);
     while (tmp.remainder_credit > -100) {
       char total[STACK] = {0};
       char month[STACK] = {0};
       char over[STACK] = {0};
       char rem[STACK] = {0};
       char res[STACK*4] = {0};
+      tmp = credit_calculate(tmp);
       snprintf(total, 20, "%.2Lf", tmp.monthly_payment);
       snprintf(month, 20, "%.2Lf", tmp.monthly_payment-tmp.overpayment);
       snprintf(over,  20,"%.2Lf", tmp.overpayment);
@@ -62,32 +62,30 @@ void addNum(GtkWidget *button, gpointer data) {
       strcat(res, over);
       strcat(res, "|");
       strcat(res, rem);
-      tmp = credit_calculate(tmp);
       gtk_string_list_append(calc_data->sl, res); 
     }
   } else if (type == 'b') {
-  tmp = credit_calculate(tmp);
-    // while (tmp.total_credit_amount > 0) {
-    //   char total[STACK] = {0};
-    //   char month[STACK] = {0};
-    //   char over[STACK] = {0};
-    //   char rem[STACK] = {0};
-    //   char res[STACK*4] = {0};
-    //   tmp = credit_calculate(tmp);
-    //   snprintf(total,20, "%.2Lf", tmp.total_payment);
-    //   snprintf(month,20, "%.2Lf", tmp.monthly_payment);
-    //   snprintf(over,20, "%.2Lf", tmp.overpayment);
-    //   snprintf(rem,  20,"%.2Lf", tmp.remainder_credit);
-    //   strcat(res, total);
-    //   strcat(res, "_");
-    //   strcat(res, month);
-    //   strcat(res, ":");
-    //   strcat(res, over);
-    //   strcat(res, "|");
-    //   strcat(res, rem);
-    //   if (tmp.total_payment <= 0) break;
-    //   gtk_string_list_append(calc_data->sl, res); 
-    // }
+    while (tmp.remainder_credit > 0) {
+      char total[STACK] = {0};
+      char month[STACK] = {0};
+      char over[STACK] = {0};
+      char rem[STACK] = {0};
+      char res[STACK*4] = {0};
+      tmp = credit_calculate(tmp);
+      snprintf(total,20, "%.2Lf", tmp.monthly_payment);
+      snprintf(month,20, "%.2Lf", tmp.diff_payment_part);
+      snprintf(over,20, "%.2Lf", tmp.percent_sum);
+      snprintf(rem,  20,"%.2Lf", tmp.remainder_credit);
+      strcat(res, total);
+      strcat(res, "_");
+      strcat(res, month);
+      strcat(res, ":");
+      strcat(res, over);
+      strcat(res, "|");
+      strcat(res, rem);
+      if (tmp.total_payment <= 0) break;
+      gtk_string_list_append(calc_data->sl, res); 
+    }
 
   }
 }
@@ -199,20 +197,20 @@ void cb_create() {
 
   gtk_check_button_set_active(GTK_CHECK_BUTTON(calc_data->type_credit2), true);
   gtk_entry_set_buffer(GTK_ENTRY(calc_data->total_amount),
-                       GTK_ENTRY_BUFFER(total_b));
+      GTK_ENTRY_BUFFER(total_b));
   gtk_entry_set_buffer(GTK_ENTRY(calc_data->term),
-                       GTK_ENTRY_BUFFER(term_b));
+      GTK_ENTRY_BUFFER(term_b));
   gtk_entry_set_buffer(GTK_ENTRY(calc_data->interest_rate),
-                       GTK_ENTRY_BUFFER(interest_b));
+      GTK_ENTRY_BUFFER(interest_b));
 
   gtk_entry_buffer_insert_text(GTK_ENTRY_BUFFER(total_b), 0, "100000",
-                               7);
+      7);
 
   gtk_entry_buffer_insert_text(GTK_ENTRY_BUFFER(term_b), 0, "12",
-                               3);
+      3);
 
   gtk_entry_buffer_insert_text(GTK_ENTRY_BUFFER(interest_b), 0, "5",
-                               2);
+      2);
 
   fineq = gtk_button_new_with_label("Calculate");
   q_butn = gtk_button_new_with_label("Quit");

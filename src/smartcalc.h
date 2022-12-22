@@ -24,6 +24,7 @@ typedef struct {
   long double term;
   long double interest_rate;
   long double diff_payment_part;
+  long double percent_sum;
   long double remainder_credit;
   long double pay_percent;
   char type_credit;
