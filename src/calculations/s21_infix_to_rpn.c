@@ -22,9 +22,7 @@ int calculate(const char* input, long double* val) {
   infToRpn(input, &root, NULL);
   long double ans = calculateRpn(root);
   *val = ans;
-#ifdef DEBUG
   debug(root);
-#endif
   freeList(&root);
   return ans;
 }
@@ -33,9 +31,7 @@ int calculate_x(const char* input, long double x, long double* val) {
   list_t* root = createList(0, 0, 0, 0);
   infToRpn(input, &root, &x);
   *val = calculateRpn(root);
-#ifdef DEBUG
   debug(root);
-#endif
   freeList(&root);
   return 0;
 }
