@@ -29,13 +29,9 @@ LIB      := s21_calc.a
 lgtk     ?=$(shell pkg-config --cflags gtk4)
 llgtk    ?=$(shell pkg-config --libs gtk4)
 
-#all: algo #example
 # The program must be built with Makefile which contains standard set of targets for GNU-programs: 
 # all, install, uninstall, clean, dvi, dist, tests, gcov_report. 
 # Installation directory could be arbitrary, except the building one
-# @gcc  $(lgtk)  -c gui/func_graph.c -o func_graph.o
-# @gcc $(CFLAGS) $(lgtk) -c gui/finance_gui.c -o nice_graph.o
-# @gcc $(CFLAGS) $(lgtk) func_graph.o nice_graph.o s21_calc.a gui/gtk_ent.c -o s21_smart_calc/smartcalc  $(llgtk)
 
 all: tests
 

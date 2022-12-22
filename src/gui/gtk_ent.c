@@ -57,10 +57,11 @@ void insert_text(GtkWidget *widget, gpointer data) {
   if ((strcmp(enter, "cos") == 0) || (strcmp(enter, "sin") == 0) ||
       (strcmp(enter, "tan") == 0) || (strcmp(enter, "log") == 0) ||
       (strcmp(enter, "sqrt") == 0) || (strcmp(enter, "ln") == 0)) {
-    if (strcmp(enter, "sqrt") == 0) len = 6;
-    if (strcmp(enter, "ln") == 0)
+    if (strcmp(enter, "sqrt") == 0) {
+      len = 6;
+    } else if (strcmp(enter, "ln") == 0) {
       len = 4;
-    else
+    } else
       len = 5;
     strcat(enter, "()");
   }
@@ -117,8 +118,8 @@ void draw_function(GtkDrawingArea *area, cairo_t *cr, int width, int height,
   calculate("2", &f2);
   calculate("2", &f3);
   calculate("2", &f4);
-	if (width > W) f1++;
-	if (height > H) f2++;
+  if (width > W) f1++;
+  if (height > H) f2++;
   cairo_translate(cr, width / f1, height / f2);
   cairo_scale(cr, ZOOM_X / f1, -ZOOM_Y / f2);
 

@@ -55,7 +55,6 @@ int freeList(list_t **root) {
 int pushValue(list_t **root, long double value) {
   return pushList(root, value, 0, 0, kValue);
 }
-int pushX(list_t **root, long double x) { return pushList(root, 0, x, 0, kX); }
 int pushOper(list_t **root, char oper) {
   return pushList(root, 0, 0, oper, kOper);
 }

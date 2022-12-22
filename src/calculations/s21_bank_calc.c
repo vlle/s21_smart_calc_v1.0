@@ -25,12 +25,14 @@ finance_t credit_calculate(finance_t credit) {
   long double monthly_inter = credit.interest_rate / 12 / 100;
   char type = credit.type_credit;
   if (type == 'a') {
-    if (credit.annuity_coeff==0) credit.annuity_coeff =
-        ((monthly_inter * powl((1 + monthly_inter), credit.term)) /
-         (powl((1 + monthly_inter), credit.term) - 1));
+    if (credit.annuity_coeff == 0)
+      credit.annuity_coeff =
+          ((monthly_inter * powl((1 + monthly_inter), credit.term)) /
+           (powl((1 + monthly_inter), credit.term) - 1));
     credit.monthly_payment = credit.total_credit_amount * credit.annuity_coeff;
-    credit.overpayment = credit.remainder_credit/100 * credit.interest_rate/credit.term;
-    credit.remainder_credit -= credit.monthly_payment-credit.overpayment;
+    credit.overpayment =
+        credit.remainder_credit / 100 * credit.interest_rate / credit.term;
+    credit.remainder_credit -= credit.monthly_payment - credit.overpayment;
     credit.total_payment = credit.monthly_payment * credit.term;
   } else if (type == 'b') {
     credit.percent_sum =

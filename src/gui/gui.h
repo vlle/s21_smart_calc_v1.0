@@ -44,10 +44,7 @@ typedef struct calc {
   GtkEntryBuffer *mcdom_buff;
   GtkEntryBuffer *cdom_buff;
 
-
 } calc;
-
-
 
 typedef struct {
   GtkWidget *total_amount;
@@ -58,11 +55,11 @@ typedef struct {
   GtkWidget *window;
   GtkWidget *s_window;
   GtkStringList *sl;
-  
-  GtkListItemFactory *sums; 
-  GtkListItemFactory *signf; 
-  GtkListItemFactory *paypercent; 
-  GtkListItemFactory *debt_remain; 
+
+  GtkListItemFactory *sums;
+  GtkListItemFactory *signf;
+  GtkListItemFactory *paypercent;
+  GtkListItemFactory *debt_remain;
   int *types1;
   int *types2;
   int *types3;

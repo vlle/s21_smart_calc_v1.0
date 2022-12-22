@@ -69,10 +69,6 @@ long double popValueStack(list_t **root, int *nodesCount) {
   return popStack(root, kValue, nodesCount);
 }
 
-long double popXStack(list_t **root, int *nodesCount) {
-  return popStack(root, kX, nodesCount);
-}
-
 char popOperStack(list_t **root, int *nodesCount) {
   return (char)popStack(root, kOper, nodesCount);
 }
@@ -85,10 +81,6 @@ char peekOperStack(list_t *root) { return peekStack(root, kOper); }
 /* push */
 int pushValueStack(list_t **root, long double value, int *nodesCount) {
   return pushStack(root, value, 0, 0, kValue, nodesCount);
-}
-
-int pushXStack(list_t **root, long double x, int *nodesCount) {
-  return pushStack(root, 0, x, 0, kX, nodesCount);
 }
 
 int pushOperStack(list_t **root, char oper, int *nodesCount) {
