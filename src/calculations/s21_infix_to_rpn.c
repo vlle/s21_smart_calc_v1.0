@@ -30,6 +30,7 @@ int calculate(const char* input, long double* val) {
 }
 
 int calculate_x(const char* input, long double x, long double* val) {
+
 	list_t* root = createList(0, 0, 0, 0);
 	infToRpn(input, &root, &x);
 	*val = calculateRpn(root);

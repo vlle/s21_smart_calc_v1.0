@@ -70,14 +70,6 @@ typedef struct {
 
 } finance_i;
 
-typedef struct {
-  int *types1;
-  int *types2;
-  int *types3;
-  int *types4;
-
-} temp_t;
-
 void cb_create();
 void activate(GtkApplication *app, gpointer user_data);
 void delete (GtkWidget *widget, gpointer data);
